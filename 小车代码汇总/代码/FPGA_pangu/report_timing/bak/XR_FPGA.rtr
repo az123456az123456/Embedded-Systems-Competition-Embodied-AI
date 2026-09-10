@@ -1,0 +1,1352 @@
+
+----------------------------------------------------------------------------------------------------
+| Tool Version : Fabric Compiler (version 2022.1 <build 99559>)
+| Date         : Tue Jul 15 13:51:38 2025
+| Design       : XR_FPGA
+| Device       : PG2L50H
+| Speed Grade  : -6
+| Package      : MBG324
+----------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
+| Timing Models: Production
+| Tcl Command  : report_timing 
+----------------------------------------------------------------------------------------------------
+
+Timing analysis mode : multi corner
+
+ Clock Summary:                                                                                         
+********************************************************************************************************
+                                                                           Clock   Non-clock            
+ Clock                    Period       Waveform       Type                 Loads       Loads  Sources   
+--------------------------------------------------------------------------------------------------------
+ XR_FPGA|clk_sys          1000.000     {0 500}        Declared               251          77  {clk_sys} 
+========================================================================================================
+
+ Clock Groups:                                                                                      
+****************************************************************************************************
+ Clock Group                   Group Type                 Clocks                                    
+----------------------------------------------------------------------------------------------------
+ Inferred_clock_group_0        asynchronous               XR_FPGA|clk_sys                           
+====================================================================================================
+
+ Performance Summary:                                                                               
+****************************************************************************************************
+                              Requested       Estimated      Requested      Estimated               
+ Clock                        Frequency       Frequency      Period         Period             Slack
+----------------------------------------------------------------------------------------------------
+ XR_FPGA|clk_sys              1.000 MHz     135.044 MHz       1000.000          7.405        992.595
+====================================================================================================
+
+Design Summary : All Constraints Met.
+
+Setup Summary(Slow Corner):
+****************************************************************************************************
+                                                                          TNS Failing      TNS Total
+ Launch Clock           Capture Clock              WNS(ns)     TNS(ns)      Endpoints      Endpoints
+----------------------------------------------------------------------------------------------------
+ XR_FPGA|clk_sys        XR_FPGA|clk_sys            992.595       0.000              0           1042
+====================================================================================================
+
+Hold Summary(Slow Corner):
+****************************************************************************************************
+                                                                          THS Failing      THS Total
+ Launch Clock           Capture Clock              WHS(ns)     THS(ns)      Endpoints      Endpoints
+----------------------------------------------------------------------------------------------------
+ XR_FPGA|clk_sys        XR_FPGA|clk_sys              0.168       0.000              0           1042
+====================================================================================================
+
+Recovery Summary(Slow Corner):
+****************************************************************************************************
+                                                                          TNS Failing      TNS Total
+ Launch Clock           Capture Clock              WNS(ns)     TNS(ns)      Endpoints      Endpoints
+----------------------------------------------------------------------------------------------------
+====================================================================================================
+
+Removal Summary(Slow Corner):
+****************************************************************************************************
+                                                                          THS Failing      THS Total
+ Launch Clock           Capture Clock              WHS(ns)     THS(ns)      Endpoints      Endpoints
+----------------------------------------------------------------------------------------------------
+====================================================================================================
+
+Minimum Pulse Width Summary(Slow Corner):
+****************************************************************************************************
+                                                                         WPWS Failing     WPWS Total
+ Clock                                            WPWS(ns)    TPWS(ns)      Endpoints      Endpoints
+----------------------------------------------------------------------------------------------------
+ XR_FPGA|clk_sys                                   499.800       0.000              0            251
+====================================================================================================
+
+Setup Summary(Fast Corner):
+****************************************************************************************************
+                                                                          TNS Failing      TNS Total
+ Launch Clock           Capture Clock              WNS(ns)     TNS(ns)      Endpoints      Endpoints
+----------------------------------------------------------------------------------------------------
+ XR_FPGA|clk_sys        XR_FPGA|clk_sys            995.240       0.000              0           1042
+====================================================================================================
+
+Hold Summary(Fast Corner):
+****************************************************************************************************
+                                                                          THS Failing      THS Total
+ Launch Clock           Capture Clock              WHS(ns)     THS(ns)      Endpoints      Endpoints
+----------------------------------------------------------------------------------------------------
+ XR_FPGA|clk_sys        XR_FPGA|clk_sys              0.103       0.000              0           1042
+====================================================================================================
+
+Recovery Summary(Fast Corner):
+****************************************************************************************************
+                                                                          TNS Failing      TNS Total
+ Launch Clock           Capture Clock              WNS(ns)     TNS(ns)      Endpoints      Endpoints
+----------------------------------------------------------------------------------------------------
+====================================================================================================
+
+Removal Summary(Fast Corner):
+****************************************************************************************************
+                                                                          THS Failing      THS Total
+ Launch Clock           Capture Clock              WHS(ns)     THS(ns)      Endpoints      Endpoints
+----------------------------------------------------------------------------------------------------
+====================================================================================================
+
+Minimum Pulse Width Summary(Fast Corner):
+****************************************************************************************************
+                                                                         WPWS Failing     WPWS Total
+ Clock                                            WPWS(ns)    TPWS(ns)      Endpoints      Endpoints
+----------------------------------------------------------------------------------------------------
+ XR_FPGA|clk_sys                                   499.800       0.000              0            251
+====================================================================================================
+
+Slow Corner
+****************************************************************************************************
+====================================================================================================
+
+Startpoint  : XR_iic_inst/XR_iic_ctrl_inst/servo_rd[9]/opit_0/CLK
+Endpoint    : XR_function_inst/XR_servo_inst/N276_2/gateop_LUT6DL5Q_perm/CE
+Path Group  : XR_FPGA|clk_sys
+Path Type   : max (slow corner)
+Path Class  : sequential timing path
+Clock Skew  :    -0.205  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  3.048
+  Launch Clock Delay      :  3.563
+  Clock Pessimism Removal :  0.310
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.897       0.930 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.930         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.110       1.040 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.920       1.960         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.177       2.137 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.651       2.788         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.302       3.090 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.473       3.563         _N10             
+ CLMA_195_342/CLK                                                          r       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[9]/opit_0/CLK
+
+ CLMA_195_342/Q0                   tco                   0.213       3.776 r       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[9]/opit_0/Q
+                                   net (fanout=2)        0.557       4.333         servo_rd[9]      
+ CLMA_195_324/Y2                   td                    0.188       4.521 r       XR_function_inst/XR_servo_inst/N0[9]/LUT6D_inst_perm/L6
+                                   net (fanout=1)        0.790       5.311         XR_function_inst/XR_servo_inst/servo_out [9]
+ APM_191_276/P_0[5]                td                    2.754       8.065 r       XR_function_inst/XR_servo_inst/N46/gopapm/P[5]
+                                   net (fanout=1)        0.663       8.728         XR_function_inst/XR_servo_inst/N351 [5]
+ CLMA_195_282/COUT                 td                    0.404       9.132 f       XR_function_inst/XR_servo_inst/N50.eq_3/gateop_perm/COUT
+                                   net (fanout=1)        0.000       9.132         XR_function_inst/XR_servo_inst/N50.co [6]
+ CLMA_195_288/COUT                 td                    0.090       9.222 f       XR_function_inst/XR_servo_inst/N50.eq_7/gateop_perm/COUT
+                                   net (fanout=1)        0.000       9.222         XR_function_inst/XR_servo_inst/N50.co [14]
+ CLMA_195_294/CR1                  td                    0.207       9.429 r       XR_function_inst/XR_servo_inst/N50.eq_9/gateop_l6l5_perm/L5
+                                   net (fanout=2)        0.411       9.840         _N1              
+ CLMA_195_300/Y1                   td                    0.188      10.028 r       XR_function_inst/XR_servo_inst/N291/LUT6_inst_perm/L6
+                                   net (fanout=1)        0.447      10.475         XR_function_inst/XR_servo_inst/N291
+ CLMS_195_289/CE                                                           r       XR_function_inst/XR_servo_inst/N276_2/gateop_LUT6DL5Q_perm/CE
+
+ Data arrival time                                                  10.475         Logic Levels: 6  
+                                                                                   Logic: 4.044ns(58.507%), Route: 2.868ns(41.493%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                      1000.000    1000.000 r                        
+ P17                                                     0.000    1000.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033    1000.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.766    1000.799 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000    1000.799         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.095    1000.894 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.783    1001.677         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.150    1001.827 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.557    1002.384         ntclkbufg_0      
+ HCKB_165_180/CLKOUT               td                    0.258    1002.642 r       HCKBROUTE_2/CLKOUT
+                                   net (fanout=28)       0.406    1003.048         _N11             
+ CLMS_195_289/CLK                                                          r       XR_function_inst/XR_servo_inst/N276_2/gateop_LUT6DL5Q_perm/CLK
+ clock pessimism                                         0.310    1003.358                          
+ clock uncertainty                                      -0.050    1003.308                          
+
+ Setup time                                             -0.238    1003.070                          
+
+ Data required time                                               1003.070                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                               1003.070                          
+ Data arrival time                                                  10.475                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                       992.595                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_iic_inst/XR_iic_ctrl_inst/servo_rd[27]/opit_0/CLK
+Endpoint    : XR_function_inst/XR_servo_inst/servo[3]/opit_0_inv_L5Q_perm/CE
+Path Group  : XR_FPGA|clk_sys
+Path Type   : max (slow corner)
+Path Class  : sequential timing path
+Clock Skew  :    -0.212  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  3.047
+  Launch Clock Delay      :  3.569
+  Clock Pessimism Removal :  0.310
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.897       0.930 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.930         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.110       1.040 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.920       1.960         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.177       2.137 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.651       2.788         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.302       3.090 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.479       3.569         _N10             
+ CLMS_195_313/CLK                                                          r       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[27]/opit_0/CLK
+
+ CLMS_195_313/Q3                   tco                   0.213       3.782 r       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[27]/opit_0/Q
+                                   net (fanout=2)        0.452       4.234         servo_rd[27]     
+ CLMS_177_313/Y1                   td                    0.240       4.474 r       XR_function_inst/XR_servo_inst/N0[27]/LUT6D_inst_perm/L6
+                                   net (fanout=1)        0.875       5.349         XR_function_inst/XR_servo_inst/servo_out [27]
+ APM_191_276/P_1[4]                td                    2.754       8.103 r       XR_function_inst/XR_servo_inst/N108/gopapm/P[4]
+                                   net (fanout=1)        0.678       8.781         XR_function_inst/XR_servo_inst/N355 [4]
+ CLMA_183_282/COUT                 td                    0.404       9.185 f       XR_function_inst/XR_servo_inst/N112.eq_3/gateop_perm/COUT
+                                   net (fanout=1)        0.000       9.185         XR_function_inst/XR_servo_inst/N112.co [6]
+ CLMA_183_288/COUT                 td                    0.090       9.275 f       XR_function_inst/XR_servo_inst/N112.eq_7/gateop_perm/COUT
+                                   net (fanout=1)        0.000       9.275         XR_function_inst/XR_servo_inst/N112.co [14]
+ CLMA_183_294/CR1                  td                    0.207       9.482 r       XR_function_inst/XR_servo_inst/N112.eq_9/gateop_l6l5_perm/L5
+                                   net (fanout=1)        0.255       9.737         _N3              
+ CLMA_183_294/Y2                   td                    0.235       9.972 r       XR_function_inst/XR_servo_inst/servo[3]/opit_0_inv_L5Q_perm/L6
+                                   net (fanout=1)        0.250      10.222         XR_function_inst/XR_servo_inst/N299
+ CLMA_183_294/CE                                                           r       XR_function_inst/XR_servo_inst/servo[3]/opit_0_inv_L5Q_perm/CE
+
+ Data arrival time                                                  10.222         Logic Levels: 6  
+                                                                                   Logic: 4.143ns(62.273%), Route: 2.510ns(37.727%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                      1000.000    1000.000 r                        
+ P17                                                     0.000    1000.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033    1000.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.766    1000.799 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000    1000.799         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.095    1000.894 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.783    1001.677         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.150    1001.827 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.557    1002.384         ntclkbufg_0      
+ HCKB_165_180/CLKOUT               td                    0.258    1002.642 r       HCKBROUTE_2/CLKOUT
+                                   net (fanout=28)       0.405    1003.047         _N11             
+ CLMA_183_294/CLK                                                          r       XR_function_inst/XR_servo_inst/servo[3]/opit_0_inv_L5Q_perm/CLK
+ clock pessimism                                         0.310    1003.357                          
+ clock uncertainty                                      -0.050    1003.307                          
+
+ Setup time                                             -0.238    1003.069                          
+
+ Data required time                                               1003.069                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                               1003.069                          
+ Data arrival time                                                  10.222                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                       992.847                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_iic_inst/XR_iic_ctrl_inst/servo_rd[54]/opit_0/CLK
+Endpoint    : XR_function_inst/XR_ultrasonic_inst/N253_20/gateop_LUT6DL5Q_perm/CE
+Path Group  : XR_FPGA|clk_sys
+Path Type   : max (slow corner)
+Path Class  : sequential timing path
+Clock Skew  :    -0.034  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  3.035
+  Launch Clock Delay      :  3.561
+  Clock Pessimism Removal :  0.492
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.897       0.930 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.930         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.110       1.040 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.920       1.960         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.177       2.137 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.651       2.788         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.302       3.090 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.471       3.561         _N10             
+ CLMA_195_354/CLK                                                          r       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[54]/opit_0/CLK
+
+ CLMA_195_354/CR1                  tco                   0.264       3.825 r       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[54]/opit_0/Q
+                                   net (fanout=2)        0.746       4.571         servo_rd[54]     
+ CLMS_195_355/Y3                   td                    0.188       4.759 r       XR_function_inst/XR_servo_inst/N0[54]/LUT6D_inst_perm/L6
+                                   net (fanout=2)        0.623       5.382         XR_function_inst/XR_servo_inst/servo_out [54]
+ APM_191_366/P_0[2]                td                    2.754       8.136 r       XR_function_inst/XR_servo_inst/N201/gopapm/P[2]
+                                   net (fanout=1)        0.642       8.778         XR_function_inst/XR_servo_inst/N361 [2]
+ CLMA_183_373/COUT                 td                    0.394       9.172 f       XR_function_inst/XR_servo_inst/N205.eq_3/gateop_perm/COUT
+                                   net (fanout=1)        0.000       9.172         XR_function_inst/XR_servo_inst/N205.co [6]
+ CLMA_183_379/COUT                 td                    0.090       9.262 f       XR_function_inst/XR_servo_inst/N205.eq_7/gateop_perm/COUT
+                                   net (fanout=1)        0.000       9.262         XR_function_inst/XR_servo_inst/N205.co [14]
+ CLMA_183_385/CR1                  td                    0.207       9.469 r       XR_function_inst/XR_servo_inst/N205.eq_9/gateop_l6l5_perm/L5
+                                   net (fanout=2)        0.255       9.724         _N6              
+ CLMA_183_385/Y3                   td                    0.188       9.912 r       XR_function_inst/XR_servo_inst/N311/LUT6_inst_perm/L6
+                                   net (fanout=1)        0.441      10.353         XR_function_inst/XR_servo_inst/N311
+ CLMA_195_378/CE                                                           r       XR_function_inst/XR_ultrasonic_inst/N253_20/gateop_LUT6DL5Q_perm/CE
+
+ Data arrival time                                                  10.353         Logic Levels: 6  
+                                                                                   Logic: 4.085ns(60.144%), Route: 2.707ns(39.856%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                      1000.000    1000.000 r                        
+ P17                                                     0.000    1000.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033    1000.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.766    1000.799 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000    1000.799         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.095    1000.894 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.783    1001.677         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.150    1001.827 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.557    1002.384         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.258    1002.642 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.393    1003.035         _N10             
+ CLMA_195_378/CLK                                                          r       XR_function_inst/XR_ultrasonic_inst/N253_20/gateop_LUT6DL5Q_perm/CLK
+ clock pessimism                                         0.492    1003.527                          
+ clock uncertainty                                      -0.050    1003.477                          
+
+ Setup time                                             -0.238    1003.239                          
+
+ Data required time                                               1003.239                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                               1003.239                          
+ Data arrival time                                                  10.353                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                       992.886                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_function_inst/XR_ultrasonic_inst/cnt[20]/opit_0_inv_AQ_perm/CLK
+Endpoint    : XR_function_inst/XR_ultrasonic_inst/US_TE_2/opit_0_inv_L6Q_perm/I5
+Path Group  : XR_FPGA|clk_sys
+Path Type   : min (slow corner)
+Path Class  : sequential timing path
+Clock Skew  :    0.210  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  3.550
+  Launch Clock Delay      :  3.030
+  Clock Pessimism Removal :  -0.310
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.766       0.799 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.799         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.095       0.894 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.783       1.677         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.150       1.827 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.557       2.384         ntclkbufg_0      
+ HCKB_165_200/CLKOUT               td                    0.258       2.642 r       HCKBROUTE_0/CLKOUT
+                                   net (fanout=24)       0.388       3.030         _N9              
+ CLMS_159_391/CLK                                                          r       XR_function_inst/XR_ultrasonic_inst/cnt[20]/opit_0_inv_AQ_perm/CLK
+
+ CLMS_159_391/Q2                   tco                   0.166       3.196 f       XR_function_inst/XR_ultrasonic_inst/cnt[19]/opit_0_inv_AQ_perm/Q
+                                   net (fanout=4)        0.197       3.393         XR_function_inst/XR_ultrasonic_inst/cnt [19]
+ CLMA_171_390/B5                                                           f       XR_function_inst/XR_ultrasonic_inst/US_TE_2/opit_0_inv_L6Q_perm/I5
+
+ Data arrival time                                                   3.393         Logic Levels: 0  
+                                                                                   Logic: 0.166ns(45.730%), Route: 0.197ns(54.270%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.897       0.930 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.930         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.110       1.040 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.920       1.960         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.177       2.137 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.651       2.788         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.302       3.090 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.460       3.550         _N10             
+ CLMA_171_390/CLK                                                          r       XR_function_inst/XR_ultrasonic_inst/US_TE_2/opit_0_inv_L6Q_perm/CLK
+ clock pessimism                                        -0.310       3.240                          
+ clock uncertainty                                       0.000       3.240                          
+
+ Hold time                                              -0.015       3.225                          
+
+ Data required time                                                  3.225                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                                  3.225                          
+ Data arrival time                                                   3.393                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                         0.168                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_function_inst/XR_servo_inst/ser_cnt[9]/opit_0_inv_L6QL5Q1_perm/CLK
+Endpoint    : XR_function_inst/XR_servo_inst/ser_cnt[18]/opit_0_inv_AQ_perm/I3
+Path Group  : XR_FPGA|clk_sys
+Path Type   : min (slow corner)
+Path Class  : sequential timing path
+Clock Skew  :    0.209  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  3.567
+  Launch Clock Delay      :  3.048
+  Clock Pessimism Removal :  -0.310
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.766       0.799 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.799         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.095       0.894 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.783       1.677         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.150       1.827 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.557       2.384         ntclkbufg_0      
+ HCKB_165_180/CLKOUT               td                    0.258       2.642 r       HCKBROUTE_2/CLKOUT
+                                   net (fanout=28)       0.406       3.048         _N11             
+ CLMA_183_300/CLK                                                          r       XR_function_inst/XR_servo_inst/ser_cnt[9]/opit_0_inv_L6QL5Q1_perm/CLK
+
+ CLMA_183_300/CR1                  tco                   0.183       3.231 f       XR_function_inst/XR_servo_inst/ser_cnt[9]/opit_0_inv_L6QL5Q1_perm/L5Q
+                                   net (fanout=24)       0.168       3.399         XR_function_inst/XR_servo_inst/ser_cnt [0]
+ CLMA_183_307/B3                                                           f       XR_function_inst/XR_servo_inst/ser_cnt[18]/opit_0_inv_AQ_perm/I3
+
+ Data arrival time                                                   3.399         Logic Levels: 0  
+                                                                                   Logic: 0.183ns(52.137%), Route: 0.168ns(47.863%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.897       0.930 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.930         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.110       1.040 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.920       1.960         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.177       2.137 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.651       2.788         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.302       3.090 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.477       3.567         _N10             
+ CLMA_183_307/CLK                                                          r       XR_function_inst/XR_servo_inst/ser_cnt[19]/opit_0_inv_AQ_perm/CLK
+ clock pessimism                                        -0.310       3.257                          
+ clock uncertainty                                       0.000       3.257                          
+
+ Hold time                                              -0.041       3.216                          
+
+ Data required time                                                  3.216                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                                  3.216                          
+ Data arrival time                                                   3.399                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                         0.183                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_iic_inst/XR_iic_com_inst/rData[0]/opit_0_inv_L6Q_perm/CLK
+Endpoint    : XR_iic_inst/XR_iic_ctrl_inst/servo_rd[40]/opit_0/D
+Path Group  : XR_FPGA|clk_sys
+Path Type   : min (slow corner)
+Path Class  : sequential timing path
+Clock Skew  :    0.076  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  3.561
+  Launch Clock Delay      :  3.037
+  Clock Pessimism Removal :  -0.448
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.766       0.799 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.799         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.095       0.894 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.783       1.677         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.150       1.827 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.557       2.384         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.258       2.642 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.395       3.037         _N10             
+ CLMA_171_343/CLK                                                          r       XR_iic_inst/XR_iic_com_inst/rData[0]/opit_0_inv_L6Q_perm/CLK
+
+ CLMA_171_343/Q1                   tco                   0.166       3.203 f       XR_iic_inst/XR_iic_com_inst/rData[0]/opit_0_inv_L6Q_perm/L6Q
+                                   net (fanout=11)       0.178       3.381         XR_iic_inst/RdData [0]
+ CLMA_183_342/BD                                                           f       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[40]/opit_0/D
+
+ Data arrival time                                                   3.381         Logic Levels: 0  
+                                                                                   Logic: 0.166ns(48.256%), Route: 0.178ns(51.744%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.897       0.930 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.930         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.110       1.040 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.920       1.960         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.177       2.137 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.651       2.788         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.302       3.090 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.471       3.561         _N10             
+ CLMA_183_342/CLK                                                          r       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[40]/opit_0/CLK
+ clock pessimism                                        -0.448       3.113                          
+ clock uncertainty                                       0.000       3.113                          
+
+ Hold time                                               0.046       3.159                          
+
+ Data required time                                                  3.159                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                                  3.159                          
+ Data arrival time                                                   3.381                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                         0.222                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_function_inst/XR_motor_inst/ena/opit_0_inv_L6Q_LUT6DQL5_perm/CLK
+Endpoint    : ena (port)
+Path Group  : **default**
+Path Type   : max (slow corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.897       0.930 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.930         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.110       1.040 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.920       1.960         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.177       2.137 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.651       2.788         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.302       3.090 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.477       3.567         _N10             
+ CLMA_231_354/CLK                                                          r       XR_function_inst/XR_motor_inst/ena/opit_0_inv_L6Q_LUT6DQL5_perm/CLK
+
+ CLMA_231_354/Q0                   tco                   0.213       3.780 r       XR_function_inst/XR_motor_inst/ena/opit_0_inv_L6Q_LUT6DQL5_perm/L6Q
+                                   net (fanout=1)        1.717       5.497         nt_ena           
+ IOLHR_292_600/DO_P                td                    1.231       6.728 r       ena_obuf/opit_1/DO_P
+                                   net (fanout=1)        0.000       6.728         ena_obuf/ntO     
+ IOBD_300_600/PAD                  td                    2.425       9.153 r       ena_obuf/opit_0/O
+                                   net (fanout=1)        0.047       9.200         ena              
+ C6                                                                        r       ena (port)       
+
+ Data arrival time                                                   9.200         Logic Levels: 2  
+                                                                                   Logic: 3.869ns(68.685%), Route: 1.764ns(31.315%)
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_iic_inst/XR_iic_com_inst/N1313/gateop_LUT6DL5Q_perm/CLK
+Endpoint    : servo[0] (port)
+Path Group  : **default**
+Path Type   : max (slow corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.897       0.930 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.930         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.110       1.040 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.920       1.960         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.177       2.137 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.651       2.788         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.302       3.090 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.468       3.558         _N10             
+ CLMS_177_355/CLK                                                          r       XR_iic_inst/XR_iic_com_inst/N1313/gateop_LUT6DL5Q_perm/CLK
+
+ CLMS_177_355/CR1                  tco                   0.240       3.798 r       XR_iic_inst/XR_iic_com_inst/N1313/gateop_LUT6DL5Q_perm/L5Q
+                                   net (fanout=1)        1.607       5.405         nt_servo[0]      
+ IOLHR_292_210/DO_P                td                    1.231       6.636 r       servo_obuf[0]/opit_1/DO_P
+                                   net (fanout=1)        0.000       6.636         servo_obuf[0]/ntO
+ IOBD_300_210/PAD                  td                    2.425       9.061 r       servo_obuf[0]/opit_0/O
+                                   net (fanout=1)        0.064       9.125         servo[0]         
+ U4                                                                        r       servo[0] (port)  
+
+ Data arrival time                                                   9.125         Logic Levels: 2  
+                                                                                   Logic: 3.896ns(69.984%), Route: 1.671ns(30.016%)
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_function_inst/XR_motor_inst/enb/opit_0_inv_L6Q_LUT6DQL5_perm/CLK
+Endpoint    : enb (port)
+Path Group  : **default**
+Path Type   : max (slow corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.897       0.930 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.930         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.110       1.040 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.920       1.960         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.177       2.137 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.651       2.788         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.302       3.090 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.485       3.575         _N10             
+ CLMA_231_312/CLK                                                          r       XR_function_inst/XR_motor_inst/enb/opit_0_inv_L6Q_LUT6DQL5_perm/CLK
+
+ CLMA_231_312/Q0                   tco                   0.213       3.788 r       XR_function_inst/XR_motor_inst/enb/opit_0_inv_L6Q_LUT6DQL5_perm/L6Q
+                                   net (fanout=1)        1.571       5.359         nt_enb           
+ IOLHR_292_576/DO_P                td                    1.231       6.590 r       enb_obuf/opit_1/DO_P
+                                   net (fanout=1)        0.000       6.590         enb_obuf/ntO     
+ IOBD_300_576/PAD                  td                    2.425       9.015 r       enb_obuf/opit_0/O
+                                   net (fanout=1)        0.055       9.070         enb              
+ A6                                                                        r       enb (port)       
+
+ Data arrival time                                                   9.070         Logic Levels: 2  
+                                                                                   Logic: 3.869ns(70.409%), Route: 1.626ns(29.591%)
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : IR[1] (port)
+Endpoint    : XR_function_inst/XR_IR_inst/motor_Follow_Line[2]/opit_0_inv_L6QL5Q_perm/I1
+Path Group  : **default**
+Path Type   : min (slow corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+
+ V1                                                      0.000       0.000 f       IR[1] (port)     
+                                   net (fanout=1)        0.053       0.053         IR[1]            
+ IOBS_300_216/DIN                  td                    0.678       0.731 f       IR_ibuf[1]/opit_0/O
+                                   net (fanout=1)        0.000       0.731         IR_ibuf[1]/ntD   
+ IOLHR_292_216/DI_TO_CLK           td                    0.095       0.826 f       IR_ibuf[1]/opit_1/DI_TO_CLK
+                                   net (fanout=2)        0.777       1.603         nt_IR[1]         
+ CLMS_255_337/C1                                                           f       XR_function_inst/XR_IR_inst/motor_Follow_Line[2]/opit_0_inv_L6QL5Q_perm/I1
+
+ Data arrival time                                                   1.603         Logic Levels: 2  
+                                                                                   Logic: 0.773ns(48.222%), Route: 0.830ns(51.778%)
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : IR[1] (port)
+Endpoint    : XR_function_inst/XR_IR_inst/motor_Follow_Line[3]/opit_0_inv_L6QL5Q1_perm/I0
+Path Group  : **default**
+Path Type   : min (slow corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+
+ V1                                                      0.000       0.000 f       IR[1] (port)     
+                                   net (fanout=1)        0.053       0.053         IR[1]            
+ IOBS_300_216/DIN                  td                    0.678       0.731 f       IR_ibuf[1]/opit_0/O
+                                   net (fanout=1)        0.000       0.731         IR_ibuf[1]/ntD   
+ IOLHR_292_216/DI_TO_CLK           td                    0.095       0.826 f       IR_ibuf[1]/opit_1/DI_TO_CLK
+                                   net (fanout=2)        0.777       1.603         nt_IR[1]         
+ CLMS_255_337/D0                                                           f       XR_function_inst/XR_IR_inst/motor_Follow_Line[3]/opit_0_inv_L6QL5Q1_perm/I0
+
+ Data arrival time                                                   1.603         Logic Levels: 2  
+                                                                                   Logic: 0.773ns(48.222%), Route: 0.830ns(51.778%)
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : IR[0] (port)
+Endpoint    : XR_function_inst/XR_IR_inst/motor_Avoiding[1]/opit_0_inv/D
+Path Group  : **default**
+Path Type   : min (slow corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+
+ U2                                                      0.000       0.000 f       IR[0] (port)     
+                                   net (fanout=1)        0.051       0.051         IR[0]            
+ IOBD_300_198/DIN                  td                    0.678       0.729 f       IR_ibuf[0]/opit_0/O
+                                   net (fanout=1)        0.000       0.729         IR_ibuf[0]/ntD   
+ IOLHR_292_198/DI_TO_CLK           td                    0.095       0.824 f       IR_ibuf[0]/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.912       1.736         nt_IR[0]         
+ CLMS_255_337/M1                                                           f       XR_function_inst/XR_IR_inst/motor_Avoiding[1]/opit_0_inv/D
+
+ Data arrival time                                                   1.736         Logic Levels: 2  
+                                                                                   Logic: 0.773ns(44.528%), Route: 0.963ns(55.472%)
+====================================================================================================
+
+{XR_FPGA|clk_sys} Minimum Pulse Width :
+****************************************************************************************************
+ Slack       Actual Width    Require Width   Type              Location                Pin          
+----------------------------------------------------------------------------------------------------
+ 499.800     500.000         0.200           High Pulse Width  CLMS_255_337/CLK        XR_function_inst/XR_IR_inst/motor_Avoiding[1]/opit_0_inv/CLK
+ 499.800     500.000         0.200           Low Pulse Width   CLMS_255_337/CLK        XR_function_inst/XR_IR_inst/motor_Avoiding[1]/opit_0_inv/CLK
+ 499.800     500.000         0.200           High Pulse Width  CLMS_255_337/CLK        XR_function_inst/XR_IR_inst/motor_Follow_Line[2]/opit_0_inv_L6QL5Q_perm/CLK
+====================================================================================================
+
+====================================================================================================
+Fast Corner
+****************************************************************************************************
+====================================================================================================
+
+Startpoint  : XR_iic_inst/XR_iic_ctrl_inst/servo_rd[9]/opit_0/CLK
+Endpoint    : XR_function_inst/XR_servo_inst/N276_2/gateop_LUT6DL5Q_perm/CE
+Path Group  : XR_FPGA|clk_sys
+Path Type   : max (fast corner)
+Path Class  : sequential timing path
+Clock Skew  :    -0.143  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  1.936
+  Launch Clock Delay      :  2.282
+  Clock Pessimism Removal :  0.203
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.521       0.554 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.554         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.087       0.641 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.588       1.229         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.115       1.344 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.397       1.741         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.233       1.974 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.308       2.282         _N10             
+ CLMA_195_342/CLK                                                          r       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[9]/opit_0/CLK
+
+ CLMA_195_342/Q0                   tco                   0.125       2.407 f       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[9]/opit_0/Q
+                                   net (fanout=2)        0.316       2.723         servo_rd[9]      
+ CLMA_195_324/Y2                   td                    0.100       2.823 f       XR_function_inst/XR_servo_inst/N0[9]/LUT6D_inst_perm/L6
+                                   net (fanout=1)        0.462       3.285         XR_function_inst/XR_servo_inst/servo_out [9]
+ APM_191_276/P_0[5]                td                    2.092       5.377 f       XR_function_inst/XR_servo_inst/N46/gopapm/P[5]
+                                   net (fanout=1)        0.369       5.746         XR_function_inst/XR_servo_inst/N351 [5]
+ CLMA_195_282/COUT                 td                    0.248       5.994 f       XR_function_inst/XR_servo_inst/N50.eq_3/gateop_perm/COUT
+                                   net (fanout=1)        0.000       5.994         XR_function_inst/XR_servo_inst/N50.co [6]
+ CLMA_195_288/COUT                 td                    0.056       6.050 f       XR_function_inst/XR_servo_inst/N50.eq_7/gateop_perm/COUT
+                                   net (fanout=1)        0.000       6.050         XR_function_inst/XR_servo_inst/N50.co [14]
+ CLMA_195_294/CR1                  td                    0.119       6.169 f       XR_function_inst/XR_servo_inst/N50.eq_9/gateop_l6l5_perm/L5
+                                   net (fanout=2)        0.227       6.396         _N1              
+ CLMA_195_300/Y1                   td                    0.104       6.500 r       XR_function_inst/XR_servo_inst/N291/LUT6_inst_perm/L6
+                                   net (fanout=1)        0.233       6.733         XR_function_inst/XR_servo_inst/N291
+ CLMS_195_289/CE                                                           r       XR_function_inst/XR_servo_inst/N276_2/gateop_LUT6DL5Q_perm/CE
+
+ Data arrival time                                                   6.733         Logic Levels: 6  
+                                                                                   Logic: 2.844ns(63.896%), Route: 1.607ns(36.104%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                      1000.000    1000.000 r                        
+ P17                                                     0.000    1000.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033    1000.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.445    1000.478 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000    1000.478         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.073    1000.551 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.493    1001.044         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.097    1001.141 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.334    1001.475         ntclkbufg_0      
+ HCKB_165_180/CLKOUT               td                    0.195    1001.670 r       HCKBROUTE_2/CLKOUT
+                                   net (fanout=28)       0.266    1001.936         _N11             
+ CLMS_195_289/CLK                                                          r       XR_function_inst/XR_servo_inst/N276_2/gateop_LUT6DL5Q_perm/CLK
+ clock pessimism                                         0.203    1002.139                          
+ clock uncertainty                                      -0.050    1002.089                          
+
+ Setup time                                             -0.116    1001.973                          
+
+ Data required time                                               1001.973                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                               1001.973                          
+ Data arrival time                                                   6.733                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                       995.240                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_iic_inst/XR_iic_ctrl_inst/servo_rd[35]/opit_0/CLK
+Endpoint    : XR_function_inst/XR_servo_inst/servo[4]/opit_0_inv_L5Q_perm/CE
+Path Group  : XR_FPGA|clk_sys
+Path Type   : max (fast corner)
+Path Class  : sequential timing path
+Clock Skew  :    -0.061  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  1.920
+  Launch Clock Delay      :  2.285
+  Clock Pessimism Removal :  0.304
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.521       0.554 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.554         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.087       0.641 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.588       1.229         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.115       1.344 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.397       1.741         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.233       1.974 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.311       2.285         _N10             
+ CLMS_195_325/CLK                                                          r       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[35]/opit_0/CLK
+
+ CLMS_195_325/Q0                   tco                   0.125       2.410 f       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[35]/opit_0/Q
+                                   net (fanout=2)        0.351       2.761         servo_rd[35]     
+ CLMA_195_312/CR1                  td                    0.135       2.896 f       XR_function_inst/XR_servo_inst/N0[56]/LUT6D_inst_perm/L5
+                                   net (fanout=1)        0.577       3.473         XR_function_inst/XR_servo_inst/servo_out [35]
+ APM_191_366/P_1[1]                td                    2.092       5.565 f       XR_function_inst/XR_servo_inst/N139/gopapm/P[1]
+                                   net (fanout=1)        0.291       5.856         XR_function_inst/XR_servo_inst/N357 [1]
+ CLMA_183_372/COUT                 td                    0.248       6.104 f       XR_function_inst/XR_servo_inst/N143.eq_3/gateop_perm/COUT
+                                   net (fanout=1)        0.000       6.104         XR_function_inst/XR_servo_inst/N143.co [6]
+ CLMA_183_378/COUT                 td                    0.056       6.160 f       XR_function_inst/XR_servo_inst/N143.eq_7/gateop_perm/COUT
+                                   net (fanout=1)        0.000       6.160         XR_function_inst/XR_servo_inst/N143.co [14]
+ CLMA_183_384/CR1                  td                    0.119       6.279 f       XR_function_inst/XR_servo_inst/N143.eq_9/gateop_l6l5_perm/L5
+                                   net (fanout=1)        0.147       6.426         _N4              
+ CLMA_183_385/Y2                   td                    0.123       6.549 r       XR_function_inst/XR_servo_inst/servo[4]/opit_0_inv_L5Q_perm/L6
+                                   net (fanout=1)        0.134       6.683         XR_function_inst/XR_servo_inst/N303
+ CLMA_183_385/CE                                                           r       XR_function_inst/XR_servo_inst/servo[4]/opit_0_inv_L5Q_perm/CE
+
+ Data arrival time                                                   6.683         Logic Levels: 6  
+                                                                                   Logic: 2.898ns(65.894%), Route: 1.500ns(34.106%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                      1000.000    1000.000 r                        
+ P17                                                     0.000    1000.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033    1000.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.445    1000.478 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000    1000.478         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.073    1000.551 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.493    1001.044         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.097    1001.141 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.334    1001.475         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.195    1001.670 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.250    1001.920         _N10             
+ CLMA_183_385/CLK                                                          r       XR_function_inst/XR_servo_inst/servo[4]/opit_0_inv_L5Q_perm/CLK
+ clock pessimism                                         0.304    1002.224                          
+ clock uncertainty                                      -0.050    1002.174                          
+
+ Setup time                                             -0.116    1002.058                          
+
+ Data required time                                               1002.058                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                               1002.058                          
+ Data arrival time                                                   6.683                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                       995.375                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_iic_inst/XR_iic_ctrl_inst/servo_rd[27]/opit_0/CLK
+Endpoint    : XR_function_inst/XR_servo_inst/servo[3]/opit_0_inv_L5Q_perm/CE
+Path Group  : XR_FPGA|clk_sys
+Path Type   : max (fast corner)
+Path Class  : sequential timing path
+Clock Skew  :    -0.149  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  1.935
+  Launch Clock Delay      :  2.287
+  Clock Pessimism Removal :  0.203
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.521       0.554 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.554         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.087       0.641 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.588       1.229         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.115       1.344 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.397       1.741         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.233       1.974 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.313       2.287         _N10             
+ CLMS_195_313/CLK                                                          r       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[27]/opit_0/CLK
+
+ CLMS_195_313/Q3                   tco                   0.125       2.412 f       XR_iic_inst/XR_iic_ctrl_inst/servo_rd[27]/opit_0/Q
+                                   net (fanout=2)        0.271       2.683         servo_rd[27]     
+ CLMS_177_313/Y1                   td                    0.125       2.808 f       XR_function_inst/XR_servo_inst/N0[27]/LUT6D_inst_perm/L6
+                                   net (fanout=1)        0.489       3.297         XR_function_inst/XR_servo_inst/servo_out [27]
+ APM_191_276/P_1[4]                td                    2.092       5.389 f       XR_function_inst/XR_servo_inst/N108/gopapm/P[4]
+                                   net (fanout=1)        0.369       5.758         XR_function_inst/XR_servo_inst/N355 [4]
+ CLMA_183_282/COUT                 td                    0.248       6.006 f       XR_function_inst/XR_servo_inst/N112.eq_3/gateop_perm/COUT
+                                   net (fanout=1)        0.000       6.006         XR_function_inst/XR_servo_inst/N112.co [6]
+ CLMA_183_288/COUT                 td                    0.056       6.062 f       XR_function_inst/XR_servo_inst/N112.eq_7/gateop_perm/COUT
+                                   net (fanout=1)        0.000       6.062         XR_function_inst/XR_servo_inst/N112.co [14]
+ CLMA_183_294/CR1                  td                    0.119       6.181 f       XR_function_inst/XR_servo_inst/N112.eq_9/gateop_l6l5_perm/L5
+                                   net (fanout=1)        0.147       6.328         _N3              
+ CLMA_183_294/Y2                   td                    0.123       6.451 r       XR_function_inst/XR_servo_inst/servo[3]/opit_0_inv_L5Q_perm/L6
+                                   net (fanout=1)        0.134       6.585         XR_function_inst/XR_servo_inst/N299
+ CLMA_183_294/CE                                                           r       XR_function_inst/XR_servo_inst/servo[3]/opit_0_inv_L5Q_perm/CE
+
+ Data arrival time                                                   6.585         Logic Levels: 6  
+                                                                                   Logic: 2.888ns(67.194%), Route: 1.410ns(32.806%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                      1000.000    1000.000 r                        
+ P17                                                     0.000    1000.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033    1000.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.445    1000.478 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000    1000.478         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.073    1000.551 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.493    1001.044         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.097    1001.141 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.334    1001.475         ntclkbufg_0      
+ HCKB_165_180/CLKOUT               td                    0.195    1001.670 r       HCKBROUTE_2/CLKOUT
+                                   net (fanout=28)       0.265    1001.935         _N11             
+ CLMA_183_294/CLK                                                          r       XR_function_inst/XR_servo_inst/servo[3]/opit_0_inv_L5Q_perm/CLK
+ clock pessimism                                         0.203    1002.138                          
+ clock uncertainty                                      -0.050    1002.088                          
+
+ Setup time                                             -0.116    1001.972                          
+
+ Data required time                                               1001.972                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                               1001.972                          
+ Data arrival time                                                   6.585                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                       995.387                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_function_inst/XR_ultrasonic_inst/cnt[20]/opit_0_inv_AQ_perm/CLK
+Endpoint    : XR_function_inst/XR_ultrasonic_inst/US_TE_2/opit_0_inv_L6Q_perm/I5
+Path Group  : XR_FPGA|clk_sys
+Path Type   : min (fast corner)
+Path Class  : sequential timing path
+Clock Skew  :    0.148  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  2.269
+  Launch Clock Delay      :  1.918
+  Clock Pessimism Removal :  -0.203
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.445       0.478 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.478         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.073       0.551 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.493       1.044         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.097       1.141 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.334       1.475         ntclkbufg_0      
+ HCKB_165_200/CLKOUT               td                    0.195       1.670 r       HCKBROUTE_0/CLKOUT
+                                   net (fanout=24)       0.248       1.918         _N9              
+ CLMS_159_391/CLK                                                          r       XR_function_inst/XR_ultrasonic_inst/cnt[20]/opit_0_inv_AQ_perm/CLK
+
+ CLMS_159_391/Q2                   tco                   0.109       2.027 f       XR_function_inst/XR_ultrasonic_inst/cnt[19]/opit_0_inv_AQ_perm/Q
+                                   net (fanout=4)        0.134       2.161         XR_function_inst/XR_ultrasonic_inst/cnt [19]
+ CLMA_171_390/B5                                                           f       XR_function_inst/XR_ultrasonic_inst/US_TE_2/opit_0_inv_L6Q_perm/I5
+
+ Data arrival time                                                   2.161         Logic Levels: 0  
+                                                                                   Logic: 0.109ns(44.856%), Route: 0.134ns(55.144%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.521       0.554 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.554         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.087       0.641 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.588       1.229         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.115       1.344 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.397       1.741         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.233       1.974 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.295       2.269         _N10             
+ CLMA_171_390/CLK                                                          r       XR_function_inst/XR_ultrasonic_inst/US_TE_2/opit_0_inv_L6Q_perm/CLK
+ clock pessimism                                        -0.203       2.066                          
+ clock uncertainty                                       0.000       2.066                          
+
+ Hold time                                              -0.008       2.058                          
+
+ Data required time                                                  2.058                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                                  2.058                          
+ Data arrival time                                                   2.161                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                         0.103                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_function_inst/XR_servo_inst/ser_cnt[9]/opit_0_inv_L6QL5Q1_perm/CLK
+Endpoint    : XR_function_inst/XR_servo_inst/ser_cnt[18]/opit_0_inv_AQ_perm/I3
+Path Group  : XR_FPGA|clk_sys
+Path Type   : min (fast corner)
+Path Class  : sequential timing path
+Clock Skew  :    0.147  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  2.286
+  Launch Clock Delay      :  1.936
+  Clock Pessimism Removal :  -0.203
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.445       0.478 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.478         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.073       0.551 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.493       1.044         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.097       1.141 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.334       1.475         ntclkbufg_0      
+ HCKB_165_180/CLKOUT               td                    0.195       1.670 r       HCKBROUTE_2/CLKOUT
+                                   net (fanout=28)       0.266       1.936         _N11             
+ CLMA_183_300/CLK                                                          r       XR_function_inst/XR_servo_inst/ser_cnt[9]/opit_0_inv_L6QL5Q1_perm/CLK
+
+ CLMA_183_300/CR1                  tco                   0.124       2.060 f       XR_function_inst/XR_servo_inst/ser_cnt[9]/opit_0_inv_L6QL5Q1_perm/L5Q
+                                   net (fanout=24)       0.112       2.172         XR_function_inst/XR_servo_inst/ser_cnt [0]
+ CLMA_183_307/B3                                                           f       XR_function_inst/XR_servo_inst/ser_cnt[18]/opit_0_inv_AQ_perm/I3
+
+ Data arrival time                                                   2.172         Logic Levels: 0  
+                                                                                   Logic: 0.124ns(52.542%), Route: 0.112ns(47.458%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.521       0.554 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.554         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.087       0.641 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.588       1.229         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.115       1.344 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.397       1.741         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.233       1.974 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.312       2.286         _N10             
+ CLMA_183_307/CLK                                                          r       XR_function_inst/XR_servo_inst/ser_cnt[19]/opit_0_inv_AQ_perm/CLK
+ clock pessimism                                        -0.203       2.083                          
+ clock uncertainty                                       0.000       2.083                          
+
+ Hold time                                              -0.031       2.052                          
+
+ Data required time                                                  2.052                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                                  2.052                          
+ Data arrival time                                                   2.172                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                         0.120                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_function_inst/XR_servo_inst/ser_cnt[9]/opit_0_inv_L6QL5Q1_perm/CLK
+Endpoint    : XR_function_inst/XR_servo_inst/ser_cnt[19]/opit_0_inv_AQ_perm/I2
+Path Group  : XR_FPGA|clk_sys
+Path Type   : min (fast corner)
+Path Class  : sequential timing path
+Clock Skew  :    0.147  (Capture Clock Delay - Launch Clock Delay + Clock Pessimism Removal)
+  Capture Clock Delay     :  2.286
+  Launch Clock Delay      :  1.936
+  Clock Pessimism Removal :  -0.203
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.445       0.478 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.478         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.073       0.551 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.493       1.044         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.097       1.141 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.334       1.475         ntclkbufg_0      
+ HCKB_165_180/CLKOUT               td                    0.195       1.670 r       HCKBROUTE_2/CLKOUT
+                                   net (fanout=28)       0.266       1.936         _N11             
+ CLMA_183_300/CLK                                                          r       XR_function_inst/XR_servo_inst/ser_cnt[9]/opit_0_inv_L6QL5Q1_perm/CLK
+
+ CLMA_183_300/CR1                  tco                   0.124       2.060 f       XR_function_inst/XR_servo_inst/ser_cnt[9]/opit_0_inv_L6QL5Q1_perm/L5Q
+                                   net (fanout=24)       0.112       2.172         XR_function_inst/XR_servo_inst/ser_cnt [0]
+ CLMA_183_307/C2                                                           f       XR_function_inst/XR_servo_inst/ser_cnt[19]/opit_0_inv_AQ_perm/I2
+
+ Data arrival time                                                   2.172         Logic Levels: 0  
+                                                                                   Logic: 0.124ns(52.542%), Route: 0.112ns(47.458%)
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.521       0.554 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.554         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.087       0.641 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.588       1.229         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.115       1.344 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.397       1.741         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.233       1.974 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.312       2.286         _N10             
+ CLMA_183_307/CLK                                                          r       XR_function_inst/XR_servo_inst/ser_cnt[19]/opit_0_inv_AQ_perm/CLK
+ clock pessimism                                        -0.203       2.083                          
+ clock uncertainty                                       0.000       2.083                          
+
+ Hold time                                              -0.056       2.027                          
+
+ Data required time                                                  2.027                          
+----------------------------------------------------------------------------------------------------
+ Data required time                                                  2.027                          
+ Data arrival time                                                   2.172                          
+----------------------------------------------------------------------------------------------------
+ Slack (MET)                                                         0.145                          
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_function_inst/XR_motor_inst/ena/opit_0_inv_L6Q_LUT6DQL5_perm/CLK
+Endpoint    : ena (port)
+Path Group  : **default**
+Path Type   : max (fast corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.521       0.554 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.554         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.087       0.641 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.588       1.229         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.115       1.344 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.397       1.741         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.233       1.974 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.312       2.286         _N10             
+ CLMA_231_354/CLK                                                          r       XR_function_inst/XR_motor_inst/ena/opit_0_inv_L6Q_LUT6DQL5_perm/CLK
+
+ CLMA_231_354/Q0                   tco                   0.119       2.405 r       XR_function_inst/XR_motor_inst/ena/opit_0_inv_L6Q_LUT6DQL5_perm/L6Q
+                                   net (fanout=1)        0.965       3.370         nt_ena           
+ IOLHR_292_600/DO_P                td                    0.488       3.858 r       ena_obuf/opit_1/DO_P
+                                   net (fanout=1)        0.000       3.858         ena_obuf/ntO     
+ IOBD_300_600/PAD                  td                    1.850       5.708 r       ena_obuf/opit_0/O
+                                   net (fanout=1)        0.047       5.755         ena              
+ C6                                                                        r       ena (port)       
+
+ Data arrival time                                                   5.755         Logic Levels: 2  
+                                                                                   Logic: 2.457ns(70.827%), Route: 1.012ns(29.173%)
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_iic_inst/XR_iic_com_inst/N1313/gateop_LUT6DL5Q_perm/CLK
+Endpoint    : servo[0] (port)
+Path Group  : **default**
+Path Type   : max (fast corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.521       0.554 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.554         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.087       0.641 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.588       1.229         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.115       1.344 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.397       1.741         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.233       1.974 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.303       2.277         _N10             
+ CLMS_177_355/CLK                                                          r       XR_iic_inst/XR_iic_com_inst/N1313/gateop_LUT6DL5Q_perm/CLK
+
+ CLMS_177_355/CR1                  tco                   0.141       2.418 r       XR_iic_inst/XR_iic_com_inst/N1313/gateop_LUT6DL5Q_perm/L5Q
+                                   net (fanout=1)        0.874       3.292         nt_servo[0]      
+ IOLHR_292_210/DO_P                td                    0.488       3.780 r       servo_obuf[0]/opit_1/DO_P
+                                   net (fanout=1)        0.000       3.780         servo_obuf[0]/ntO
+ IOBD_300_210/PAD                  td                    1.850       5.630 r       servo_obuf[0]/opit_0/O
+                                   net (fanout=1)        0.064       5.694         servo[0]         
+ U4                                                                        r       servo[0] (port)  
+
+ Data arrival time                                                   5.694         Logic Levels: 2  
+                                                                                   Logic: 2.479ns(72.549%), Route: 0.938ns(27.451%)
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : XR_function_inst/XR_motor_inst/enb/opit_0_inv_L6Q_LUT6DQL5_perm/CLK
+Endpoint    : enb (port)
+Path Group  : **default**
+Path Type   : max (fast corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+ Clock XR_FPGA|clk_sys (rising edge)
+                                                         0.000       0.000 r                        
+ P17                                                     0.000       0.000 r       clk_sys (port)   
+                                   net (fanout=1)        0.033       0.033         clk_sys          
+ IOBD_0_162/DIN                    td                    0.521       0.554 r       clk_sys_ibuf/opit_0/O
+                                   net (fanout=1)        0.000       0.554         clk_sys_ibuf/ntD 
+ IOLHR_16_162/DI_TO_CLK            td                    0.087       0.641 r       clk_sys_ibuf/opit_1/DI_TO_CLK
+                                   net (fanout=1)        0.588       1.229         nt_clk_sys       
+ USCM_167_270/CLKOUT               td                    0.115       1.344 r       clkbufg_0/gopclkbufg/CLKOUT
+                                   net (fanout=3)        0.397       1.741         ntclkbufg_0      
+ HCKB_165_220/CLKOUT               td                    0.233       1.974 r       HCKBROUTE_1/CLKOUT
+                                   net (fanout=276)      0.320       2.294         _N10             
+ CLMA_231_312/CLK                                                          r       XR_function_inst/XR_motor_inst/enb/opit_0_inv_L6Q_LUT6DQL5_perm/CLK
+
+ CLMA_231_312/Q0                   tco                   0.119       2.413 r       XR_function_inst/XR_motor_inst/enb/opit_0_inv_L6Q_LUT6DQL5_perm/L6Q
+                                   net (fanout=1)        0.880       3.293         nt_enb           
+ IOLHR_292_576/DO_P                td                    0.488       3.781 r       enb_obuf/opit_1/DO_P
+                                   net (fanout=1)        0.000       3.781         enb_obuf/ntO     
+ IOBD_300_576/PAD                  td                    1.850       5.631 r       enb_obuf/opit_0/O
+                                   net (fanout=1)        0.055       5.686         enb              
+ A6                                                                        r       enb (port)       
+
+ Data arrival time                                                   5.686         Logic Levels: 2  
+                                                                                   Logic: 2.457ns(72.435%), Route: 0.935ns(27.565%)
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : IR[1] (port)
+Endpoint    : XR_function_inst/XR_IR_inst/motor_Follow_Line[2]/opit_0_inv_L6QL5Q_perm/I1
+Path Group  : **default**
+Path Type   : min (fast corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+
+ V1                                                      0.000       0.000 r       IR[1] (port)     
+                                   net (fanout=1)        0.053       0.053         IR[1]            
+ IOBS_300_216/DIN                  td                    0.445       0.498 r       IR_ibuf[1]/opit_0/O
+                                   net (fanout=1)        0.000       0.498         IR_ibuf[1]/ntD   
+ IOLHR_292_216/DI_TO_CLK           td                    0.073       0.571 r       IR_ibuf[1]/opit_1/DI_TO_CLK
+                                   net (fanout=2)        0.498       1.069         nt_IR[1]         
+ CLMS_255_337/C1                                                           r       XR_function_inst/XR_IR_inst/motor_Follow_Line[2]/opit_0_inv_L6QL5Q_perm/I1
+
+ Data arrival time                                                   1.069         Logic Levels: 2  
+                                                                                   Logic: 0.518ns(48.457%), Route: 0.551ns(51.543%)
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : IR[1] (port)
+Endpoint    : XR_function_inst/XR_IR_inst/motor_Follow_Line[3]/opit_0_inv_L6QL5Q1_perm/I0
+Path Group  : **default**
+Path Type   : min (fast corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+
+ V1                                                      0.000       0.000 r       IR[1] (port)     
+                                   net (fanout=1)        0.053       0.053         IR[1]            
+ IOBS_300_216/DIN                  td                    0.445       0.498 r       IR_ibuf[1]/opit_0/O
+                                   net (fanout=1)        0.000       0.498         IR_ibuf[1]/ntD   
+ IOLHR_292_216/DI_TO_CLK           td                    0.073       0.571 r       IR_ibuf[1]/opit_1/DI_TO_CLK
+                                   net (fanout=2)        0.498       1.069         nt_IR[1]         
+ CLMS_255_337/D0                                                           r       XR_function_inst/XR_IR_inst/motor_Follow_Line[3]/opit_0_inv_L6QL5Q1_perm/I0
+
+ Data arrival time                                                   1.069         Logic Levels: 2  
+                                                                                   Logic: 0.518ns(48.457%), Route: 0.551ns(51.543%)
+====================================================================================================
+
+====================================================================================================
+
+Startpoint  : IR[2] (port)
+Endpoint    : XR_function_inst/XR_IR_inst/motor_Follow_Line[2]/opit_0_inv_L6QL5Q_perm/I0
+Path Group  : **default**
+Path Type   : min (fast corner)
+Path Class  : combinational timing path
+
+ Location                          Delay Type             Incr        Path         Logical Resource 
+----------------------------------------------------------------------------------------------------
+
+
+ V2                                                      0.000       0.000 r       IR[2] (port)     
+                                   net (fanout=1)        0.050       0.050         IR[2]            
+ IOBS_300_192/DIN                  td                    0.445       0.495 r       IR_ibuf[2]/opit_0/O
+                                   net (fanout=1)        0.000       0.495         IR_ibuf[2]/ntD   
+ IOLHR_292_192/DI_TO_CLK           td                    0.073       0.568 r       IR_ibuf[2]/opit_1/DI_TO_CLK
+                                   net (fanout=2)        0.565       1.133         nt_IR[2]         
+ CLMS_255_337/C0                                                           r       XR_function_inst/XR_IR_inst/motor_Follow_Line[2]/opit_0_inv_L6QL5Q_perm/I0
+
+ Data arrival time                                                   1.133         Logic Levels: 2  
+                                                                                   Logic: 0.518ns(45.719%), Route: 0.615ns(54.281%)
+====================================================================================================
+
+{XR_FPGA|clk_sys} Minimum Pulse Width :
+****************************************************************************************************
+ Slack       Actual Width    Require Width   Type              Location                Pin          
+----------------------------------------------------------------------------------------------------
+ 499.800     500.000         0.200           High Pulse Width  CLMS_255_337/CLK        XR_function_inst/XR_IR_inst/motor_Avoiding[1]/opit_0_inv/CLK
+ 499.800     500.000         0.200           Low Pulse Width   CLMS_255_337/CLK        XR_function_inst/XR_IR_inst/motor_Avoiding[1]/opit_0_inv/CLK
+ 499.800     500.000         0.200           High Pulse Width  CLMS_255_337/CLK        XR_function_inst/XR_IR_inst/motor_Follow_Line[2]/opit_0_inv_L6QL5Q_perm/CLK
+====================================================================================================
+
+====================================================================================================
+
+Inputs and Outputs :
++---------------------------------------------------------------+
+| Type       | File Name                                       
++---------------------------------------------------------------+
+| Input      | D:/FPGA_pangu/place_route/XR_FPGA_pnr.adf       
+| Output     | D:/FPGA_pangu/report_timing/XR_FPGA_rtp.adf     
+|            | D:/FPGA_pangu/report_timing/XR_FPGA.rtr         
+|            | D:/FPGA_pangu/report_timing/rtr.db              
++---------------------------------------------------------------+
+
+
+Flow Command: report_timing 
+Peak memory: 817 MB
+Total CPU  time to report_timing completion : 0h:0m:15s
+Process Total CPU  time to report_timing completion : 0h:0m:15s
+Total real time to report_timing completion : 0h:0m:17s
