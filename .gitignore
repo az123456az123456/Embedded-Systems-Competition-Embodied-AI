@@ -1,0 +1,51 @@
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+.pytest_cache/
+
+# ===== 日志 =====
+*.log
+log/
+logbackup/
+
+# ===== FPGA / Pango 编译生成物 =====
+compile/
+synthesize/
+place_route/
+generate_bitstream/
+device_map/
+report_timing/
+"Route Constraint Editor/"
+constraint_backup/
+bak/
+*.adf
+*.vm
+*.netlist
+*.snr
+*.dmr
+*.prr
+*.pds
+*.pvf
+*.cmr
+*.ccr
+*.sbit
+*.smsk
+*.fdc
+
+# ===== 编辑器/系统 =====
+.history/
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ===== 大文件/资料（归档到项目 文档/，不进版本库） =====
+*.rar
+*.zip
+*.xlsx
