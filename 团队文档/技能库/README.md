@@ -11,6 +11,7 @@
 | `verilog-sim-nosudo` | 无 sudo 装 iverilog/GTKWave 仿真 | 学 Verilog、RTL 仿真 |
 | `github-private-auth` | 私有仓库登录/克隆/推送 | 队友拉取比赛仓库 |
 | `gowin-eda-setup` | 高云 EDA 下载安装 + License | FPGA 综合/烧录 |
+| `camera-device-in-sandbox` | 沙箱看不到摄像头的问题与正确测试法 | 摄像头/视觉调试 |
 
 ## 怎么用（给队友）
 
@@ -23,6 +24,7 @@ cp -r 技能库/python-venv-nosudo ~/.codex/skills/
 cp -r 技能库/verilog-sim-nosudo ~/.codex/skills/
 cp -r 技能库/github-private-auth ~/.codex/skills/
 cp -r 技能库/gowin-eda-setup ~/.codex/skills/
+cp -r 技能库/camera-device-in-sandbox ~/.codex/skills/
 ```
 然后对 Codex 说「用 python-venv-nosudo 帮我装环境」或直接描述需求（描述匹配时 Codex 会自动选用）。
 
