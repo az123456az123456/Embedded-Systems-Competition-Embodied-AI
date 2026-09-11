@@ -23,9 +23,17 @@ Gowin EDA (云源软件) is the official IDE for Gowin FPGAs. Downloading requir
 ## Known issue: fontconfig/freetype symbol error on new Ubuntu
 Symptom: `gw_ide` fails with `symbol lookup error: /usr/lib/x86_64-linux-gnu/libfontconfig.so.1: undefined symbol: FT_Done_MM_Var`.
 Cause: the IDE bundles an old `libfreetype.so.6` in `IDE/lib`; the system `libfontconfig` needs a newer freetype symbol.
-Fix: preload the system freetype before launching:
+Fix (verified on Ubuntu 26.04): the IDE bundles old libstdc++/freetype and its own Qt 5.15.14; the system Qt 5.15.18 gets pulled in for plugins, causing "Cannot mix incompatible Qt library" and GLIBCXX_3.4.29 errors. The working launch combo is:
 ```bash
-export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libfreetype.so.6
+export LD_LIBRARY_PATH="$GOWIN/IDE/lib"          # use bundled Qt consistently
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libfreetype.so.6  # satisfy system fontconfig
+export QT_QPA_PLATFORM=xcb                        # Wayland session: use XWayland, not the wayland plugin
 "$GOWIN/IDE/bin/gw_ide"
 ```
-Wrap this in a launcher script so teammates don't have to remember it.
+`license_config_gui` needs the same env. Wrap this in a launcher script so teammates don't have to remember it.
+
+## License (free, node-locked)
+1. Apply at `https://www.gowinsemi.com.cn/profile/license` after login.
+2. Get the machine code from `license_config_gui` (run with the launch env above) or the IDE's license dialog.
+3. Submit machine code + email on the website; Gowin provides a `license.dat`.
+4. Import the `.dat` via `license_config_gui`, or place it where the IDE expects (the tool shows the path). The default `IDE/bin/gwlicense.ini` points at a license server (`lic=...`); a local node-locked license overrides it.
