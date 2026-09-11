@@ -19,3 +19,13 @@ Gowin EDA (云源软件) is the official IDE for Gowin FPGAs. Downloading requir
 ## Notes
 - Keep the download and license steps with the user; an agent can install/extract and verify the tool once the installer file is provided.
 - Learning resources: Gowin official docs center and Bilibili official courses.
+
+## Known issue: fontconfig/freetype symbol error on new Ubuntu
+Symptom: `gw_ide` fails with `symbol lookup error: /usr/lib/x86_64-linux-gnu/libfontconfig.so.1: undefined symbol: FT_Done_MM_Var`.
+Cause: the IDE bundles an old `libfreetype.so.6` in `IDE/lib`; the system `libfontconfig` needs a newer freetype symbol.
+Fix: preload the system freetype before launching:
+```bash
+export LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libfreetype.so.6
+"$GOWIN/IDE/bin/gw_ide"
+```
+Wrap this in a launcher script so teammates don't have to remember it.
