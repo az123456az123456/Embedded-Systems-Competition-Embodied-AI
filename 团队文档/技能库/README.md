@@ -20,11 +20,11 @@
 ```bash
 # 把需要的技能拷到自己的 Codex skills 目录
 mkdir -p ~/.codex/skills
-cp -r 技能库/python-venv-nosudo ~/.codex/skills/
-cp -r 技能库/verilog-sim-nosudo ~/.codex/skills/
-cp -r 技能库/github-private-auth ~/.codex/skills/
-cp -r 技能库/gowin-eda-setup ~/.codex/skills/
-cp -r 技能库/camera-device-in-sandbox ~/.codex/skills/
+cp -r 团队文档/技能库/python-venv-nosudo ~/.codex/skills/
+cp -r 团队文档/技能库/verilog-sim-nosudo ~/.codex/skills/
+cp -r 团队文档/技能库/github-private-auth ~/.codex/skills/
+cp -r 团队文档/技能库/gowin-eda-setup ~/.codex/skills/
+cp -r 团队文档/技能库/camera-device-in-sandbox ~/.codex/skills/
 ```
 然后对 Codex 说「用 python-venv-nosudo 帮我装环境」或直接描述需求（描述匹配时 Codex 会自动选用）。
 
@@ -32,10 +32,12 @@ cp -r 技能库/camera-device-in-sandbox ~/.codex/skills/
 直接打开各技能目录下的 `SKILL.md`，里面有完整步骤和解法，照着做即可。
 
 ## 贡献新技能（规范）
-1. 在 `技能库/` 下新建文件夹，命名用英文小写 + 连字符（如 `python-venv-nosudo`）
+1. 在 `团队文档/技能库/` 下新建文件夹，命名用英文小写 + 连字符（如 `python-venv-nosudo`）
 2. 里面必须有一个 `SKILL.md`，开头是 YAML 头（`name` + `description`），正文写步骤
 3. 需要自动化的部分放 `scripts/`，详细资料放 `references/`
 4. 写好后在群里说一声，让大家同步
+
+> 注意：上面命令要从**主仓库根目录**执行，即与 `团队文档/` 同级。
 
 ## 说明
 - 技能内容来自 2026-09-11 团队与 Codex 的实际协作，均已验证 ✅

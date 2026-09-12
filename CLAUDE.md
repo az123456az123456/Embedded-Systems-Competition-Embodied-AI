@@ -15,7 +15,7 @@
 ## 目录地图
 
 ```
-├── 团队文档/          需求分析、能力边界、分工、协作记录、进度清单（新文档都放这，按日期命名）
+├── 团队文档/          团队文档导航（README.md）+ 需求/规范/环境/进度/技能库
 ├── 小车代码汇总/代码/  全部代码：旧框架（FPGA_pangu / ultralytics-main / usb.arm）+ 新开发 fpga/rk3588
 ├── 文档/              归档资料（大文件、压缩包）
 ├── yolov8n.pt         根目录遗留的重复权重（与 小车代码汇总/代码/2026新开发/rk3588/yolov8n.pt 重复，可清理）
@@ -28,9 +28,9 @@
    ```bash
    source /home/woonlf/Documents/Codex/Embedded-Systems-Competition/开发/venv/bin/activate
    ```
-2. **权重不进版本库**：`*.pt / *.pth / *.onnx / *.rknn` 已 gitignore，从官方链接单独下载（见 `团队文档/2026-09-12_视觉模块新增功能说明.md`）。
+2. **权重不进版本库**：`*.pt / *.pth / *.onnx / *.rknn` 已 gitignore，从官方链接单独下载（见 `团队文档/进度/2026-09-12_视觉模块新增功能说明.md`）。
 3. **代码放 `小车代码汇总/代码/`，说明放 `团队文档/`**：新文档沿用现有格式（`# 标题` + `> 日期` + emoji + 表格）。
-4. **协议 v2 已冻结**：`AA 55 + CMD + SEQ + LEN + PAYLOAD + CRC16`。RK 端已实现，FPGA `top_robot` 尚待迁移。任务 6 优先使用 STATUS 中的超声波距离，失效时回退框高。
+4. **协议 v2 已冻结**：`AA 55 + CMD + SEQ + LEN + PAYLOAD + CRC16`。RK 端和 FPGA `top_robot_v2` 已实现，待高云综合/实板联调。任务 6 优先使用 STATUS 中的超声波距离，失效时回退框高。
 5. **旧框架代码只读**：`小车代码汇总/代码/` 下的 `FPGA_pangu` / `ultralytics-main` / `usb.arm` 是历史参照，不要改。
 
 ## 视觉模块关键文件（均在 `小车代码汇总/代码/2026新开发/rk3588/`）
@@ -62,4 +62,4 @@
 - **无板卡完整闭环**：`cd 小车代码汇总/代码/2026新开发/rk3588 && bash run_virtual_demo.sh --target bottle --target-color red`
 - **调跟随逻辑**：改 `task6_mission.py` 的状态机 / `pick_follow_target`
 - **接真实测距/串口**：协议实现改 `fpga_protocol.py` / `fpga_link.py`，动作映射改 `MotionCommand`
-- **新增文档**：写到 `团队文档/`，命名 `2026-MM-DD_主题.md`
+- **新增文档**：团队级说明写 `团队文档/` 对应分类；协作记录写 `团队文档/进度/`；代码说明写对应模块 `README.md`
