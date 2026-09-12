@@ -49,3 +49,7 @@ Thumbs.db
 *.rar
 *.zip
 *.xlsx
+
+# ===== iverilog 仿真产物 =====
+*.vcd
+sim
