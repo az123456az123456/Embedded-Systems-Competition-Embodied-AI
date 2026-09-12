@@ -58,6 +58,8 @@
 - ✅ 任务4 PC 导航模拟（A* + 里程计 + 差速 + 虚拟 FPGA）
 - ⏳ `top_robot_v2` 高云综合、引脚约束和实板联调
 - ✅ 中文语义解析（`semantic_parser.py`，已接入 `--instruction`）
+- ✅ 摄像头普通水瓶识别实测（YOLO + Deep ReID + 状态机）
+- ✅ 动作日志去抖（`--action-log-interval/delta-v/delta-w`）
 - ⏳ `.pt → .rknn` 部署链路
 
 ## 常见任务的入口

@@ -29,6 +29,8 @@ python nav_demo.py --instruction "走到右上角"
 - ✅ 虚拟 FPGA 无板卡联调
 - ✅ 任务4 PC 导航模拟（A* + 里程计 + 虚拟 FPGA）
 - ✅ 中文语义解析（`--instruction`）
+- ✅ 摄像头普通水瓶识别实测
+- ✅ 动作日志去抖
 - ⏳ 高云综合、实板联调、机械臂
 
 ## 目录
