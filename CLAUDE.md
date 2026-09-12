@@ -18,7 +18,7 @@
 ├── 团队文档/          需求分析、能力边界、分工、协作记录、进度清单（新文档都放这，按日期命名）
 ├── 小车代码汇总/代码/  全部代码：旧框架（FPGA_pangu / ultralytics-main / usb.arm）+ 新增视觉模块 rk3588/
 ├── 文档/              归档资料（大文件、压缩包）
-├── yolov8n.pt         根目录遗留的重复权重（与 小车代码汇总/代码/rk3588/yolov8n.pt 重复，可清理）
+├── yolov8n.pt         根目录遗留的重复权重（与 小车代码汇总/代码/2026新开发/rk3588/yolov8n.pt 重复，可清理）
 └── .venv/             本机虚拟环境（已 gitignore，不提交）
 ```
 
@@ -33,7 +33,7 @@
 4. **串口/测距是「占位」**：协议格式 `$M,...!` / 距离用框高比例近似，都是待 FPGA 组确认的占位。
 5. **旧框架代码只读**：`小车代码汇总/代码/` 下的 `FPGA_pangu` / `ultralytics-main` / `usb.arm` 是历史参照，不要改。
 
-## 视觉模块关键文件（均在 `小车代码汇总/代码/rk3588/`）
+## 视觉模块关键文件（均在 `小车代码汇总/代码/2026新开发/rk3588/`）
 
 | 文件 | 干什么 | 改它时注意 |
 |---|---|---|
@@ -53,7 +53,7 @@
 
 ## 常见任务的入口
 
-- **跑通任务6 演示**：`cd 小车代码汇总/代码/rk3588 && python task6_mission.py --target bottle --target-color red`
+- **跑通任务6 演示**：`cd 小车代码汇总/代码/2026新开发/rk3588 && python task6_mission.py --target bottle --target-color red`
 - **调跟随逻辑**：改 `task6_mission.py` 的状态机 / `pick_follow_target`
 - **接真实测距/串口**：只改 `task6_mission.py` 的 `is_near` / `MotionCommand`
 - **新增文档**：写到 `团队文档/`，命名 `2026-MM-DD_主题.md`
