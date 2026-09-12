@@ -26,6 +26,12 @@ run_one "encoder"    "$HERE/encoder/quadrature_decoder.v" "$HERE/encoder/tb_quad
 run_one "motor"      "$HERE/motor/motor_pwm.v" "$HERE/motor/encoder_velocity.v" "$HERE/motor/motor_pid.v" "$HERE/motor/tb_motor.v"
 run_one "ultrasonic" "$HERE/ultrasonic/ultrasonic.v" "$HERE/ultrasonic/tb_ultrasonic.v"
 run_one "imu"        "$HERE/imu/i2c_master.v" "$HERE/imu/imu_mpu6050.v" "$HERE/imu/tb_imu.v"
+run_one "top"        "$HERE/uart/uart_tx.v" "$HERE/uart/uart_rx.v" \
+                     "$HERE/encoder/quadrature_decoder.v" \
+                     "$HERE/motor/motor_pwm.v" "$HERE/motor/encoder_velocity.v" "$HERE/motor/motor_pid.v" \
+                     "$HERE/ultrasonic/ultrasonic.v" \
+                     "$HERE/imu/i2c_master.v" "$HERE/imu/imu_mpu6050.v" \
+                     "$HERE/top/top_robot.v" "$HERE/top/tb_top.v"
 
 echo ""
 echo "================================================"
