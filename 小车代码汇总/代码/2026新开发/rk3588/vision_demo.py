@@ -375,7 +375,7 @@ def send_target(ser, tid, cls_name, color_name, cx, cy, w, h, frame_w):
     """
     把目标信息下发给 FPGA（任务6 的视觉→运动链路）。
 
-    ⚠️ 这里用的是【临时占位协议】，等和 FPGA 组定好协议后替换。
+    ⚠️ 本 demo 保留早期占位输出；协议 v2 闭环请使用 task6_mission.py。
        当前格式（ASCII，一行）：  $T,<id>,<cls>,<color>,<cx>,<cy>,<w>,<h>,<bearing>!
        其中 bearing = 目标相对画面中心的偏角，-1.0(最左) ~ +1.0(最右)
     """

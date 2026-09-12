@@ -51,9 +51,10 @@ module tb_uart;
             tx_start = 1;
             @(posedge clk);
             tx_start = 0;
-            // 等待发送完成 + 接收完成
-            wait (tx_busy == 0);
+            // 接收端在停止位中点完成；发送 busy 要到停止位结束才释放，
+            // 因此必须先等 rx_valid，避免错过一拍脉冲。
             wait (rx_valid == 1);
+            wait (tx_busy == 0);
             @(posedge clk);
             // 校验
             if (rx_data == send_bytes[i])

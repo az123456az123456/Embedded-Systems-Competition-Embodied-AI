@@ -10,6 +10,6 @@ ultralytics>=8.0          # YOLO 目标检测 + ByteTrack 跟踪（track() 依�
 opencv-python>=4.8        # 图像读取/HSV 颜色判定/画框
 numpy                     # 特征与坐标运算
 pillow                    # 中文文字渲染（draw_text_cn 用 PIL）
-pyserial                  # 串口下发运动指令给 FPGA（占位协议）
+pyserial                  # 协议 v2 串口下发 + STATUS 接收
 torch                     # 深度 ReID 特征提取（deep_reid.py，ResNet50-IBN-a）
 torchvision

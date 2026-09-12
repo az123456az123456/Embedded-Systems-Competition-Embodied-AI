@@ -60,8 +60,11 @@ module uart_tx #(
                 tx      <= shift[0];
                 shift   <= {1'b0, shift[7:1]};
                 bit_cnt <= bit_cnt + 4'd1;
+            end else if (bit_cnt == 4'd9) begin
+                // 停止位保持一个完整 bit 周期
+                tx      <= 1'b1;
+                bit_cnt <= 4'd10;
             end else begin
-                // 停止位
                 tx      <= 1'b1;
                 bit_cnt <= 4'd0;
                 tx_busy <= 1'b0;

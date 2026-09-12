@@ -16,7 +16,7 @@
 
 ```
 ├── 团队文档/          需求分析、能力边界、分工、协作记录、进度清单（新文档都放这，按日期命名）
-├── 小车代码汇总/代码/  全部代码：旧框架（FPGA_pangu / ultralytics-main / usb.arm）+ 新增视觉模块 rk3588/
+├── 小车代码汇总/代码/  全部代码：旧框架（FPGA_pangu / ultralytics-main / usb.arm）+ 新开发 fpga/rk3588
 ├── 文档/              归档资料（大文件、压缩包）
 ├── yolov8n.pt         根目录遗留的重复权重（与 小车代码汇总/代码/2026新开发/rk3588/yolov8n.pt 重复，可清理）
 └── .venv/             本机虚拟环境（已 gitignore，不提交）
@@ -24,13 +24,13 @@
 
 ## 协作约定（务必遵守）
 
-1. **Python 环境**：仓库根目录 `.venv`（Python 3.x + ultralytics 8.4.x + torch）。
+1. **Python 环境**：优先使用项目本地虚拟环境。当前主机位于项目上级目录的 `开发/venv`；若仓库根存在 `.venv` 也可使用。
    ```bash
-   source .venv/bin/activate
+   source /home/woonlf/Documents/Codex/Embedded-Systems-Competition/开发/venv/bin/activate
    ```
 2. **权重不进版本库**：`*.pt / *.pth / *.onnx / *.rknn` 已 gitignore，从官方链接单独下载（见 `团队文档/2026-09-12_视觉模块新增功能说明.md`）。
 3. **代码放 `小车代码汇总/代码/`，说明放 `团队文档/`**：新文档沿用现有格式（`# 标题` + `> 日期` + emoji + 表格）。
-4. **串口/测距是「占位」**：协议格式 `$M,...!` / 距离用框高比例近似，都是待 FPGA 组确认的占位。
+4. **协议 v2 已冻结**：`AA 55 + CMD + SEQ + LEN + PAYLOAD + CRC16`。RK 端已实现，FPGA `top_robot` 尚待迁移。任务 6 优先使用 STATUS 中的超声波距离，失效时回退框高。
 5. **旧框架代码只读**：`小车代码汇总/代码/` 下的 `FPGA_pangu` / `ultralytics-main` / `usb.arm` 是历史参照，不要改。
 
 ## 视觉模块关键文件（均在 `小车代码汇总/代码/2026新开发/rk3588/`）
@@ -38,22 +38,28 @@
 | 文件 | 干什么 | 改它时注意 |
 |---|---|---|
 | `vision_demo.py` | 任务5 感知（检测+跟踪+颜色，开环） | 颜色判定 `COLOR_RANGES` |
-| `task6_mission.py` | 任务6 状态机闭环 + 运动指令（**主入口**） | 状态机 / `MissionReID` / `MotionCommand` / `is_near` 都在这 |
+| `task6_mission.py` | 任务6 状态机闭环 + 运动指令（**主入口**） | 状态机 / `MissionReID` / `MotionCommand` |
 | `deep_reid.py` | 深度 ReID 特征（ResNet50-IBN-a，2048 维） | 已做次正规数清零提速，勿删 |
+| `fpga_protocol.py` | 协议 v2 编解码、CRC16、流式帧解析 | 帧格式变更必须同步通信协议文档 |
+| `fpga_link.py` | 串口、心跳、STATUS、看门狗停车 | 不能在 RX/心跳线程中做重计算 |
+| `virtual_fpga.py` | PTY 虚拟 FPGA，无板卡闭环 | 只模拟运动学，不代替实板验证 |
 
 两层 ID：**ByteTrack 过程 ID**（遮挡会变）→ **ReID 逻辑 ID**（跨遮挡稳定），跟随只看逻辑 ID。
 
 ## 当前进度 / 下一步（截至 2026-09-12）
 
 - ✅ 检测 + 跟踪 + 颜色；✅ 任务6 状态机闭环；✅ 深度 ReID（外观+空间双特征+空间连续性兜底）
-- ⏳ 测距接入（替换 `task6_mission.is_near`，接 FPGA 超声波）——「移动到其附近」的关键
-- ⏳ 串口协议 + 看门狗（与 FPGA 组对齐）
+- ✅ RK 端协议 v2 + CRC16 + 心跳 + 看门狗 + 虚拟 FPGA 闭环
+- ✅ 任务 6 优先使用 FPGA 超声波距离，STATUS 失效时回退框高
+- ✅ FPGA `top_robot_v2` 已实现协议 v2、CRC16、看门狗和双电机差速，并通过 Icarus 仿真
+- ⏳ `top_robot_v2` 高云综合、引脚约束和实板联调
 - ⏳ 语义指令解析（`--instruction "找到红色水瓶"` → `(bottle, red)`）
 - ⏳ `.pt → .rknn` 部署链路
 
 ## 常见任务的入口
 
 - **跑通任务6 演示**：`cd 小车代码汇总/代码/2026新开发/rk3588 && python task6_mission.py --target bottle --target-color red`
+- **无板卡完整闭环**：`cd 小车代码汇总/代码/2026新开发/rk3588 && bash run_virtual_demo.sh --target bottle --target-color red`
 - **调跟随逻辑**：改 `task6_mission.py` 的状态机 / `pick_follow_target`
-- **接真实测距/串口**：只改 `task6_mission.py` 的 `is_near` / `MotionCommand`
+- **接真实测距/串口**：协议实现改 `fpga_protocol.py` / `fpga_link.py`，动作映射改 `MotionCommand`
 - **新增文档**：写到 `团队文档/`，命名 `2026-MM-DD_主题.md`

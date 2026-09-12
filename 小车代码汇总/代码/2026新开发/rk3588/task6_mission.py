@@ -24,14 +24,16 @@
   ARRIVE   停车 + 上报，任务完成
   任意状态：目标连续 M 帧丢失 → 回到 SEARCH
 
-⚠️ 测距占位：赛题规定距离由 FPGA 超声波模块提供，这里用【框高度占画面比例】
-   近似"足够近"，只为让状态机能跑通演示；FPGA 测距到位后替换 is_near() 一处即可。
+测距：默认优先使用 FPGA 串口返回的超声波 STATUS；数据失效时自动回退到框高估算。
+      可用 --distance-source fpga 强制要求真实测距。
+
+运动接口：协议 v2 SET_TWIST/STOP，定义见 ../fpga/通信协议.md。
 
 用法：
   python task6_mission.py                     # 找人（默认）
   python task6_mission.py --target bottle --target-color red   # 找红色瓶子
   python task6_mission.py --no-show --frames 200               # 无窗口跑 200 帧
-  python task6_mission.py --serial /dev/ttyUSB0 --baud 115200  # 串口下发运动指令
+  python task6_mission.py --serial /dev/ttyUSB0 --baud 115200  # 真实/虚拟串口闭环
 """
 
 import argparse
@@ -52,6 +54,8 @@ from vision_demo import (
     COLOR_DISPLAY, FLIP_CODES, FLIP_ORDER,
     dominant_color, draw_text_cn,
 )
+from fpga_link import FpgaLink
+from fpga_protocol import Mode
 
 
 # ============================================================================
@@ -138,7 +142,7 @@ class MissionStateMachine:
             'has_target': bool,       # 本帧是否锁定到目标
             'target': dict | None,    # 目标信息（id/cls/color/cx/cy/w/h）
             'bearing': float,         # 偏角 -1(最左) ~ +1(最右)
-            'near': bool,             # 是否"足够近"（占位测距）
+            'near': bool,             # 是否"足够近"（FPGA 距离优先，框高回退）
         }
         """
         lost_confirmed = self._lost.update(not obs["has_target"])
@@ -456,65 +460,73 @@ class MissionReID:
 
 
 # ============================================================================
-# 四、运动指令下发 —— 占位协议，等 FPGA 组定
+# 四、运动指令下发 —— FPGA 协议 v2
 # ============================================================================
 
 class MotionCommand:
     """把状态机产出的【语义动作】翻译成串口字节下发 FPGA。
 
-    借鉴 Security 的 EventDispatcher 思路：状态机只关心"做什么"，不关心"怎么发"。
-    协议为占位（同 vision_demo 的 $T），格式：
-        $M,<CMD>,<arg>!   （arg 可省略）
-      CMD ∈ {ROTATE 原地旋转搜索, TURN 转向, FORWARD 前进, STOP 停车}
-    与 FPGA 组确认真实协议后，只改这一处。
+    状态机只关心“做什么”，本类负责映射成协议 v2：
+      ROTATE   -> SET_TWIST(v=0, w=rotate_rate)
+      TURN     -> SET_TWIST(v=0, w=-bearing*turn_rate)
+      FORWARD  -> SET_TWIST(v=forward_speed, w=0)
+      STOP     -> STOP
+
+    协议定义见 ../fpga/通信协议.md。
     """
 
-    def __init__(self, ser):
-        self.ser = ser
-        self.last_line = None   # 最近一条指令，避免重复打印刷屏
+    def __init__(self, link, forward_mm_s=300, turn_max_mrad_s=500,
+                 rotate_mrad_s=350):
+        self.link = link
+        self.forward_mm_s = int(forward_mm_s)
+        self.turn_max_mrad_s = int(turn_max_mrad_s)
+        self.rotate_mrad_s = int(rotate_mrad_s)
+        self.last_command = None   # 避免每帧打印相同动作
 
-    def send(self, cmd, arg=None):
-        line = "$M,%s" % cmd
-        if arg is not None:
-            if isinstance(arg, float):
-                line += ",%.3f" % arg
-            else:
-                line += ",%s" % arg
-        line += "!\n"
+    def send_twist(self, v_mm_s, w_mrad_s, label):
+        command = (int(v_mm_s), int(w_mrad_s))
+        if command != self.last_command:
+            print(f"[动作] {label}: v={command[0]} mm/s, w={command[1]} mrad/s")
+            self.last_command = command
+        self.link.set_twist(command[0], command[1])
 
-        if self.ser is not None:
-            try:
-                self.ser.write(line.encode('ascii'))
-            except Exception as e:
-                print(f"[串口] 发送失败：{e}")
-
-        if line != self.last_line:
-            print(f"[动作] {line.strip()}")
-            self.last_line = line
+    def stop(self, label="STOP"):
+        if self.last_command != "STOP":
+            print(f"[动作] {label}")
+            self.last_command = "STOP"
+        self.link.stop()
 
     def execute(self, action, obs):
         """把动作名映射成具体指令。bearing 来自 obs。"""
         if action == "ROTATE":
-            self.send("ROTATE", 0.5)          # 原地匀速旋转（方向后续定）
+            self.send_twist(0, self.rotate_mrad_s, "ROTATE")
         elif action == "TURN":
-            self.send("TURN", obs["bearing"])  # 朝目标偏角方向转向
+            bearing = max(-1.0, min(1.0, float(obs.get("bearing", 0.0))))
+            # bearing>0 表示目标在画面右侧；w<0 表示顺时针转向右侧。
+            w = int(round(-bearing * self.turn_max_mrad_s))
+            self.send_twist(0, w, "TURN")
         elif action == "FORWARD":
-            self.send("FORWARD", 0.5)
+            self.send_twist(self.forward_mm_s, 0, "FORWARD")
         elif action == "STOP" or action == "LOCK":
-            self.send("STOP")
+            self.stop()
 
 
 # ============================================================================
-# 五、占位测距 —— FPGA 超声波到位后替换这一处
+# 五、测距与目标选择
 # ============================================================================
 
-def is_near(box_h, frame_h, arrive_ratio=0.5):
+def is_near_bbox(box_h, frame_h, arrive_ratio=0.5):
     """占位测距：目标框高度占画面高度比例 >= arrive_ratio 视为"足够近"。
 
-    ⚠️ 赛题规定距离由 FPGA 超声波模块测量。这里用框高近似，只为让状态机能
-       跑通演示。FPGA 测距接入后，替换为：从串口读测距值，和阈值比较。
+    仅在 FPGA 超声波数据不可用时作为回退，不能代替真实测距。
     """
     return frame_h > 0 and (box_h / frame_h) >= arrive_ratio
+
+
+def is_near_distance(distance_cm, threshold_cm):
+    """使用 FPGA 超声波距离判断目标是否足够近。"""
+
+    return distance_cm is not None and distance_cm <= threshold_cm
 
 
 def pick_follow_target(candidates, locked, frame_w):
@@ -548,13 +560,28 @@ def parse_args():
     p.add_argument('--flip', default='h', choices=FLIP_ORDER, help='画面翻转方式')
     p.add_argument('--serial', default=None, help='串口设备，如 /dev/ttyUSB0')
     p.add_argument('--baud', type=int, default=115200, help='串口波特率')
+    p.add_argument('--heartbeat-ms', type=int, default=100,
+                   help='协议 v2 心跳周期')
+    p.add_argument('--watchdog-ms', type=int, default=500,
+                   help='超过此时间没收到 STATUS，FPGA 自动停车')
+    p.add_argument('--distance-source', choices=('auto', 'fpga', 'bbox'),
+                   default='auto',
+                   help='到达判定距离来源：自动回退/仅FPGA/仅框高')
+    p.add_argument('--arrive-distance-cm', type=int, default=60,
+                   help='FPGA 测距下的到达距离阈值')
+    p.add_argument('--forward-speed', type=int, default=300,
+                   help='前进线速度 mm/s')
+    p.add_argument('--turn-rate', type=int, default=500,
+                   help='最大转向角速度 mrad/s')
+    p.add_argument('--rotate-rate', type=int, default=350,
+                   help='搜索旋转角速度 mrad/s')
     # 状态机参数
     p.add_argument('--conf-frames', type=int, default=5, help='锁定确认帧数')
     p.add_argument('--align-thresh', type=float, default=0.2,
                    help='偏角对齐阈值 0~1：|偏角| 小于此值才算"对准"（默认 0.2 ≈ 偏离画面中心 10%% 宽度）')
     p.add_argument('--arrive-frames', type=int, default=5, help='靠近确认帧数')
     p.add_argument('--arrive-ratio', type=float, default=0.5,
-                   help='占位测距：框高/画面高 >= 此值视为"足够近"')
+                   help='回退测距：框高/画面高 >= 此值视为"足够近"')
     p.add_argument('--lost-frames', type=int, default=15, help='连续丢失多少帧回搜索')
     # ReID 参数
     p.add_argument('--no-reid', action='store_true', help='关闭重识别')
@@ -569,19 +596,6 @@ def parse_args():
     return p.parse_args()
 
 
-def open_serial(port, baud):
-    if not port:
-        return None
-    try:
-        import serial
-        ser = serial.Serial(port, baud, timeout=0.1)
-        print(f"[串口] 已连接 {port} @ {baud}")
-        return ser
-    except Exception as e:
-        print(f"[串口] 打开失败（继续运行，不下发）：{e}")
-        return None
-
-
 def main():
     args = parse_args()
 
@@ -594,8 +608,21 @@ def main():
     if not cap.isOpened():
         sys.exit(f"无法打开视频源：{args.source}")
 
-    ser = open_serial(args.serial, args.baud)
-    motion = MotionCommand(ser)
+    link = FpgaLink(
+        args.serial,
+        baud=args.baud,
+        heartbeat_ms=args.heartbeat_ms,
+        watchdog_ms=args.watchdog_ms,
+    )
+    link.start()
+    if link.connected:
+        link.set_mode(Mode.VISION)
+    motion = MotionCommand(
+        link,
+        forward_mm_s=args.forward_speed,
+        turn_max_mrad_s=args.turn_rate,
+        rotate_mrad_s=args.rotate_rate,
+    )
 
     target_cls = args.target.strip()
     target_color = args.target_color.strip()
@@ -622,6 +649,8 @@ def main():
     print(f"[配置] 目标='{target_cls or '任意'}' 颜色='{target_color or '任意'}'")
     print(f"[配置] imgsz={args.imgsz} conf={args.conf} flip={args.flip} "
           f"对齐阈值={args.align_thresh}")
+    print(f"[控制] 距离源={args.distance_source} "
+          f"到达阈值={args.arrive_distance_cm}cm")
     print(f"[状态机] SEARCH→LOCK→ALIGN→APPROACH→ARRIVE  "
           f"(锁{args.conf_frames}帧/靠近{args.arrive_frames}帧/丢{args.lost_frames}帧)")
     print("[提示] 按 q 退出，按 f 切换画面翻转\n")
@@ -747,11 +776,37 @@ def main():
             # ---- 构造观测，驱动状态机 ----
             bearing = (target['cx'] - frame_w / 2.0) / (frame_w / 2.0) \
                 if target else 0.0
-            near = is_near(target['h'], frame_h, args.arrive_ratio) if target else False
+            fpga_distance = link.distance_cm()
+            distance_text = "无"
+            if target and args.distance_source != 'bbox' and fpga_distance is not None:
+                near = is_near_distance(fpga_distance, args.arrive_distance_cm)
+                distance_text = f"FPGA {fpga_distance}cm"
+            elif target and args.distance_source == 'bbox':
+                near = is_near_bbox(target['h'], frame_h, args.arrive_ratio)
+                distance_text = f"框高 {target['h'] / frame_h:.0%}"
+            elif target and args.distance_source == 'fpga':
+                near = False
+                distance_text = "FPGA 无有效数据"
+            elif target:
+                near = is_near_bbox(target['h'], frame_h, args.arrive_ratio)
+                distance_text = f"框高回退 {target['h'] / frame_h:.0%}"
+            else:
+                near = False
 
             obs = {'has_target': has_target, 'target': target,
                    'bearing': bearing, 'near': near}
             state, action, note = sm.step(obs)
+            distance_required_missing = (
+                target is not None
+                and args.distance_source == 'fpga'
+                and fpga_distance is None
+            )
+            if link.connected and link.watchdog_tripped:
+                action = "STOP"
+                note = "FPGA STATUS 超时，安全停车"
+            elif distance_required_missing:
+                action = "STOP"
+                note = "FPGA 距离无效，安全停车"
             motion.execute(action, obs)
 
             # ---- 面板 ----
@@ -785,7 +840,8 @@ def main():
                 panel.append((f"目标 #{target['id']} {target['cls']}"
                               f"({target['color'] or '无色'}) "
                               f"偏角{bearing:+.2f}({'已对准' if aligned else '未对准'}) "
-                              f"{'已近' if near else '未近'}",
+                              f"{'已近' if near else '未近'} "
+                              f"距离={distance_text}",
                               (0, 255, 255)))
             else:
                 panel.append(("无目标，旋转搜索中…", (0, 165, 255)))
@@ -827,12 +883,10 @@ def main():
     except KeyboardInterrupt:
         print("\n[中断] 用户停止")
     finally:
-        # 退出前发一次停车，避免小车按最后一条运动指令继续跑（看门狗前的手动兜底）
-        if ser:
-            motion.send("STOP")
+        # 退出前停车并关闭心跳线程。
+        motion.stop("EXIT STOP")
+        link.close()
         cap.release()
-        if ser:
-            ser.close()
         if not args.no_show:
             cv2.destroyAllWindows()
 
