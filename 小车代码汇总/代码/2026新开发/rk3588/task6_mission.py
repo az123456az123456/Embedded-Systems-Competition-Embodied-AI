@@ -477,24 +477,43 @@ class MotionCommand:
     """
 
     def __init__(self, link, forward_mm_s=300, turn_max_mrad_s=500,
-                 rotate_mrad_s=350):
+                 rotate_mrad_s=350, log_interval_s=0.5,
+                 log_delta_v=60, log_delta_w=60):
         self.link = link
         self.forward_mm_s = int(forward_mm_s)
         self.turn_max_mrad_s = int(turn_max_mrad_s)
         self.rotate_mrad_s = int(rotate_mrad_s)
-        self.last_command = None   # 避免每帧打印相同动作
+        # 日志去抖：指令仍每帧发送，只有动作变化足够明显或超过间隔才打印。
+        self.log_interval_s = max(0.05, float(log_interval_s))
+        self.log_delta_v = int(log_delta_v)
+        self.log_delta_w = int(log_delta_w)
+        self._last_log_label = None
+        self._last_log_v = 0
+        self._last_log_w = 0
+        self._last_log_time = 0.0
+
+    def _maybe_log(self, label, v_mm_s, w_mrad_s):
+        now = time.monotonic()
+        same = (
+            label == self._last_log_label
+            and abs(v_mm_s - self._last_log_v) <= self.log_delta_v
+            and abs(w_mrad_s - self._last_log_w) <= self.log_delta_w
+        )
+        if same and now - self._last_log_time < self.log_interval_s:
+            return
+        print(f"[动作] {label}: v={v_mm_s} mm/s, w={w_mrad_s} mrad/s")
+        self._last_log_label = label
+        self._last_log_v = v_mm_s
+        self._last_log_w = w_mrad_s
+        self._last_log_time = now
 
     def send_twist(self, v_mm_s, w_mrad_s, label):
         command = (int(v_mm_s), int(w_mrad_s))
-        if command != self.last_command:
-            print(f"[动作] {label}: v={command[0]} mm/s, w={command[1]} mrad/s")
-            self.last_command = command
+        self._maybe_log(label, command[0], command[1])
         self.link.set_twist(command[0], command[1])
 
     def stop(self, label="STOP"):
-        if self.last_command != "STOP":
-            print(f"[动作] {label}")
-            self.last_command = "STOP"
+        self._maybe_log(label, 0, 0)
         self.link.stop()
 
     def execute(self, action, obs):
@@ -578,6 +597,12 @@ def parse_args():
                    help='最大转向角速度 mrad/s')
     p.add_argument('--rotate-rate', type=int, default=350,
                    help='搜索旋转角速度 mrad/s')
+    p.add_argument('--action-log-interval', type=float, default=0.5,
+                   help='动作日志去抖间隔（秒）')
+    p.add_argument('--action-log-delta-v', type=int, default=60,
+                   help='线速度变化超过该值才重新打印日志')
+    p.add_argument('--action-log-delta-w', type=int, default=60,
+                   help='角速度变化超过该值才重新打印日志')
     # 状态机参数
     p.add_argument('--conf-frames', type=int, default=5, help='锁定确认帧数')
     p.add_argument('--align-thresh', type=float, default=0.2,
@@ -670,6 +695,9 @@ def main():
         forward_mm_s=args.forward_speed,
         turn_max_mrad_s=args.turn_rate,
         rotate_mrad_s=args.rotate_rate,
+        log_interval_s=args.action_log_interval,
+        log_delta_v=args.action_log_delta_v,
+        log_delta_w=args.action_log_delta_w,
     )
 
     target_cls = args.target.strip()
