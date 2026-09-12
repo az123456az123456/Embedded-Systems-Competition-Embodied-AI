@@ -15,6 +15,10 @@ bash 小车代码汇总/代码/2026新开发/fpga/run_all_sim.sh
 # 3. 无板卡完整闭环（摄像头 + Deep ReID + 虚拟 FPGA）
 cd 小车代码汇总/代码/2026新开发/rk3588
 bash run_virtual_demo.sh
+
+# 4. 任务4 导航模拟（A* + 里程计 + 虚拟 FPGA）
+cd 小车代码汇总/代码/2026新开发/rk3588
+python nav_demo.py --instruction "走到右上角"
 ```
 
 ## 当前状态（2026-09-12）
@@ -23,7 +27,9 @@ bash run_virtual_demo.sh
 - ✅ FPGA 双电机差速 RTL 仿真（`top_robot_v2`）
 - ✅ RK 视觉 + 任务 6 状态机 PC 端闭环
 - ✅ 虚拟 FPGA 无板卡联调
-- ⏳ 高云综合、实板联调、导航、机械臂
+- ✅ 任务4 PC 导航模拟（A* + 里程计 + 虚拟 FPGA）
+- ✅ 中文语义解析（`--instruction`）
+- ⏳ 高云综合、实板联调、机械臂
 
 ## 目录
 

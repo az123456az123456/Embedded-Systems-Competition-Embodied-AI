@@ -42,7 +42,10 @@
 | `deep_reid.py` | 深度 ReID 特征（ResNet50-IBN-a，2048 维） | 已做次正规数清零提速，勿删 |
 | `fpga_protocol.py` | 协议 v2 编解码、CRC16、流式帧解析 | 帧格式变更必须同步通信协议文档 |
 | `fpga_link.py` | 串口、心跳、STATUS、看门狗停车 | 不能在 RX/心跳线程中做重计算 |
-| `virtual_fpga.py` | PTY 虚拟 FPGA，无板卡闭环 | 只模拟运动学，不代替实板验证 |
+| `virtual_fpga.py` | PTY 虚拟 FPGA，无板卡闭环（支持障碍物/位置） | 只模拟运动学，不代替实板验证 |
+| `navigation.py` | 任务4：A* 规划、里程计、路径点控制 | 纯逻辑模块，不启动串口 |
+| `nav_demo.py` | 任务4 无板卡导航演示（虚拟 FPGA） | 依赖 `virtual_fpga.py` |
+| `semantic_parser.py` | 中文语义指令解析 | 与 `task6_mission.py` 的 `--instruction` 配合 |
 
 两层 ID：**ByteTrack 过程 ID**（遮挡会变）→ **ReID 逻辑 ID**（跨遮挡稳定），跟随只看逻辑 ID。
 
@@ -52,8 +55,9 @@
 - ✅ RK 端协议 v2 + CRC16 + 心跳 + 看门狗 + 虚拟 FPGA 闭环
 - ✅ 任务 6 优先使用 FPGA 超声波距离，STATUS 失效时回退框高
 - ✅ FPGA `top_robot_v2` 已实现协议 v2、CRC16、看门狗和双电机差速，并通过 Icarus 仿真
+- ✅ 任务4 PC 导航模拟（A* + 里程计 + 差速 + 虚拟 FPGA）
 - ⏳ `top_robot_v2` 高云综合、引脚约束和实板联调
-- ⏳ 语义指令解析（`--instruction "找到红色水瓶"` → `(bottle, red)`）
+- ✅ 中文语义解析（`semantic_parser.py`，已接入 `--instruction`）
 - ⏳ `.pt → .rknn` 部署链路
 
 ## 常见任务的入口

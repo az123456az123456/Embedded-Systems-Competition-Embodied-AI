@@ -20,7 +20,7 @@ import time
 import tty
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Sequence
 
 from fpga_protocol import (
     Command,
@@ -46,6 +46,9 @@ class VirtualState:
     target_w_mrad_s: float = 0.0
     distance_mm: float = 2000.0
     yaw_centideg: float = 0.0
+    x_mm: float = 0.0
+    y_mm: float = 0.0
+    theta_rad: float = 0.0
     mode: Mode = Mode.VISION
     last_heartbeat_at: float = 0.0
     watchdog_tripped: bool = False
@@ -60,11 +63,21 @@ class VirtualFpga:
         track_width_mm: float = 160.0,
         watchdog_ms: int = 500,
         max_distance_cm: int = 500,
+        obstacles: Optional[Sequence[tuple[float, float, float]]] = None,
+        start_x_mm: float = 0.0,
+        start_y_mm: float = 0.0,
+        start_deg: float = 0.0,
     ) -> None:
         self.track_width_mm = float(track_width_mm)
         self.watchdog_s = max(0.1, watchdog_ms / 1000.0)
         self.max_distance_mm = max_distance_cm * 10.0
+        self.obstacles: list[tuple[float, float, float]] = (
+            [(float(x), float(y), float(r)) for x, y, r in (obstacles or [])]
+        )
         self.state = VirtualState()
+        self.state.x_mm = float(start_x_mm)
+        self.state.y_mm = float(start_y_mm)
+        self.state.theta_rad = math.radians(float(start_deg))
         self._seq = 0
         self._parser = FrameParser()
 
@@ -74,6 +87,28 @@ class VirtualFpga:
 
     def make_frame(self, cmd: Command, payload: bytes = b"") -> bytes:
         return encode_frame(cmd, self._next_seq(), payload)
+
+    def _nearest_obstacle_distance(self) -> float:
+        """沿当前航向到最近障碍物的距离（mm）；无障碍物返回最大量程。"""
+
+        state = self.state
+        if not self.obstacles:
+            return self.max_distance_mm
+        cos_t, sin_t = math.cos(state.theta_rad), math.sin(state.theta_rad)
+        best = self.max_distance_mm
+        for ox, oy, radius in self.obstacles:
+            dx = ox - state.x_mm
+            dy = oy - state.y_mm
+            proj = dx * cos_t + dy * sin_t
+            if proj <= 0.0:
+                continue
+            perp2 = dx * dx + dy * dy - proj * proj
+            if perp2 > radius * radius:
+                continue
+            along = proj - math.sqrt(max(0.0, radius * radius - perp2))
+            if along < best:
+                best = max(0.0, along)
+        return best
 
     def handle_frame(self, frame: Frame) -> Optional[bytes]:
         """处理下行命令，返回需要立即回给主机的帧。"""
@@ -125,7 +160,7 @@ class VirtualFpga:
         return self.make_frame(Command.ACK, make_ack(frame.cmd, ErrorCode.BAD_COMMAND))
 
     def update(self, dt: float) -> None:
-        """积分速度、航向和目标距离。"""
+        """积分速度、航向、位置和前方障碍距离。"""
 
         state = self.state
         now = time.monotonic()
@@ -146,13 +181,20 @@ class VirtualFpga:
         actual_w = (
             (state.speed_right_mm_s - state.speed_left_mm_s) / self.track_width_mm
         )
-        state.distance_mm = min(
-            self.max_distance_mm,
-            max(100.0, state.distance_mm - actual_v * dt),
-        )
+        state.theta_rad = state.theta_rad + actual_w * dt
+        state.x_mm = state.x_mm + actual_v * math.cos(state.theta_rad) * dt
+        state.y_mm = state.y_mm + actual_v * math.sin(state.theta_rad) * dt
         state.yaw_centideg = (
             state.yaw_centideg + math.degrees(actual_w * dt) * 100.0
         ) % 36000.0
+
+        if self.obstacles:
+            state.distance_mm = self._nearest_obstacle_distance()
+        else:
+            state.distance_mm = min(
+                self.max_distance_mm,
+                max(100.0, state.distance_mm - actual_v * dt),
+            )
 
     def status_frame(self) -> bytes:
         state = self.state
@@ -163,6 +205,8 @@ class VirtualFpga:
             flags |= StatusFlag.WATCHDOG | StatusFlag.ESTOP
         if state.fault_code:
             flags |= StatusFlag.FAULT
+        if self.obstacles and state.distance_mm <= 200.0:
+            flags |= StatusFlag.OBSTACLE
 
         distance_cm = int(round(state.distance_mm / 10.0))
         if distance_cm > INVALID_DISTANCE_CM - 1:
@@ -200,6 +244,10 @@ def _run(args: argparse.Namespace) -> int:
         track_width_mm=args.track_width_mm,
         watchdog_ms=args.watchdog_ms,
         max_distance_cm=args.max_distance_cm,
+        obstacles=args.obstacles,
+        start_x_mm=args.start_x_mm,
+        start_y_mm=args.start_y_mm,
+        start_deg=args.start_deg,
     )
     model.state.distance_mm = args.distance_cm * 10.0
     model.state.last_heartbeat_at = time.monotonic()
@@ -263,6 +311,21 @@ def _run(args: argparse.Namespace) -> int:
     return 0
 
 
+def _parse_obstacles(spec: Optional[str]) -> list[tuple[float, float, float]]:
+    """解析障碍物："x_mm,y_mm,r_mm;x_mm,y_mm,r_mm"。"""
+
+    if not spec:
+        return []
+    result = []
+    for part in spec.split(';'):
+        part = part.strip()
+        if not part:
+            continue
+        x, y, r = (float(v.strip()) for v in part.split(','))
+        result.append((x, y, r))
+    return result
+
+
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="协议 v2 虚拟 FPGA（PTY 串口模拟器）")
     parser.add_argument("--pty-file", default="/tmp/virtual_fpga.tty",
@@ -277,6 +340,14 @@ def parse_args() -> argparse.Namespace:
                         help="初始超声波距离")
     parser.add_argument("--max-distance-cm", type=int, default=500)
     parser.add_argument("--track-width-mm", type=float, default=160.0)
+    parser.add_argument("--obstacles", type=_parse_obstacles, default=None,
+                        help="障碍物列表 x,y,r;x,y,r（mm），分号分隔")
+    parser.add_argument("--start-x-mm", type=float, default=0.0,
+                        help="起点 x（mm）")
+    parser.add_argument("--start-y-mm", type=float, default=0.0,
+                        help="起点 y（mm）")
+    parser.add_argument("--start-deg", type=float, default=0.0,
+                        help="起点朝向（度）")
     return parser.parse_args()
 
 

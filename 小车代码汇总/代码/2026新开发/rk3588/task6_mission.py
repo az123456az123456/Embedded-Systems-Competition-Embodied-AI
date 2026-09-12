@@ -56,6 +56,7 @@ from vision_demo import (
 )
 from fpga_link import FpgaLink
 from fpga_protocol import Mode
+from semantic_parser import parse_instruction
 
 
 # ============================================================================
@@ -555,6 +556,8 @@ def parse_args():
     p.add_argument('--model', default='yolov8n.pt', help='模型权重')
     p.add_argument('--target', default='person', help='目标类别（COCO 类名）；空=不筛')
     p.add_argument('--target-color', default='', help='目标颜色 red/green/blue；空=不筛')
+    p.add_argument('--instruction', default=None,
+                   help='中文指令，如 "找到红色水瓶"；会自动覆盖 --target/--target-color')
     p.add_argument('--conf', type=float, default=0.4, help='检测置信度阈值')
     p.add_argument('--imgsz', type=int, default=320, help='推理输入尺寸')
     p.add_argument('--flip', default='h', choices=FLIP_ORDER, help='画面翻转方式')
@@ -596,8 +599,53 @@ def parse_args():
     return p.parse_args()
 
 
+def _resolve_model_path(model: str) -> str:
+    """自动定位本机 YOLO 权重，避免误触发联网下载。"""
+
+    if not model:
+        return model
+    if os.path.exists(model):
+        return model
+    if model != "yolov8n.pt":
+        return model
+
+    candidates = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "yolov8n.pt"),
+        os.path.join(os.getcwd(), "yolov8n.pt"),
+    ]
+    current = os.path.dirname(os.path.abspath(__file__))
+    while True:
+        candidates.append(os.path.join(current, "开发", ".ultralytics", "yolov8n.pt"))
+        parent = os.path.dirname(current)
+        if parent == current:
+            break
+        current = parent
+    for candidate in candidates:
+        if os.path.exists(candidate):
+            return candidate
+    return model
+
+
 def main():
     args = parse_args()
+    args.model = _resolve_model_path(args.model)
+
+    # ---- 中文语义指令 -> 结构化意图 ----
+    instruction_intent = None
+    if args.instruction:
+        try:
+            instruction_intent = parse_instruction(args.instruction)
+        except ValueError as exc:
+            print(f"[语义] 解析失败：{exc}")
+            return
+        print(f"[语义] {args.instruction} -> "
+              f"action={instruction_intent.action} "
+              f"target={instruction_intent.target or '任意'} "
+              f"color={instruction_intent.color or '任意'} "
+              f"zone={instruction_intent.zone or '-'}")
+        if instruction_intent.action == "STOP":
+            print("[语义] 指令为停止，不启动视觉任务")
+            return
 
     print(f"[模型] 加载 {args.model} ...")
     model = YOLO(args.model)
@@ -626,6 +674,13 @@ def main():
 
     target_cls = args.target.strip()
     target_color = args.target_color.strip()
+    if instruction_intent is not None:
+        if instruction_intent.target:
+            target_cls = instruction_intent.target
+        if instruction_intent.color:
+            target_color = instruction_intent.color
+        if instruction_intent.action == "GOTO" and instruction_intent.zone:
+            print(f"[语义] GOTO 区域 {instruction_intent.zone} 由任务4导航模块执行，任务6只负责目标识别")
 
     reid = None
     if not args.no_reid:
