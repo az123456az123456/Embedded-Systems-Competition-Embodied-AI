@@ -34,6 +34,6 @@ export QT_QPA_PLATFORM=xcb                        # Wayland session: use XWaylan
 
 ## License (free, node-locked)
 1. Apply at `https://www.gowinsemi.com.cn/profile/license` after login.
-2. Get the machine code from `license_config_gui` (run with the launch env above) or the IDE's license dialog.
+2. Get the machine code from `license_config_gui` (run with the launch env above **and from the `IDE/bin` directory**, since it reads/writes `gwlicense.ini` relative to cwd; a launcher that `cd`s first avoids the "No such file or directory gwlicense.ini" error) or the IDE's license dialog.
 3. Submit machine code + email on the website; Gowin provides a `license.dat`.
 4. Import the `.dat` via `license_config_gui`, or place it where the IDE expects (the tool shows the path). The default `IDE/bin/gwlicense.ini` points at a license server (`lic=...`); a local node-locked license overrides it.
