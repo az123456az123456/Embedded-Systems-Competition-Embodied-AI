@@ -77,7 +77,9 @@ run_extra() {
 run_one "uart"       "$HERE/uart/uart_tx.v" "$HERE/uart/uart_rx.v" "$HERE/uart/tb_uart.v"
 run_one "encoder"    "$HERE/encoder/quadrature_decoder.v" "$HERE/encoder/tb_quadrature.v"
 run_one "motor"      "$HERE/motor/motor_pwm.v" "$HERE/motor/encoder_velocity.v" "$HERE/motor/motor_pid.v" "$HERE/motor/tb_motor.v"
-run_one "ultrasonic" "$HERE/ultrasonic/ultrasonic.v" "$HERE/ultrasonic/tb_ultrasonic.v"
+run_one "ultrasonic" "$HERE/ultrasonic/legacy_hcsr04/ultrasonic.v" "$HERE/ultrasonic/legacy_hcsr04/tb_ultrasonic.v"
+echo "-------- [A02YYUW front/left/right interface] --------"
+IVERILOG="$IVERILOG_BIN" VVP="$VVP_BIN" bash "$HERE/ultrasonic/a02yyuw/run_tests.sh"
 run_one "imu"        "$HERE/imu/i2c_master.v" "$HERE/imu/imu_mpu6050.v" "$HERE/imu/tb_imu.v"
 run_extra "protocol_v2" "$HERE/protocol" \
     "$HERE/protocol/crc16_byte.v" \
@@ -88,7 +90,7 @@ run_extra "protocol_v2" "$HERE/protocol" \
 run_one "top"        "$HERE/uart/uart_tx.v" "$HERE/uart/uart_rx.v" \
                      "$HERE/encoder/quadrature_decoder.v" \
                      "$HERE/motor/motor_pwm.v" "$HERE/motor/encoder_velocity.v" "$HERE/motor/motor_pid.v" \
-                     "$HERE/ultrasonic/ultrasonic.v" \
+                     "$HERE/ultrasonic/legacy_hcsr04/ultrasonic.v" \
                      "$HERE/imu/i2c_master.v" "$HERE/imu/imu_mpu6050.v" \
                      "$HERE/top/top_robot.v" "$HERE/top/tb_top.v"
 run_extra "top_v2" "$HERE/top" \
@@ -100,7 +102,7 @@ run_extra "top_v2" "$HERE/top" \
     "$HERE/uart/uart_tx.v" "$HERE/uart/uart_rx.v" \
     "$HERE/encoder/quadrature_decoder.v" \
     "$HERE/motor/motor_pwm.v" "$HERE/motor/encoder_velocity.v" "$HERE/motor/motor_pid.v" \
-    "$HERE/ultrasonic/ultrasonic.v" \
+    "$HERE/ultrasonic/legacy_hcsr04/ultrasonic.v" \
     "$HERE/imu/i2c_master.v" "$HERE/imu/imu_mpu6050.v" \
     "$HERE/top/top_robot_v2.v" "$HERE/top/tb_top_v2.v"
 

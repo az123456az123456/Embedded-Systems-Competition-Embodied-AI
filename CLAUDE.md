@@ -17,17 +17,19 @@
 ```
 ├── 团队文档/          团队文档导航（README.md）+ 需求/规范/环境/进度/技能库
 ├── 小车代码汇总/代码/  全部代码：旧框架（FPGA_pangu / ultralytics-main / usb.arm）+ 新开发 fpga/rk3588
-├── 文档/              归档资料（大文件、压缩包）
+├── 开发/              新开发目录（本机目前只有 rk3588/）
 ├── yolov8n.pt         根目录遗留的重复权重（与 小车代码汇总/代码/2026新开发/rk3588/yolov8n.pt 重复，可清理）
-└── .venv/             本机虚拟环境（已 gitignore，不提交）
+└── .venv/             Python 虚拟环境（本机实际使用，已 gitignore，不提交）
 ```
 
 ## 协作约定（务必遵守）
 
-1. **Python 环境**：优先使用项目本地虚拟环境。当前主机位于项目上级目录的 `开发/venv`；若仓库根存在 `.venv` 也可使用。
+1. **Python 环境**：用仓库根目录下的 `.venv`（Python 3.10.12，torch 2.14.0+cpu / ultralytics 8.4.147）。
    ```bash
-   source /home/woonlf/Documents/Codex/Embedded-Systems-Competition/开发/venv/bin/activate
+   cd <仓库根目录> && source .venv/bin/activate
    ```
+   > 原开发机（woonlf）用的是 `开发/venv`（Python 3.14，另装了 pyautogui / mss）。**本机没有这个目录**，
+   > 也没有 `开发/工具/`、`开发/测试输出/`。文档里的路径一律写成相对仓库根的形式，别写死绝对路径。
 2. **权重不进版本库**：`*.pt / *.pth / *.onnx / *.rknn` 已 gitignore，从官方链接单独下载（见 `团队文档/进度/2026-09-12_视觉模块新增功能说明.md`）。
 3. **代码放 `小车代码汇总/代码/`，说明放 `团队文档/`**：新文档沿用现有格式（`# 标题` + `> 日期` + emoji + 表格）。
 4. **协议 v2 已冻结**：`AA 55 + CMD + SEQ + LEN + PAYLOAD + CRC16`。RK 端和 FPGA `top_robot_v2` 已实现，待高云综合/实板联调。任务 6 优先使用 STATUS 中的超声波距离，失效时回退框高。
