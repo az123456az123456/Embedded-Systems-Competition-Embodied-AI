@@ -1,0 +1,659 @@
+{
+  "source": "FMCtoGPIO-241118.pdf p1/p2 and ACG138 schematic",
+  "pins": [
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D0_P",
+      "pin": 1,
+      "ball": "J15",
+      "fmc": "H19",
+      "bank": 4,
+      "net": "B4_R22_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D0_N",
+      "pin": 2,
+      "ball": "H15",
+      "fmc": "H20",
+      "bank": 4,
+      "net": "B4_R22_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D1_P",
+      "pin": 3,
+      "ball": "J22",
+      "fmc": "H16",
+      "bank": 5,
+      "net": "B5_B45_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D1_N",
+      "pin": 4,
+      "ball": "H22",
+      "fmc": "H17",
+      "bank": 5,
+      "net": "B5_B45_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D2_P",
+      "pin": 5,
+      "ball": "Y21",
+      "fmc": "H13",
+      "bank": 8,
+      "net": "B8_B99_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D2_N",
+      "pin": 6,
+      "ball": "Y22",
+      "fmc": "H14",
+      "bank": 8,
+      "net": "B8_B99_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D3_P",
+      "pin": 7,
+      "ball": "AB21",
+      "fmc": "H10",
+      "bank": 8,
+      "net": "B8_B97_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D3_N",
+      "pin": 8,
+      "ball": "AB22",
+      "fmc": "H11",
+      "bank": 8,
+      "net": "B8_B97_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D4_P",
+      "pin": 9,
+      "ball": "AA19",
+      "fmc": "H7",
+      "bank": 8,
+      "net": "B8_B85_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D4_N",
+      "pin": 10,
+      "ball": "AB20",
+      "fmc": "H8",
+      "bank": 8,
+      "net": "B8_B85_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D5_P",
+      "pin": 13,
+      "ball": "J20",
+      "fmc": "H4",
+      "bank": 5,
+      "net": "B5_B54_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D5_N",
+      "pin": 14,
+      "ball": "J21",
+      "fmc": "H5",
+      "bank": 5,
+      "net": "B5_B54_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D6_P",
+      "pin": 15,
+      "ball": "H20",
+      "fmc": "G18",
+      "bank": 5,
+      "net": "B5_B43_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D6_N",
+      "pin": 16,
+      "ball": "G20",
+      "fmc": "G19",
+      "bank": 5,
+      "net": "B5_B43_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D7_P",
+      "pin": 17,
+      "ball": "H17",
+      "fmc": "D17",
+      "bank": 4,
+      "net": "B4_R32_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D7_N",
+      "pin": 18,
+      "ball": "H18",
+      "fmc": "D18",
+      "bank": 4,
+      "net": "B4_R32_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D8_P",
+      "pin": 19,
+      "ball": "G17",
+      "fmc": "G15",
+      "bank": 4,
+      "net": "B4_R30_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D8_N",
+      "pin": 20,
+      "ball": "G18",
+      "fmc": "G16",
+      "bank": 4,
+      "net": "B4_R30_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D9_P",
+      "pin": 21,
+      "ball": "G15",
+      "fmc": "D14",
+      "bank": 4,
+      "net": "B4_R24_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D9_N",
+      "pin": 22,
+      "ball": "G16",
+      "fmc": "D15",
+      "bank": 4,
+      "net": "B4_R24_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D10_P",
+      "pin": 23,
+      "ball": "N22",
+      "fmc": "G12",
+      "bank": 5,
+      "net": "B5_B63_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D10_N",
+      "pin": 24,
+      "ball": "M22",
+      "fmc": "G13",
+      "bank": 5,
+      "net": "B5_B63_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D11_P",
+      "pin": 25,
+      "ball": "L16",
+      "fmc": "D11",
+      "bank": 4,
+      "net": "B4_R34_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D11_N",
+      "pin": 26,
+      "ball": "K16",
+      "fmc": "D12",
+      "bank": 4,
+      "net": "B4_R34_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D12_P",
+      "pin": 27,
+      "ball": "M15",
+      "fmc": "G9",
+      "bank": 5,
+      "net": "B5_B52_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D12_N",
+      "pin": 28,
+      "ball": "M16",
+      "fmc": "G10",
+      "bank": 5,
+      "net": "B5_B52_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D13_P",
+      "pin": 31,
+      "ball": "K21",
+      "fmc": "C14",
+      "bank": 5,
+      "net": "B5_B59_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D13_N",
+      "pin": 32,
+      "ball": "K22",
+      "fmc": "C15",
+      "bank": 5,
+      "net": "B5_B59_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D14_P",
+      "pin": 33,
+      "ball": "W19",
+      "fmc": "G6",
+      "bank": 8,
+      "net": "B8_B93_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D14_N",
+      "pin": 34,
+      "ball": "W20",
+      "fmc": "G7",
+      "bank": 8,
+      "net": "B8_B93_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D15_P",
+      "pin": 35,
+      "ball": "M21",
+      "fmc": "C10",
+      "bank": 5,
+      "net": "B5_B68_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D15_N",
+      "pin": 36,
+      "ball": "L21",
+      "fmc": "C11",
+      "bank": 5,
+      "net": "B5_B68_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D16_P",
+      "pin": 37,
+      "ball": "L19",
+      "fmc": "D8",
+      "bank": 5,
+      "net": "B5_B61_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D16_N",
+      "pin": 38,
+      "ball": "L20",
+      "fmc": "D9",
+      "bank": 5,
+      "net": "B5_B61_N"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D17_P",
+      "pin": 39,
+      "ball": "N18",
+      "fmc": "C18",
+      "bank": 5,
+      "net": "B5_B72_P"
+    },
+    {
+      "interface": "GPIO0/P3",
+      "gpio": "GPIO0_D17_N",
+      "pin": 40,
+      "ball": "N19",
+      "fmc": "C19",
+      "bank": 5,
+      "net": "B5_B72_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D0_P",
+      "pin": 1,
+      "ball": "Y18",
+      "fmc": "G2",
+      "bank": 8,
+      "net": "B8_B87_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D0_N",
+      "pin": 2,
+      "ball": "Y19",
+      "fmc": "G3",
+      "bank": 8,
+      "net": "B8_B87_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D1_P",
+      "pin": 3,
+      "ball": "N20",
+      "fmc": "C26",
+      "bank": 5,
+      "net": "B5_B70_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D1_N",
+      "pin": 4,
+      "ball": "M20",
+      "fmc": "C27",
+      "bank": 5,
+      "net": "B5_B70_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D2_P",
+      "pin": 5,
+      "ball": "U20",
+      "fmc": "C22",
+      "bank": 8,
+      "net": "B8_B95_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D2_N",
+      "pin": 6,
+      "ball": "V20",
+      "fmc": "C23",
+      "bank": 8,
+      "net": "B8_B95_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D3_P",
+      "pin": 7,
+      "ball": "L14",
+      "fmc": "G36",
+      "bank": 5,
+      "net": "B5_B48_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D3_N",
+      "pin": 8,
+      "ball": "L15",
+      "fmc": "G37",
+      "bank": 5,
+      "net": "B5_B48_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D4_P",
+      "pin": 9,
+      "ball": "J19",
+      "fmc": "G33",
+      "bank": 5,
+      "net": "B5_B41_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D4_N",
+      "pin": 10,
+      "ball": "H19",
+      "fmc": "G34",
+      "bank": 5,
+      "net": "B5_B41_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D5_P",
+      "pin": 13,
+      "ball": "K17",
+      "fmc": "G30",
+      "bank": 5,
+      "net": "B5_B39_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D5_N",
+      "pin": 14,
+      "ball": "J17",
+      "fmc": "G31",
+      "bank": 5,
+      "net": "B5_B39_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D6_P",
+      "pin": 15,
+      "ball": "K18",
+      "fmc": "G27",
+      "bank": 5,
+      "net": "B5_B57_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D6_N",
+      "pin": 16,
+      "ball": "K19",
+      "fmc": "G28",
+      "bank": 5,
+      "net": "B5_B57_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D7_P",
+      "pin": 17,
+      "ball": "K13",
+      "fmc": "D26",
+      "bank": 4,
+      "net": "B4_R36_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D7_N",
+      "pin": 18,
+      "ball": "K14",
+      "fmc": "D27",
+      "bank": 4,
+      "net": "B4_R36_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D8_P",
+      "pin": 19,
+      "ball": "M13",
+      "fmc": "G24",
+      "bank": 5,
+      "net": "B5_B50_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D8_N",
+      "pin": 20,
+      "ball": "L13",
+      "fmc": "G25",
+      "bank": 5,
+      "net": "B5_B50_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D9_P",
+      "pin": 21,
+      "ball": "H13",
+      "fmc": "D23",
+      "bank": 4,
+      "net": "B4_R20_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D9_N",
+      "pin": 22,
+      "ball": "G13",
+      "fmc": "D24",
+      "bank": 4,
+      "net": "B4_R20_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D10_P",
+      "pin": 23,
+      "ball": "M18",
+      "fmc": "G21",
+      "bank": 5,
+      "net": "B5_B66_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D10_N",
+      "pin": 24,
+      "ball": "L18",
+      "fmc": "G22",
+      "bank": 5,
+      "net": "B5_B66_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D11_P",
+      "pin": 25,
+      "ball": "V18",
+      "fmc": "D20",
+      "bank": 8,
+      "net": "B8_B81_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D11_N",
+      "pin": 26,
+      "ball": "V19",
+      "fmc": "D21",
+      "bank": 8,
+      "net": "B8_B81_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D12_P",
+      "pin": 27,
+      "ball": "W14",
+      "fmc": "H37",
+      "bank": 8,
+      "net": "B8_B91_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D12_N",
+      "pin": 28,
+      "ball": "V14",
+      "fmc": "H38",
+      "bank": 8,
+      "net": "B8_B91_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D13_P",
+      "pin": 31,
+      "ball": "AB15",
+      "fmc": "H34",
+      "bank": 8,
+      "net": "B8_B89_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D13_N",
+      "pin": 32,
+      "ball": "AA14",
+      "fmc": "H35",
+      "bank": 8,
+      "net": "B8_B89_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D14_P",
+      "pin": 33,
+      "ball": "AA18",
+      "fmc": "H31",
+      "bank": 8,
+      "net": "B8_B77_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D14_N",
+      "pin": 34,
+      "ball": "AB18",
+      "fmc": "H32",
+      "bank": 8,
+      "net": "B8_B77_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D15_P",
+      "pin": 35,
+      "ball": "V17",
+      "fmc": "H28",
+      "bank": 8,
+      "net": "B8_B79_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D15_N",
+      "pin": 36,
+      "ball": "W17",
+      "fmc": "H29",
+      "bank": 8,
+      "net": "B8_B79_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D16_P",
+      "pin": 37,
+      "ball": "U17",
+      "fmc": "H25",
+      "bank": 8,
+      "net": "B8_B75_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D16_N",
+      "pin": 38,
+      "ball": "U18",
+      "fmc": "H26",
+      "bank": 8,
+      "net": "B8_B75_N"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D17_P",
+      "pin": 39,
+      "ball": "J14",
+      "fmc": "H22",
+      "bank": 4,
+      "net": "B4_R26_P"
+    },
+    {
+      "interface": "GPIO1/P2",
+      "gpio": "GPIO1_D17_N",
+      "pin": 40,
+      "ball": "H14",
+      "fmc": "H23",
+      "bank": 4,
+      "net": "B4_R26_N"
+    }
+  ],
+  "power_pins": {
+    "11": "5V",
+    "12": "GND",
+    "29": "3.3V",
+    "30": "GND"
+  }
+}

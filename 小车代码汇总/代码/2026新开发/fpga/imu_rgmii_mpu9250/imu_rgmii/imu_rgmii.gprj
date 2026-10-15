@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE gowin-fpga-project>
+<Project>
+<Template>FPGA</Template><Version>5</Version>
+<Device name="GW5AT-60B" pn="GW5AT-LV60PG484AC1/I0">gw5at60b-002</Device>
+<FileList>
+<File path="rtl/i2c_reg_master.v" type="file.verilog" enable="1"/>
+<File path="rtl/mpu9250_reader.v" type="file.verilog" enable="1"/>
+<File path="rtl/imu_ethernet_tx.v" type="file.verilog" enable="1"/>
+<File path="rtl/imu_rgmii_top.v" type="file.verilog" enable="1"/>
+<File path="imu_rgmii.cst" type="file.cst" enable="1"/>
+<File path="imu_rgmii.sdc" type="file.sdc" enable="1"/>
+</FileList>
+</Project>
