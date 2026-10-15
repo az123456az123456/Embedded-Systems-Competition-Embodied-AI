@@ -9,7 +9,7 @@
 #include <stdint.h>
 static struct wl_display *display;
 static struct wl_resource *xdg,*top,*buffer,*callback;
-static uint32_t serial; static int acked,frames,resized;
+static uint32_t serial; static int acked,frames,resized,fullscreen_requested;
 static void destroy(struct wl_client *c,struct wl_resource *r) {(void)c; wl_resource_destroy(r);}
 static void ignored(struct wl_client *c,struct wl_resource *r,int32_t x,int32_t y,int32_t w,int32_t h) {(void)c;(void)r;(void)x;(void)y;(void)w;(void)h;}
 static void configure(int w,int h) {
@@ -53,7 +53,7 @@ static void bind_compositor(struct wl_client *c,void *data,uint32_t version,uint
 }
 static void title(struct wl_client *c,struct wl_resource *r,const char *v) {(void)c;(void)r;assert(v);}
 static void min_size(struct wl_client *c,struct wl_resource *r,int32_t w,int32_t h) {(void)c;(void)r;assert(w>0&&h>0);}
-static void fullscreen(struct wl_client *c,struct wl_resource *r,struct wl_resource *o) {(void)c;(void)r;(void)o;}
+static void fullscreen(struct wl_client *c,struct wl_resource *r,struct wl_resource *o) {(void)c;(void)r;(void)o;fullscreen_requested=1;}
 static const struct xdg_toplevel_interface top_impl={.destroy=destroy,.set_title=title,.set_app_id=title,.set_min_size=min_size,.set_fullscreen=fullscreen};
 static void get_top(struct wl_client *c,struct wl_resource *r,uint32_t id) {
     (void)r; top=wl_resource_create(c,&xdg_toplevel_interface,1,id); wl_resource_set_implementation(top,&top_impl,NULL,NULL);
@@ -79,6 +79,9 @@ int main(void) {
     wl_global_create(display,&xdg_wm_base_interface,1,NULL,bind_wm);
     wl_display_add_client_created_listener(display,&new_client);
     puts("READY");fflush(stdout);wl_display_run(display);
-    assert(frames>=10 && resized); wl_display_destroy_clients(display);wl_display_destroy(display);
+    assert(frames>=10 && resized);
+    const char *expected=getenv("PERCEPTION_EXPECT_FULLSCREEN");
+    assert(fullscreen_requested==(expected?atoi(expected):1));
+    wl_display_destroy_clients(display);wl_display_destroy(display);
     puts("PASS Wayland: configure/ack, shared-memory format/pixels, double-buffer release, frame callback, resize and close");
 }

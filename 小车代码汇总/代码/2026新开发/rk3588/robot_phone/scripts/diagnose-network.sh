@@ -24,7 +24,7 @@ if [ -r /proc/device-tree/model ]; then
 fi
 
 heading '1. 工具是否存在（存在不表示当前网卡可用）'
-for acg_tool in ip ifconfig route iw wpa_supplicant wpa_cli wpa_passphrase hostapd udhcpc dhcpcd lsusb lspci rfkill; do
+for acg_tool in ip ifconfig route iw wpa_supplicant wpa_cli wpa_passphrase hostapd udhcpc dhcpcd lsusb lspci rfkill modinfo zcat; do
     if has "$acg_tool"; then printf '  %-18s %s\n' "$acg_tool" "$(command -v "$acg_tool")"
     else printf '  %-18s %s\n' "$acg_tool" '未找到'; fi
 done
@@ -120,42 +120,43 @@ done
 printf '%s\n' '  USB 已枚举不等于 Wi-Fi 可用；以无线接口、其实际驱动、关联和 IPv4 为准。'
 printf '%s\n' '  btusb 等蓝牙接口不等于已提供 Wi-Fi；USB 无线网卡应按实际芯片/VID:PID 核对。'
 
-heading '4. 可选参考：PCIe 网卡及 AX210 驱动绑定'
-acg_ax210=0
-for acg_pci in /sys/bus/pci/devices/*; do
-    [ -r "$acg_pci/vendor" ] && [ -r "$acg_pci/device" ] || continue
-    acg_vendor=$(cat "$acg_pci/vendor" 2>/dev/null)
-    acg_product=$(cat "$acg_pci/device" 2>/dev/null)
-    acg_class=$(cat "$acg_pci/class" 2>/dev/null || true)
-    acg_is_ax210=0
-    if [ "$acg_vendor" = 0x8086 ] && [ "$acg_product" = 0x2725 ]; then
-        acg_is_ax210=1; acg_ax210=$((acg_ax210 + 1))
+heading '4. RTL8821CU 驱动与内核配置（只查询，不加载模块）'
+acg_rtl_loaded=0
+for acg_module in 8821cu rtl8821cu rtw88_8821cu rtw88_usb rtw88_8821c; do
+    if [ -d "/sys/module/$acg_module" ]; then
+        printf '  已存在内核模块: %s（还需核对 USB 接口绑定）\n' "$acg_module"
+        acg_rtl_loaded=$((acg_rtl_loaded + 1))
     fi
-    case "$acg_class:$acg_is_ax210" in 0x02*|*:1)
-        acg_binding=$(target_of "$acg_pci/driver")
-        printf '  PCI %s vendor=%s device=%s class=%s driver=%s\n' "${acg_pci##*/}" "$acg_vendor" "$acg_product" "$acg_class" "${acg_binding##*/}"
-        [ "$acg_is_ax210" -eq 0 ] || printf '%s\n' '    已枚举 AX210（8086:2725），还需无线接口、关联和 IP 才算能通信。'
-    esac
 done
-if [ "$acg_ax210" -eq 0 ]; then
-    printf '%s\n' '  未找到 PCIe AX210 8086:2725；使用 USB 无线网卡时这不是异常。'
+[ "$acg_rtl_loaded" -gt 0 ] || printf '%s\n' '  未看到上述驱动模块；网卡未插入、模块未加载、缺驱动均可能，不直接判定故障。'
+if has find && [ -d /lib/modules ]; then
+    printf '%s\n' '  /lib/modules 中相关模块文件（存在不表示与当前内核匹配）:'
+    find /lib/modules -type f -name '*8821*.ko*' -print 2>/dev/null | head -n 20
 fi
-if [ -d /sys/module/iwlwifi ]; then printf '%s\n' '  内核 iwlwifi 已存在（可能为内置驱动）。'
-else printf '%s\n' '  iwlwifi 未出现；USB 网卡通常使用其他实际芯片驱动，不据此判断 USB 异常。'; fi
+if has modinfo; then
+    for acg_module in 8821cu rtl8821cu rtw88_8821cu; do
+        acg_module_info=$(modinfo "$acg_module" 2>/dev/null | sed -n '/^filename:/p; /^vermagic:/p')
+        [ -z "$acg_module_info" ] || printf '  %s:\n%s\n' "$acg_module" "$acg_module_info"
+    done
+fi
+if [ -r /proc/config.gz ] && has zcat; then
+    printf '%s\n' '  运行内核的相关配置（若开放 /proc/config.gz）:'
+    zcat /proc/config.gz 2>/dev/null | sed -n \
+        '/^CONFIG_RTW88=/p; /^# CONFIG_RTW88 is not set/p; /^CONFIG_RTW88_USB=/p; /^CONFIG_RTW88_8821CU=/p; /^CONFIG_RTL8821CU=/p; /^CONFIG_CFG80211=/p; /^CONFIG_MAC80211=/p; /^CONFIG_MODULES=/p; /^CONFIG_MODVERSIONS=/p'
+else
+    printf '%s\n' '  /proc/config.gz 不可读或无 zcat，不能据此判断配置；请保留 uname -r 输出。'
+fi
 
-heading '5. 可选参考：AX210 固件文件与相关内核消息'
-printf '%s\n' '  以下仅针对 PCIe AX210；不能替代 USB 网卡的实际芯片/驱动核对。'
-acg_firmware=0
-for acg_fw in /lib/firmware/iwlwifi-ty-a0-gf-a0-*.ucode* /lib/firmware/iwlwifi-ty-a0-gf-a0.pnvm*; do
-    [ -f "$acg_fw" ] || continue
-    acg_firmware=$((acg_firmware + 1))
-    printf '  %s\n' "$acg_fw"
-done
-[ "$acg_firmware" -gt 0 ] || printf '%s\n' '  未找到常见 AX210 固件路径；这不表示 USB 无线网卡缺少固件。'
+heading '5. RTL8821CU 固件参考与加载错误'
+if [ -f /lib/firmware/rtw88/rtw8821c_fw.bin ]; then
+    printf '%s\n' '  找到 /lib/firmware/rtw88/rtw8821c_fw.bin（rtw88 驱动所用固件）。'
+else
+    printf '%s\n' '  未找到 rtw88/rtw8821c_fw.bin；厂商 8821cu 驱动可能采用不同方式，需按实际驱动判断。'
+fi
+printf '%s\n' '  rtl_bt 下的 8821c 文件是蓝牙固件，不能作为 Wi-Fi 驱动已可用的证明。'
 if has dmesg; then
-    # Only fixed firmware/driver diagnostics; never dump network authentication logs.
     dmesg 2>/dev/null | sed -n \
-        '/iwlwifi.*loaded firmware version/p; /iwlwifi.*Direct firmware load/p; /iwlwifi.*no suitable firmware/p; /iwlwifi.*Failed to load/p; /iwlwifi.*Detected Intel/p' | tail -n 8
+        '/8821.*Unknown symbol/p; /8821.*disagrees about version/p; /8821.*version magic/p; /8821.*Direct firmware load/p; /8821.*failed to load/p; /8821.*Failed to load/p; /8821.*probe.*fail/p' | tail -n 12
 fi
 
 heading '6. 网络管理/WPA/DHCP 进程（只显示名称和 PID）'
@@ -202,7 +203,7 @@ if [ "$acg_wifi_count" -gt 0 ]; then
     printf '%s\n' '  也可让板子连接手机 2.4GHz 热点，但热点/路由器客户端隔离可能阻断访问，必须实际连接测试。'
 else
     printf '%s\n' '  暂未看到无线接口。你的网卡通过 USB 连接：先核对上面的 USB VID:PID、接口驱动及实际芯片，再核对对应驱动/固件。'
-    printf '%s\n' '  若连 USB 枚举都没有，先核对 USB 主机口、连接线、转接器和供电；不要按 PCIe AX210/J4 的方案排查 USB 网卡。'
+    printf '%s\n' '  若连 USB 枚举都没有，先核对 USB 主机口、连接线、转接器和供电；RTL8821CU 使用 USB，按其实际 USB ID 和驱动绑定排查。'
 fi
 if [ "$acg_external_count" -gt 0 ]; then
     printf '%s\n' '  可先用外部 RJ45 接路由器，手机接该路由器 Wi-Fi，验证 APK 和服务端，无需等待无线扩展。'

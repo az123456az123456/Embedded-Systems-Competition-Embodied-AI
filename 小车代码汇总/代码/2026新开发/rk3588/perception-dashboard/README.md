@@ -1,6 +1,31 @@
 # YOLO 与 IMU 统一窗口 · RK3588 / Buildroot
 
-> 2026-10-15 · 启动适配 v2 · ACG138 · 双目 OV5640 · MPU9250 · Weston / Wayland
+> 2026-10-15 · 俯视小车动画＋默认全屏 v3 · ACG138 · 双目 OV5640 · MPU9250 · Weston / Wayland
+
+## 🚗 v3 俯视小车与全屏升级
+
+右侧原水平仪替换为简约四轮小车俯视图。车头带方向箭头，随相对 Yaw 旋转：归零后朝上，正角向左、负角向右；横滚和俯仰保留上方数值，不再倾斜动画视角。IMU 数据无效或超时时灰显并提示等待。圆环顶部是相对零方向，不表示磁北。
+
+启动后默认请求全屏，按屏幕尺寸等比例显示，顶部右侧关闭按钮仍可退出。直接执行原来的 `./run-perception.sh` 即可，不必追加全屏参数；需要普通可拖动窗口时使用 `./run-perception.sh --windowed`。`--demo` 也默认全屏，并可演示小车航向变化。
+
+已经运行 v2 的板子仅需替换窗口二进制。把 `perception-dashboard-top-view-arm64-v3-20261015.tar.gz` 复制到 `/root/`，先关闭旧窗口，再执行：
+
+```sh
+cd /root
+tar -xzf perception-dashboard-top-view-arm64-v3-20261015.tar.gz
+cd /root/perception-dashboard
+cp -p perception-dashboard.aarch64 perception-dashboard.aarch64.bak
+cp /root/perception-dashboard-top-view-update/perception-dashboard.aarch64 perception-dashboard.aarch64.new
+chmod +x perception-dashboard.aarch64.new
+mv -f perception-dashboard.aarch64.new perception-dashboard.aarch64
+./run-perception.sh
+```
+
+若原窗口放在其他目录，将 `/root/perception-dashboard` 换成实际目录。必须更新启动器优先使用的项目根目录 `perception-dashboard.aarch64`，只更新 `build/` 下文件不会覆盖根目录的旧版本。原来的模型、运行库、启动参数可以沿用。
+
+![俯视小车动画演示](reports/imu-top-view.gif)
+
+本次严格编译、ARM64 交叉编译、原有单元检查和 Wayland 窗口检查已通过；检查了默认全屏请求、窗口模式回退，以及 0°、+90°、-90°、180° 和超时状态的原生渲染。本环境未连接实际 RK3588 屏幕。
 
 ## 🖥️ 在板上运行
 
@@ -49,7 +74,7 @@ XDG_RUNTIME_DIR=/run WAYLAND_DISPLAY=wayland-0 ./run-perception.sh
 ## 📊 一个窗口中的内容
 
 - 左侧：双目视频、L/R 检测框、类别、置信度和当前显示处理速率。
-- 右侧：横滚 Roll、俯仰 Pitch、相对偏航 Yaw、姿态示意、三轴加速度和短时趋势。
+- 右侧：横滚 Roll、俯仰 Pitch、相对偏航 Yaw、俯视线条小车航向动画、三轴加速度和短时趋势。
 - 底部：静态零偏校准、航向归零。启动后保持 IMU 静止约 2 秒。
 - 摄像头超过 1 秒没有新图像，停止显示实时检测框；IMU 超过 500ms 没有有效新六轴采样，数值显示横线。
 

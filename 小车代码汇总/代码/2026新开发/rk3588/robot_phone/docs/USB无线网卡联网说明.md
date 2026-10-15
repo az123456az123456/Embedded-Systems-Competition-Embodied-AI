@@ -1,6 +1,6 @@
-# ACG138 USB 无线网卡连接手机
+# ACG138 RTL8821CU USB 无线网卡连接手机
 
-> 日期：2026-10-15。当前硬件按用户确认：USB 网卡连接 RK3588。芯片型号、USB ID、实机驱动状态尚待确认。
+> 日期：2026-10-15。当前硬件按用户确认：USB 网卡连接 RK3588。用户确认芯片为 RTL8821CU；网卡尚未实测，USB ID、运行内核及驱动状态待确认。
 
 ## 📡 当前连接方式
 
@@ -8,13 +8,29 @@ USB 无线网卡插入 RK3588 USB 主机口，板子与 Android 手机连接同�
 
 先用 2.4GHz 网络联调。也可让板子连接手机热点；是否允许手机访问热点客户端需实测。当前没有实现或要求板子自身开热点。
 
-之前提到的 AX210 需要核对：Intel 官方规格明确 **AX210 Wi-Fi 使用 PCIe，蓝牙使用 USB**。若是原生 AX210 加普通 USB 转接，枚举到蓝牙并不等于有 Wi-Fi；若是其他 USB 无线芯片，要按其 USB VID:PID 和当前内核驱动判断。不能由外壳名称或“AX”速率标签推断芯片，也不能在确认前安装 iwlwifi 或任意桌面 Linux 驱动。
+本次明确使用 **Realtek RTL8821CU USB 无线网卡**。先前 AX210/PCIe 的硬件接入说明不适用于这张网卡。网络应用仍采用板子与手机同一局域网的方式。
+
+## 🧩 本地 BSP 核对结果
+
+| 项目 | 资料包中的结果 | 对当前接入的含义 |
+|---|---|---|
+| 内核源码版本 | Linux 6.1.75 | 用户实机版本尚需 `uname -r` 确认 |
+| 资料 boot 内嵌配置和发布配置 | Linux 6.1.75、`CONFIG_RTW88` 未启用，二者配置一致 | 资料内核不提供该 rtw88 路径的 RTL8821CU 支持 |
+| 本地 6.1 rtw88 Kconfig | 包含 PCIe 8821CE，未包含 USB 8821CU 配置项 | 不能直接把 CE 当作 CU，或只开启现有 RTW88 就认为支持 USB |
+| 资料 rootfs 模块目录 | 核对 `/lib/modules/6.1.75`，未找到 8821cu/rtl8821cu/rtw88_8821cu 模块，modules.builtin 也未列出 | 不能按资料镜像已预装相应驱动来部署 |
+| Buildroot 源码 | 有独立 `package/rtl8821cu` 配方 | 说明有构建途径，不能证明发布镜像已装好模块 |
+| 内核／rootfs 构建 | 该 rootfs 配置 `BR2_LINUX_KERNEL` 未启用，内核由 BSP 单独构建 | 不能只在这份 Buildroot rootfs 配置里勾驱动包，就假定它会自动匹配并生成 |
+
+Linux Wireless 文档列出主线 rtw88 对这组 USB 设备的支持从 6.2 开始。对于本资料的 6.1 内核，需要检查厂商 `8821cu` 驱动或适配的回移驱动是否已部署；不为增加此网卡而直接替换整套内核，以免影响已跑通的相机与板内 RGMII。
+
+如果最终需要补 `.ko`，应基于**板子实际运行内核**的源码、配置、构建输出和符号版本表交叉编译。Buildroot 没有必要安装 Ubuntu/Debian 的 `apt`/DKMS 驱动包，其他机器的 `.ko` 也不能直接视为兼容。当前没有生成或宣称提供可直接加载的匹配驱动模块。
 
 ## 🔍 在板子上确认设备
 
 插入网卡后，在 RK3588 终端执行：
 
 ```sh
+uname -r
 lsusb
 ip link
 iw dev
@@ -27,7 +43,7 @@ cd /root/robot-phone
 sh scripts/diagnose-network.sh
 ```
 
-脚本只查询 USB VID:PID、产品名称、设备接口驱动、实际网络接口、IPv4 和管理进程；不改网络、不启动服务、不读取 Wi-Fi 密码、不打印进程完整参数。
+脚本只查询 USB VID:PID、产品名称、设备接口驱动、8821cu/rtw88 模块与可读内核配置、实际网络接口、IPv4 和管理进程；不改网络、不启动服务、不读取 Wi-Fi 密码、不打印进程完整参数。
 
 | 实际现象 | 下一步 |
 |---|---|
@@ -97,6 +113,7 @@ APP 连接失败不必先换模型或重烧 FPGA：先区分没有关联、没�
 
 ## 📚 依据与验证范围
 
-- [Intel AX210 官方规格](https://www.intel.com/content/www/us/en/products/sku/204836/intel-wifi-6e-ax210-gig/specifications.html)：System Interface Type 为 Wi-Fi(PCIe)、BT(USB)。
-- 本地 ACG138 手册与设备树只用于识别板内 GMAC/原 PCIe 参考方案；不能作为当前未知 USB 芯片驱动已支持的证明。
-- 尚未收到实机 USB ID/驱动输出，也未连接实物；当前只能确认软件不依赖特定外部网卡，不能提前保证此 USB 设备已能联网。
+- 本地 `bsp_r4/ACG138-Offline-BSP-20260923-r4/sdk/yy3588_linux/Makefile`、`configs/kernel.config` 和 `drivers/net/wireless/realtek/rtw88/Kconfig`：版本、配置及本地驱动范围。
+- 本地 `sdk/yy3588_buildroot/package/rtl8821cu/rtl8821cu.mk` 和 `configs/rockchip_rk3588.config`：驱动配方及内核与 rootfs 分离构建现状。
+- [Linux Wireless 官方 Realtek 驱动文档](https://wireless.docs.kernel.org/en/latest/en/users/drivers/rtl819x.html)：rtw88 的 USB 设备支持范围。
+- 用户确认型号为 RTL8821CU，但尚未提供实机输出；当前不能提前保证这张网卡插入后即可联网。网卡到手后先跑上面的检查，若已识别无线接口就沿用后续 WPA/DHCP 步骤。

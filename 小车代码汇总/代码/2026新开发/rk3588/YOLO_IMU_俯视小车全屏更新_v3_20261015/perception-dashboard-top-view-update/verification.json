@@ -1,0 +1,40 @@
+{
+  "version": "v3-top-view-fullscreen",
+  "date": "2026-10-15",
+  "hardware_screen_verified": false,
+  "binary_sha256": "147efecc20de30ea8c10de99df62879a2271d084db7faafcf75f5994a9c22d06",
+  "source_sha256": "c4aa1a077f9c4705fd18998dc45e6f4560b76b7cdd80c719535ef592287c6345",
+  "change": "Fixed top view line-art four-wheel car; relative yaw rotates the nose, pitch and roll remain numeric.",
+  "visual_checks": [
+    "0 deg nose up",
+    "+90 deg nose left",
+    "-90 deg nose right",
+    "180 deg nose down",
+    "IMU stale dims car and hides numeric angles",
+    "48-frame native-rendered relative-yaw animation"
+  ],
+  "tests": {
+    "strict_host_build": "passed",
+    "unit_checks": "passed: IMU, camera, detector",
+    "wayland_window": "passed in default fullscreen and --windowed: actual set_fullscreen request, configure/ack, SHM pixels, release, frame callback, resize, close",
+    "arm64_cross_compile": "passed"
+  },
+  "source_files": {
+    "src/camera.cc": "968f771ac77c17a88678690f50e749d10ca1fb5bf50004011e3097cbb23f38d3",
+    "src/camera.h": "c568d5ef737d32fe6f2332875c35c80319dfc40e47c6288f65c0f3fb69feb280",
+    "src/dashboard.c": "c4aa1a077f9c4705fd18998dc45e6f4560b76b7cdd80c719535ef592287c6345",
+    "src/dashboard.h": "c061cda7d86f82ae6f4ad1e61476f7b3a22b33d2788a893f67ea2c8013372506",
+    "src/detector.cc": "e5ee822b674b7631eefd635f4e0f51612feed1e77077fe3d5cf6fbad389cae58",
+    "src/detector.h": "a3daeb8a2d178f2455f611715351e2d0c5b2048202b8d5530c0300e54d93079e",
+    "src/detector_math.cc": "7cde4a6d259af4cecfc5a7fb2ab0ecffc52727ee913c851c302c932b7c0f2936",
+    "src/detector_math.h": "1557379e9f71c7c462de295bfaaae13992b5c475d3a3199db53348117c478f46",
+    "src/imu_data.c": "5c089cd58f1930724e3014aa946ff832b6ddd3c3ec36d41a466f9bf4d8042a63",
+    "src/imu_data.h": "0f6133fbe3a91cb836242a4aa382a3278af7f04fa933964230ff085899ad538d",
+    "src/main.c": "bd3571cd7bfb60c5d74074121e4de8dbc09e1b83647def7dc119326293d1fc16",
+    "src/vision.cc": "7af450fbb26d34a5b9dc7990d753d52158b256be2953d37d3681d13a38b5176f",
+    "src/vision.h": "78f4902492eec4f96d9870fbd98fc83a6cc7ec723bb18e6c19a38021412d1484"
+  },
+  "runtime_dependencies_unchanged": true,
+  "default_fullscreen": true,
+  "windowed_override": "--windowed"
+}

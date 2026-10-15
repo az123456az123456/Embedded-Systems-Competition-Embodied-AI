@@ -147,23 +147,70 @@ static void detections(struct dashboard *d) {
         box(d,tx,ty,w,26,5,c); text_fit(d,tx+8,ty+18,13,0x153a3c,w-16,label);
     }
 }
-static void horizon(struct dashboard *d, double roll, double pitch, int fresh) {
-    const double cx = 1102, cy = 333;
-    double c = cos(roll*IMU_PI/180), s = sin(roll*IMU_PI/180);
-    for (int y = 261; y < 403; y++) for (int x = 973; x < 1231; x++) {
-        double dx = fmax(fabs(x+.5-cx)-115,0), dy = fmax(fabs(y+.5-cy)-57,0);
-        double a = clamp(14.5-hypot(dx,dy),0,1);
-        double ry = (x-cx)*s+(y-cy)*c-clamp(pitch,-50,50)*1.15;
-        pixel(d,x,y,fresh?(ry<0?0xe2f1f2:0xeeece4):0xeef3f3,a);
-        if (fresh && fabs(ry)<.7) pixel(d,x,y,0x91b9b8,a);
-        double rx = (x-cx)*c-(y-cy)*s;
-        if (fresh) for (int deg=-20; deg<=20; deg+=10)
-            if (deg && fabs(ry+deg*1.15)<.55 && fabs(rx)<(deg%20?13:21)) pixel(d,x,y,0xadc5c2,a);
+struct car_pose { double cx, cy, c, s; };
+static void car_line(struct dashboard *d, const struct car_pose *p,
+                     double x, double y, double xx, double yy,
+                     double width, unsigned color) {
+    /* Screen Y points down: positive IMU yaw turns the nose to the left. */
+    line(d,p->cx+x*p->c+y*p->s,p->cy-x*p->s+y*p->c,
+         p->cx+xx*p->c+yy*p->s,p->cy-xx*p->s+yy*p->c,width,color);
+}
+static void car_path(struct dashboard *d, const struct car_pose *p,
+                     const double points[][2], size_t count,
+                     double width, unsigned color) {
+    for (size_t i=0;i<count;i++) {
+        size_t next=(i+1)%count;
+        car_line(d,p,points[i][0],points[i][1],points[next][0],points[next][1],width,color);
     }
-    line(d,cx-40,cy,cx-12,cy,2.5,INK); line(d,cx+12,cy,cx+40,cy,2.5,INK);
-    line(d,cx-12,cy,cx,cy+7,2.5,INK); line(d,cx,cy+7,cx+12,cy,2.5,INK);
-    box(d,cx-3,278,6,6,3,TEAL);
-    if (!fresh) text(d,cx-text_width(13,"等待有效数据")/2,385,13,MUTED,"等待有效数据");
+}
+static void car_top_view(struct dashboard *d, double yaw, int fresh) {
+    const double cx=1102, cy=333, radius=60;
+    fresh=fresh && isfinite(yaw);
+    double angle=fresh?remainder(yaw,360)*IMU_PI/180:0;
+    const struct car_pose pose={cx,cy,cos(angle),sin(angle)};
+    unsigned body=fresh?INK:0xa5b5b6, accent=fresh?TEAL:0xb3c2c3;
+    box(d,973,261,258,142,14,0xf6f9f8);
+    text(d,985,282,11,MUTED,"俯视");
+    text(d,985,296,8,MUTED,"TOP VIEW");
+    text(d,1192,282,9,MUTED,"YAW");
+    /* A fixed reference ring; this is relative heading, not magnetic north. */
+    for (int i=0;i<96;i++) {
+        double a=i*2*IMU_PI/96,b=(i+1)*2*IMU_PI/96;
+        line(d,cx+radius*cos(a),cy+radius*sin(a),cx+radius*cos(b),cy+radius*sin(b),1,0xe0e9e7);
+    }
+    for (int i=0;i<4;i++) {
+        double a=i*IMU_PI/2, inner=i==3?53:56;
+        line(d,cx+inner*cos(a),cy+inner*sin(a),cx+radius*cos(a),cy+radius*sin(a),
+             i==3?2:1.3,i==3?0x92bbb5:0xc3d4d0);
+    }
+    for (int i=-49;i<=49;i+=10) {
+        line(d,cx+i,cy,cx+i+3,cy,1,0xe5edeb);
+        line(d,cx,cy+i,cx,cy+i+3,1,0xe5edeb);
+    }
+    /* Four separate wheels and a chamfered chassis, all in one yaw transform. */
+    for (int side=-1;side<=1;side+=2) for (int axle=-1;axle<=1;axle+=2) {
+        double x=side*28.5,y=axle*23;
+        const double wheel[][2]={{x-4.5,y-11},{x+4.5,y-11},{x+4.5,y+11},{x-4.5,y+11}};
+        car_line(d,&pose,side*21,y,side*24,y,1.7,accent);
+        car_path(d,&pose,wheel,4,2.2,body);
+    }
+    const double chassis[][2]={{-15,-39},{15,-39},{21,-29},{21,30},
+                               {15,38},{-15,38},{-21,30},{-21,-29}};
+    const double cabin[][2]={{-12,-15},{12,-15},{15,13},{-15,13}};
+    car_path(d,&pose,chassis,8,2.2,body);
+    car_path(d,&pose,cabin,4,1.5,accent);
+    car_line(d,&pose,-13,-9,13,-9,1,accent);
+    car_line(d,&pose,-8,28,8,28,1.6,accent);
+    car_line(d,&pose,-12,-32,-7,-32,2.7,accent);
+    car_line(d,&pose,7,-32,12,-32,2.7,accent);
+    /* Small nose arrow makes forward unambiguous at every heading. */
+    car_line(d,&pose,0,-42,0,-51,2.2,accent);
+    car_line(d,&pose,-4,-47,0,-52,2.2,accent);
+    car_line(d,&pose,0,-52,4,-47,2.2,accent);
+    if (!fresh) {
+        box(d,cx-55,377,110,20,7,0xf6f9f8);
+        text(d,cx-text_width(12,"等待有效数据")/2,391,12,MUTED,"等待有效数据");
+    }
 }
 void dashboard_init(struct dashboard *d) {
     memset(d,0,sizeof(*d));
@@ -246,7 +293,7 @@ void dashboard_render(struct dashboard *d, const struct imu_state *s, uint64_t n
         text(d,x,225,10,MUTED,english[i]);
     }
     line(d,973,245,1231,245,1,LINE);
-    horizon(d,attitude?s->roll:0,attitude?s->pitch:0,attitude);
+    car_top_view(d,attitude?s->yaw:0,attitude);
     text(d,973,422,11,MUTED,"偏航为相对角，可能随时间漂移");
 
     card(d,952,460,300,234); text(d,973,492,18,INK,"加速度");

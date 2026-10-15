@@ -121,7 +121,7 @@
     "android/src/cn/acg138/robotphone/SelectionGate.java": "b2fe2376766ce31fb7bc6ed97d40096f3c1a67c00f75645a4b94a0b5fa833423",
     "android/res/xml/network_security_config.xml": "01bcc99f81aaa51ab09e0e1e49c9647ca8846051bbf412c6fefe94f314f7b88a",
     "scripts/build-arm64.sh": "4f881eb453057684686fd2f2301f4947fe37bd89f70962e1a7918c441d875d1f",
-    "scripts/diagnose-network.sh": "763eec11e5fc8d92c25da23706bff3caa40916d3eea85d243d3153cd8318f91c",
+    "scripts/diagnose-network.sh": "5b98ec15852c5cf5807a0708084fb5ba15f10931c5be3e2fc8168cdbdcabb7f6",
     "scripts/package-release.py": "ccb31b472f032866c0ec83f18f4898ec17a5dbc44b94cbda9435d686a1bcff48",
     "Makefile": "943252e2cd01f957a5cbc2af140c2c65a5106c3dd510c58be62c8c09da2067a5",
     "run-robot-phone.sh": "3cefb739848bc8e8dc05f8118cf4327aeaa02ca567bf1b03e56c38af288214c1",
@@ -138,6 +138,11 @@
       "busybox sh -n",
       "host read-only execution with both shells"
     ],
-    "note": "USB sysfs enumeration is independent of optional AX210 PCIe reference checks."
+    "note": "User confirms RTL8821CU, no physical device output yet. Updated diagnostics query vendor/in-kernel module paths without loading anything; APK, ARM64 executable and FPGA unchanged.",
+    "user_confirmed_chipset": "RTL8821CU",
+    "bsp_kernel": "6.1.75",
+    "bsp_rtw88_enabled": false,
+    "bsp_rtw88_has_8821cu_usb_config": false,
+    "matching_driver_module_built": false
   }
 }

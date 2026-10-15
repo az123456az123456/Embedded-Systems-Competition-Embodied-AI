@@ -186,9 +186,13 @@ static void cleanup(struct app *a) {
 }
 static void demo_sample(struct app *a,uint64_t now,uint64_t elapsed) {
     double t=elapsed/1000., r=.22*sin(t*.7),p=.16*cos(t*.5);
+    double rd=.22*.7*cos(t*.7),pd=-.16*.5*sin(t*.5),yd=.95*.45*cos(t*.45);
     struct imu_sample s={.flags=15,.ag_age=0,.temperature=26.4,.sequence=(uint32_t)(elapsed/10+1),.timestamp=(uint32_t)elapsed,.uptime=(uint32_t)elapsed};
     s.accel[0]=-sin(p); s.accel[1]=sin(r)*cos(p); s.accel[2]=cos(r)*cos(p);
-    s.gyro[0]=.22*.7*cos(t*.7)*180/IMU_PI; s.gyro[1]=-.16*.5*sin(t*.5)*180/IMU_PI;
+    /* Body-axis gyro for an Euler-angle demo that also turns in top view. */
+    s.gyro[0]=(rd-yd*sin(p))*180/IMU_PI;
+    s.gyro[1]=(pd*cos(r)+yd*sin(r)*cos(p))*180/IMU_PI;
+    s.gyro[2]=(-pd*sin(r)+yd*cos(r)*cos(p))*180/IMU_PI;
     imu_update(&a->imu,&s,now); a->imu.calibrating=0;
 }
 static int number(const char *s,int low,int high,int *out) {
@@ -204,12 +208,14 @@ static int fraction(const char *s,float *out) {
 static void usage(const char *name) {
     printf("Usage: %s [--model FILE.rknn] [--labels FILE.txt] [--camera /dev/videoX]\n"
            "  [--view both|left|right|single] [--confidence 0.35] [--nms 0.45]\n"
-           "  [--interface NAME] [--width 1920] [--height 1080] [--fullscreen]\n"
+           "  [--interface NAME] [--width 1920] [--height 1080] [--fullscreen|--windowed]\n"
+           "  Fullscreen is enabled by default; --windowed opens a movable window.\n"
            "  [--demo] [--seconds N] [--preview FILE.ppm [--waiting]]\n",name);
 }
 int main(int argc,char **argv) {
     struct app *a=calloc(1,sizeof(*a)); if(!a) return 1;
     a->pending_w=VIEW_W; a->pending_h=VIEW_H;
+    a->fullscreen=1;
     const char *iface=NULL,*preview=NULL; int demo=0,timeout=0,waiting_preview=0;
     struct vision_options options={.model="model/model.rknn",.labels="model/coco_80_labels_list.txt",
         .device="/dev/video0",.view="both",.width=1920,.height=1080,.confidence=.35f,.nms=.45f};
@@ -217,6 +223,7 @@ int main(int argc,char **argv) {
         if(!strcmp(argv[i],"--help")) { usage(argv[0]); free(a); return 0; }
         if(!strcmp(argv[i],"--demo")) { demo=1; continue; }
         if(!strcmp(argv[i],"--fullscreen")) { a->fullscreen=1; continue; }
+        if(!strcmp(argv[i],"--windowed")) { a->fullscreen=0; continue; }
         if(!strcmp(argv[i],"--waiting")) { waiting_preview=1; continue; }
         if(i+1>=argc) { usage(argv[0]); free(a); return 2; }
         const char *key=argv[i],*value=argv[++i]; int valid=1;
