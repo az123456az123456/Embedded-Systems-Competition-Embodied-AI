@@ -1,0 +1,50 @@
+选题三：三路 A02YYUW 超声波驱动
+依据本目录A02YYUW手册第5～6页、ACG138硬件手册第6/7/12/13章。
+适用 UART 自动输出型号；每路独立9600 8N1接收器和解析器，可同时接收。
+
+顶层仍为top。Gowin工程加入：
+top.v、a02_uart_rx.v、a02_uart_tx.v、ultrasonic_sensor.v、ultrasonic_driver.v、ultrasonic_3ch.v；
+电机控制另添加a02yyuw_obstacle_if.v，使用该模块的前左右障碍/距离/有效状态接口。
+约束top.cst、top.sdc。仿真文件tb_*.v不要加入综合工程。
+器件按实际JTAG识别确认，本手册为GW5AT-LV60PG484A。
+
+三路接线（按用户指定；固定通道0=前方，通道1=左侧，通道2=右侧）：
+通道0（前方）：模块VCC -> P3.29 (3.3V)，GND -> P2.12，TX -> P2.1/Y18/us_rx[0]。
+通道1（左侧）：模块VCC -> P10.24 (3.3V)，GND -> P10.23，TX -> P2.3/N20/us_rx[1]。
+通道2（右侧）：模块VCC -> P2.29 (3.3V)，GND -> P2.30，TX -> P2.5/U20/us_rx[2]。
+P2/P3为FMCtoGPIO转接板排针，P10为ACG138主板排针。九根线各用独立针脚。
+三个模块RX均悬空并绝缘，选择处理值自动输出，响应时间100～500ms。
+三个TX不能并接。VCC/GND是固定电源网络，不是FPGA逻辑端口，不能用代码控制。
+按实物Pin1标记确认针号及模块引线功能，不按线色猜测，不把原理图当俯视接线图。
+FMC Bank5/8随VCCADJ供电；本约束使用LVCMOS33，必须先确认实际Bank电压适配。
+IO_TYPE=LVCMOS33不会把实际Bank电源自动变为3.3V。
+已报告转接板烧毁：本次引脚修改不代表硬件故障已排除，损坏板不得直接重新上电。
+
+可复用模块：ultrasonic_driver是完整单路驱动，包含a02_uart_rx和ultrasonic_sensor。
+ultrasonic_3ch实例化三个独立驱动，共用时钟和复位；每路状态、超时互不影响。
+输出distance_mm[15:0]为通道0、[31:16]通道1、[47:32]通道2，单位毫米。
+distance_valid、online、sensor_fault、obstacle、slow_down、stop_req均为3位向量，bit i对应通道i。
+distance_valid为单周期脉冲，distance_mm保留最近有效距离；故障时必须结合online使用。
+any_obstacle、any_slow_down、any_stop_req分别为三路或汇总；它们仅用于诊断，不能直接作为按方位控制的电机指令。
+front_distance_mm、left_distance_mm、right_distance_mm分别为前/左/右距离别名。
+forward_stop_req为前方stop_req或任一路sensor_fault；forward_slow_req为前方slow_down或forward_stop_req。
+left_blocked、right_blocked为对应侧stop_req或故障，仅表示该侧近距离受限，不是转向许可。
+侧面接近本身不触发forward_stop_req，但任一路故障仍会请求停车。
+这些是前进辅助请求，不适用于后退/原地旋转；车宽、转弯扫掠空间和电机控制仍需单独判断。
+顶层目前仅串口/LED验证，未接电机，命名信号供后续系统集成。
+默认<=1200mm障碍、<=800mm减速、<=300mm停车，释放各加50mm滞回。
+默认1秒无有效数据失联停车；量程30～4500mm，量程外立即故障停车。
+参数可调；方位相关运动策略应使用单路状态决定，stop_req优先于slow_down。
+此模块不含电机闭环和自主绕障规划。
+
+调试串口：J2 FPGA串口，C13输出，115200 8N1。
+每100ms输出三行快照，格式：方位字母:四位十六进制距离 空格 一位十六进制状态 CRLF。
+例如F:07A1 0表示前方1953mm且四个状态均未触发。F=前，L=左，R=右。
+状态位bit3故障、bit2停车、bit1减速、bit0障碍。上电未收到数据时为F。
+断线时仍输出最后距离和故障状态，不能把旧距离当成当前测量。
+LED：D0心跳；D1/D2/D3分别为前/左/右在线；D4任一障碍；D5任一减速；D6任一停车；D7任一故障。
+
+验证：bash run_tests.sh（需要iverilog、vvp、verilator）。
+三个模块自动发射，电气上独立接收不代表声学上无串扰；装车需测试探头朝向和互扰。
+若实物存在串扰，须采用支持受控触发型号实现轮询发射，当前自动输出驱动不能控制发射时序。
+尚需Gowin布局布线、下载及实物测距验证。

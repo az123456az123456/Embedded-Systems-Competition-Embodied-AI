@@ -1,0 +1,46 @@
+// ============================================================================
+//  ACG138 + A02YYUW  物理约束
+//  依据《ACG138 硬件手册 V0.9.1》第 7、12、13 章
+//  注意：插拔前务必断电；排针方向以实物 Pin1 标记及断电通断测量确认
+// ============================================================================
+
+// ---- 时钟：核心板 50MHz，FPGA 球 F13（经 R119） ----
+IO_LOC  "clk" F13;
+IO_PORT "clk" IO_TYPE=LVCMOS33;
+
+// ---- 三路超声波 TX -> FMCtoGPIO P2，均为 FPGA 输入 ----
+// 前提：实测 FMC VCCADJ 适合 LVCMOS33；约束不能改变实际 Bank 供电。
+// 通道0 前方 FRONT：P2.1 / GPIO1_D0_P / FMC G2 / FPGA Y18 (Bank8)
+IO_LOC "us_rx[0]" Y18;
+IO_PORT "us_rx[0]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// 通道1 左侧 LEFT：P2.3 / GPIO1_D1_P / FMC C26 / FPGA N20 (Bank5)
+IO_LOC "us_rx[1]" N20;
+IO_PORT "us_rx[1]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// 通道2 右侧 RIGHT：P2.5 / GPIO1_D2_P / FMC C22 / FPGA U20 (Bank8)
+IO_LOC "us_rx[2]" U20;
+IO_PORT "us_rx[2]" IO_TYPE=LVCMOS33 PULL_MODE=UP;
+// VCC/GND 是固定电源网络，不作为 HDL 端口，也不设置 IO_LOC。
+// 通道0 VCC=P3.29, GND=P2.12；通道1 VCC=P10.24, GND=P10.23；
+// 通道2 VCC=P2.29, GND=P2.30。各模块 RX 悬空。
+
+// ---- FPGA 虚拟串口 TX -> J2 -> 电脑，Bank1 3.3V ----
+IO_LOC  "dbg_tx" C13;
+IO_PORT "dbg_tx" IO_TYPE=LVCMOS33 DRIVE=8;
+
+// ---- 用户 LED D0~D7，高电平点亮 ----
+IO_LOC  "led[0]" E13;
+IO_PORT "led[0]" IO_TYPE=LVCMOS33 DRIVE=8;
+IO_LOC  "led[1]" E14;
+IO_PORT "led[1]" IO_TYPE=LVCMOS33 DRIVE=8;
+IO_LOC  "led[2]" D14;
+IO_PORT "led[2]" IO_TYPE=LVCMOS33 DRIVE=8;
+IO_LOC  "led[3]" D15;
+IO_PORT "led[3]" IO_TYPE=LVCMOS33 DRIVE=8;
+IO_LOC  "led[4]" B17;
+IO_PORT "led[4]" IO_TYPE=LVCMOS33 DRIVE=8;
+IO_LOC  "led[5]" B18;
+IO_PORT "led[5]" IO_TYPE=LVCMOS33 DRIVE=8;
+IO_LOC  "led[6]" B15;
+IO_PORT "led[6]" IO_TYPE=LVCMOS33 DRIVE=8;
+IO_LOC  "led[7]" B16;
+IO_PORT "led[7]" IO_TYPE=LVCMOS33 DRIVE=8;

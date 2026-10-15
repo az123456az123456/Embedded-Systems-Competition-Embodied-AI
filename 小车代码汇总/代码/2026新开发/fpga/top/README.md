@@ -1,5 +1,7 @@
 # FPGA 顶层集成
 
+> 当前实物超声波已改为前/左/右三路A02YYUW。下述旧机器人顶层仍使用HC-SR04的echo/trig接口，尚未完成迁移；请以[三路接口说明](../ultrasonic/a02yyuw/README.md)接入。旧模块已移至`ultrasonic/legacy_hcsr04/`。
+
 > 日期：2026-09-12
 > 当前推荐：`top_robot_v2.v`，协议 v2 + 双电机差速
 
@@ -68,7 +70,7 @@ iverilog -g2001 -o sim \
   ../uart/uart_tx.v ../uart/uart_rx.v \
   ../encoder/quadrature_decoder.v \
   ../motor/motor_pwm.v ../motor/encoder_velocity.v ../motor/motor_pid.v \
-  ../ultrasonic/ultrasonic.v ../imu/i2c_master.v ../imu/imu_mpu6050.v \
+  ../ultrasonic/legacy_hcsr04/ultrasonic.v ../imu/i2c_master.v ../imu/imu_mpu6050.v \
   top_robot_v2.v tb_top_v2.v
 vvp sim
 ```
