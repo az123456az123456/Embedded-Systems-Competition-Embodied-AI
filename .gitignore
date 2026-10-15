@@ -49,10 +49,22 @@ Thumbs.db
 *.rar
 *.zip
 *.xlsx
+YOLO/
+bsp_r4/
+outputs/
+runs/
+gst-dev/
+Gowin_V1.9.12.03/
+rk3588_acg138/
+*.tar.gz
+*.pt
 
 # ===== iverilog 仿真产物 =====
 *.vcd
 sim
+
+Gowin_V1.9.12.03/
+runs/
 
 # ===== 模型权重 / 推理转换产物（体积大，单独分发，不进版本库）=====
 # YOLO 权重、ReID 权重，以及 .pt→.rknn 的中间/最终产物都很大，
