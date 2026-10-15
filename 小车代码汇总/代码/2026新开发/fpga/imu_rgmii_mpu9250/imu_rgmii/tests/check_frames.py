@@ -74,3 +74,18 @@ assert [struct.unpack('>I', p[60:64])[0] for p in top] == [0, 1, 1]
 assert all(p[16:42] == frames[0][22+16:22+41]+b'\x69' for p in top)
 assert struct.unpack('>H', top[2][56:58])[0] >= 500
 print('PASS actual top packet layout, status, sequences, ages, heartbeat and RGMII nibble order')
+
+# Single-frame gravity initialization: +30 degree pitch, zero relative yaw.
+pose = bytearray(frames[0][8:-4])
+pose[14+16:14+22] = struct.pack('>hhh', -8192, 0, 14189)
+Path('build/pitch.bin').write_bytes(pose)
+r = subprocess.run(['build/imu-monitor', '--decode', 'build/pitch.bin'],
+                   check=True, capture_output=True, text=True)
+line = next(line for line in r.stdout.splitlines() if line.startswith('Attitude [deg]'))
+values = {key: line.split(key+'=')[1].split()[0] for key in ('Pitch','Yaw')}
+assert abs(float(values['Pitch']) - 30) < 0.01
+assert abs(float(values['Yaw'])) < 0.001
+r = subprocess.run(['build/imu-monitor', '--decode', 'build/stale.bin'],
+                   check=True, capture_output=True, text=True)
+assert 'Attitude [deg]' not in r.stdout
+print('PASS monitor pitch/yaw output and stale attitude suppression')

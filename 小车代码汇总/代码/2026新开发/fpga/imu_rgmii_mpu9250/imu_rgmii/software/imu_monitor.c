@@ -15,7 +15,9 @@
 #include <sys/socket.h>
 #include <time.h>
 #include <unistd.h>
+#include "imu_data.h"
 
+static struct imu_state attitude;
 static volatile sig_atomic_t stop;
 static void on_signal(int signo) { (void)signo; stop=1; }
 static uint16_t u16(const unsigned char *p) { return (uint16_t)((p[0]<<8)|p[1]); }
@@ -52,6 +54,10 @@ static int decode(const unsigned char *frame, size_t n, unsigned char out[64]) {
     memcpy(out,p,64);
     return 1;
 }
+static void update_attitude(const unsigned char *frame, size_t n, uint64_t now) {
+    struct imu_sample sample;
+    if (imu_decode(frame,n,&sample)) imu_update(&attitude,&sample,now);
+}
 static void show(const unsigned char *p, uint64_t elapsed, int clear) {
     unsigned flags=u16(p+6);
     int ag=(flags&1) && p[39]==0x71 && u16(p+56)+elapsed<500;
@@ -78,7 +84,14 @@ static void show(const unsigned char *p, uint64_t elapsed, int clear) {
     } else printf("Magnetometer: waiting for fresh data (overflow=%u)\n",!!(flags&32));
     printf("ASA: %u/%u/%u | I2C errors: %u | FPGA snapshot drops: %u | fault: %u\n",
            p[36],p[37],p[38],u32(p+44),u32(p+48),!!(flags&16));
-    printf("Native sensor axes; no attitude fusion or hard/soft-iron calibration.\n");
+    if (ag && attitude.initialized && imu_fresh(&attitude,now_ms())) {
+        printf("Attitude [deg] Pitch=%+9.3f Yaw=%+9.3f Roll=%+9.3f\n",
+               attitude.pitch,attitude.yaw,attitude.roll);
+        if (attitude.calibrating)
+            printf("Gyro calibration: keep still (%u/200 samples)\n",attitude.calibration);
+        else printf("Gyro calibration: ready\n");
+    } else printf("Attitude: waiting for fresh gravity / gyro data\n");
+    printf("Native sensor axes; yaw is relative to startup and drifts; no magnetic calibration.\n");
     fflush(stdout);
 }
 static int discover(char name[IFNAMSIZ]) {
@@ -100,6 +113,7 @@ static int discover(char name[IFNAMSIZ]) {
     return found==1;
 }
 int main(int argc, char **argv) {
+    imu_init(&attitude);
     char iface[IFNAMSIZ]={0};
     const char *offline=NULL;
     int once=0, clear=isatty(STDOUT_FILENO);
@@ -121,6 +135,7 @@ int main(int argc, char **argv) {
         size_t n=fread(frame,1,sizeof(frame),f);
         int io_error=ferror(f); fclose(f);
         if (io_error || !decode(frame,n,latest)) { fprintf(stderr,"Invalid IMU Ethernet frame\n"); return 1; }
+        update_attitude(frame,n,now_ms());
         show(latest,0,0); return 0;
     }
     if (!*iface && !discover(iface)) {
@@ -150,6 +165,7 @@ int main(int argc, char **argv) {
             if (n<0 && errno!=EINTR) { perror("recvfrom"); result=1; break; }
             if (n>0 && from.sll_pkttype!=PACKET_OUTGOING && decode(frame,(size_t)n,latest)) {
                 received=now_ms(); have=1;
+                update_attitude(frame,(size_t)n,received);
                 if (once) { show(latest,0,0); break; }
             }
         }

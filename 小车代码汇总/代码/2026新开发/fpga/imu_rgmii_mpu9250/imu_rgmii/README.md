@@ -138,3 +138,16 @@ I²C 超时会释放总线并重试；如果从机持续拉住 SDA，本实现�
 接线依据工作区 ACG138 硬件手册，RGMII 球位和 DDR 方式依据 `rk3588_acg138/13_FPGA_RGMII/01_FPGA工程/rgmii_l2_loopback` 的维护版源码/CST。
 
 寄存器、身份及灵敏度依据 TDK 官方 [MPU9250 Register Map rev1.6](https://invensense.tdk.com/wp-content/uploads/2017/11/RM-MPU-9250A-00-v1.6.pdf) 和 [MPU9250 Product Specification rev1.1](https://invensense.tdk.com/wp-content/uploads/2015/02/PS-MPU-9250A-01-v1.1.pdf)。换算：加速度 raw/16384，角速度 raw/131，温度 raw/333.87+21，磁场 raw×0.15×(1+(ASA−128)/256)。
+
+## 俯仰角与相对偏航角
+
+`imu-monitor` 每个有效新采样调用 RK3588 共用的四元数互补滤波器，终端输出
+`Attitude [deg] Pitch=... Yaw=... Roll=...`。角度采用传感器原生右手坐标：
+Pitch 绕 Y 轴，范围 −90°～90°；Yaw 绕 Z 轴，范围 −180°～180°。
+启动时静置约 2 秒（200 个连续采样）完成陀螺仪零偏校准。俯仰由重力和陀螺仪融合，
+偏航为启动参考方向的相对角，会漂移，不代表磁北；未校准的磁力计不参与姿态修正。
+数据过期或无法建立重力初始姿态时显示等待状态。超过 200 ms 的采样间隔会重建姿态参考。
+离线 `--decode` 单帧只能给出重力初始俯仰，不能恢复历史偏航。
+
+姿态实现复用 `rk3588/robot_phone/backend/perception/imu_data.c`，构建时需保留仓库目录结构。
+运行 `make test` 可验证姿态解算与 FPGA 数据链路。
