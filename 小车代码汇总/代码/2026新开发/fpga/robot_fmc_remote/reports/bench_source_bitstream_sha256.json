@@ -1,0 +1,17 @@
+{
+  "tool": "Gowin V1.9.12.03",
+  "device": "GW5AT-LV60PG484AC1/I0",
+  "hardware_tested": false,
+  "sources": {
+    "rtl/motor_packet_rx.v": "eae9b8b42dc2464bac91a26bd0adb35a371f733e8483b78f2d2ce89a21855929",
+    "rtl/motor_remote_control.v": "fe4123b1953e1e80b55c84f144ac98437588ccbcbaf537b04f2698b51a51d771",
+    "rtl/motor_status_tx.v": "fd7bb58dcec06cfbfaea8265f586b1b99bccbaeb8abeb1d643367446b97a7148",
+    "rtl/fmc_remote_motor_only_top.v": "6bb67c44487164a311a9f014d938b166d7199222e4d56b9a7e3e032bc3ebd4c0",
+    "build_motor_only.tcl": "dc6ab96a1531b5803a5116d6a5532683093fcf56bdc2bdf2476d1ef9f7da893e",
+    "fmc_remote_motor_only.cst": "dfd72f10c650ae41a18793e2e7a333dfdcb84650816b9bb6754ffc35a813a11c",
+    "fmc_remote_motor_only.sdc": "06de29e00b69953777eefdd47576a999219a68ba340a90cca891d91d159a7dae"
+  },
+  "bitstreams": {
+    "fmc_remote_motor_only": "3998da3029e163b15cda305bf0415f7eab3ffe6de0ff6a87ed0081fb9228c351"
+  }
+}

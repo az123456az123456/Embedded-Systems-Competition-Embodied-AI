@@ -1,0 +1,17 @@
+{
+  "previous_summary": "99 setup / 0 hold; all same-clock setup/hold zero",
+  "after_local_reset_and_pointer_constraints_summary": "Setup Delay Model Slow 0.93V 0C C1/I0 Hold Delay Model Fast 0.975V 85C C1/I0 Numbers of Paths Analyzed 19566 Numbers of Endpoints Analyzed 15081 Numbers of Falling Endpoints 18 Numbers of Setup Violated Endpoints 4 Numbers of Hold Violated Endpoints 0",
+  "remaining_paths_before_final_scoped_reset_exception": [
+    "Slack -2.520 Data Arrival Time 6.396 Data Required Time 3.876 From core/Camera_ETH_Formator2/fifo_aclr_s0 To core/controller_top/cache2/dc_fifo/fifo_inst/reset_r_1_s0 Launch Clk cam2_pclk:[R] Latch Clk core/your_instance_name/u_pll/PLLA_inst/CLKOUT0.default_gen_clk:[F]",
+    "Slack -2.520 Data Arrival Time 6.396 Data Required Time 3.876 From core/Camera_ETH_Formator2/fifo_aclr_s0 To core/controller_top/cache2/dc_fifo/fifo_inst/reset_r_0_s0 Launch Clk cam2_pclk:[R] Latch Clk core/your_instance_name/u_pll/PLLA_inst/CLKOUT0.default_gen_clk:[F]",
+    "Slack -1.357 Data Arrival Time 5.225 Data Required Time 3.868 From core/Camera_ETH_Formator1/fifo_aclr_s0 To core/controller_top/cache1/dc_fifo/fifo_inst/reset_r_1_s0 Launch Clk cam1_pclk:[R] Latch Clk core/your_instance_name/u_pll/PLLA_inst/CLKOUT0.default_gen_clk:[F]",
+    "Slack -1.357 Data Arrival Time 5.225 Data Required Time 3.868 From core/Camera_ETH_Formator1/fifo_aclr_s0 To core/controller_top/cache1/dc_fifo/fifo_inst/reset_r_0_s0 Launch Clk cam1_pclk:[R] Latch Clk core/your_instance_name/u_pll/PLLA_inst/CLKOUT0.default_gen_clk:[F]"
+  ],
+  "reset_source": "camera/ov5640x2_udp_rgmii.v uses independent synchronous release per 50MHz/125MHz/PCLK1/PCLK2; camera/controller_top.v synchronizes combined FIFO reset release",
+  "fifo_evidence": "Gowin encrypted asynchronous FIFO IP, official dual independent clock interface; timing netlist names Equal.wptr -> Equal.rq1_wptr identify vendor pointer crossing. Internal Gray equations cannot be independently inspected; no claim of independent proof is made. Pointer paths are bounded to 8ns, not cut globally.",
+  "reset_evidence": "Only PRESET pins on the two vendor FIFO reset_r_0/reset_r_1 chains accept the PCLK fifo_aclr asynchronously. Downstream read-domain reset release is still timed.",
+  "official_fifo_guide": "https://www.gowinsemi.com/upload/database_doc/2574/document/68dc39a49d8ad.pdf",
+  "sdc_guide": "/home/tan/qiansai/Gowin_V1.9.12.03/IDE/doc/EN/SUG940-2.0.4E_Gowin Design Timing Constraints User Guide.pdf",
+  "final_summary": "Setup Delay Model Slow 0.93V 0C C1/I0 Hold Delay Model Fast 0.975V 85C C1/I0 Numbers of Paths Analyzed 19566 Numbers of Endpoints Analyzed 15081 Numbers of Falling Endpoints 14 Numbers of Setup Violated Endpoints 0 Numbers of Hold Violated Endpoints 0",
+  "final_fpga_sha256": "f24ad0f88a42b778578bfd95510894d7abf5fab92f2505cbc39eecb90dec7bd3"
+}

@@ -1,0 +1,7 @@
+build/
+pair-token.txt
+__pycache__/
+*.pyc
+*.rknn
+*.onnx
+*.ses

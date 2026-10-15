@@ -1,0 +1,187 @@
+{
+  "status": "passed",
+  "purpose": "Implementation parity and sample sanity; not mAP evaluation or hardware/RKNN validation",
+  "model_sha256": "02b8644b1cebab427608d6c4259bb34b09d92068e7172d4de902af3988a4a3f9",
+  "image_sha256": "fb4914d123d97c440cd127ef0e98d4bdc68cd88e2683657528928b4a34014e16",
+  "model": "yolov8s_airockchip.onnx",
+  "image": "bus.jpg",
+  "confidence": 0.35,
+  "nms": 0.45,
+  "onnxruntime": "1.30.0",
+  "required_whole_image_classes": [
+    0,
+    5
+  ],
+  "cases": [
+    {
+      "name": "whole_image",
+      "geometry": {
+        "source_w": 640,
+        "source_h": 640,
+        "target_w": 640,
+        "target_h": 640,
+        "resized_w": 640,
+        "resized_h": 640,
+        "pad_x": 0,
+        "pad_y": 0,
+        "scale_x": 1,
+        "scale_y": 1
+      },
+      "detections": [
+        {
+          "left": 109.427185,
+          "top": 236.184219,
+          "right": 226.094513,
+          "bottom": 535.413086,
+          "score": 0.910558701,
+          "class_id": 0
+        },
+        {
+          "left": 94.0980835,
+          "top": 136.33165,
+          "right": 549.447388,
+          "bottom": 439.503021,
+          "score": 0.896880031,
+          "class_id": 5
+        },
+        {
+          "left": 475.20166,
+          "top": 232.954514,
+          "right": 559.611694,
+          "bottom": 521.196899,
+          "score": 0.880931735,
+          "class_id": 0
+        },
+        {
+          "left": 212.020126,
+          "top": 241.676712,
+          "right": 286.19754,
+          "bottom": 508.820679,
+          "score": 0.847734272,
+          "class_id": 0
+        },
+        {
+          "left": 80.2598801,
+          "top": 326.894043,
+          "right": 123.359833,
+          "bottom": 517.287964,
+          "score": 0.595646322,
+          "class_id": 0
+        }
+      ],
+      "python_detection_count": 5,
+      "max_box_delta_pixels": 3.348855875628942e-05,
+      "max_score_delta": 4.800110309233219e-10,
+      "preprocessing_opencv_max_difference": 0,
+      "preprocessing_opencv_mean_difference": 0.0
+    },
+    {
+      "name": "portrait_roi",
+      "geometry": {
+        "source_w": 481,
+        "source_h": 961,
+        "target_w": 640,
+        "target_h": 640,
+        "resized_w": 320,
+        "resized_h": 640,
+        "pad_x": 160,
+        "pad_y": 0,
+        "scale_x": 0.66528064,
+        "scale_y": 0.665972948
+      },
+      "detections": [
+        {
+          "left": 164.876831,
+          "top": 354.881622,
+          "right": 338.072174,
+          "bottom": 804.246887,
+          "score": 0.914745331,
+          "class_id": 0
+        },
+        {
+          "left": 137.008575,
+          "top": 204.716858,
+          "right": 480.934326,
+          "bottom": 656.764526,
+          "score": 0.879865766,
+          "class_id": 5
+        },
+        {
+          "left": 317.864716,
+          "top": 359.660431,
+          "right": 427.222687,
+          "bottom": 765.315857,
+          "score": 0.871868968,
+          "class_id": 0
+        },
+        {
+          "left": 120.252411,
+          "top": 490.666443,
+          "right": 186.592926,
+          "bottom": 776.081238,
+          "score": 0.608119607,
+          "class_id": 0
+        }
+      ],
+      "python_detection_count": 4,
+      "max_box_delta_pixels": 3.110999341515708e-05,
+      "max_score_delta": 4.284057553149978e-10,
+      "preprocessing_opencv_max_difference": 1,
+      "preprocessing_opencv_mean_difference": 0.04611979166666667
+    },
+    {
+      "name": "landscape_roi",
+      "geometry": {
+        "source_w": 961,
+        "source_h": 481,
+        "target_w": 640,
+        "target_h": 640,
+        "resized_w": 640,
+        "resized_h": 320,
+        "pad_x": 0,
+        "pad_y": 160,
+        "scale_x": 0.665972948,
+        "scale_y": 0.66528064
+      },
+      "detections": [
+        {
+          "left": 149.216278,
+          "top": 204.072754,
+          "right": 833.786926,
+          "bottom": 475.27417,
+          "score": 0.950529099,
+          "class_id": 5
+        },
+        {
+          "left": 330.038605,
+          "top": 362.086945,
+          "right": 424.635681,
+          "bottom": 479.591888,
+          "score": 0.864779592,
+          "class_id": 0
+        },
+        {
+          "left": 173.914673,
+          "top": 356.020142,
+          "right": 287.525696,
+          "bottom": 479.950531,
+          "score": 0.796780705,
+          "class_id": 0
+        },
+        {
+          "left": 806.620605,
+          "top": 350.347076,
+          "right": 840.509033,
+          "bottom": 479.203278,
+          "score": 0.580806375,
+          "class_id": 0
+        }
+      ],
+      "python_detection_count": 4,
+      "max_box_delta_pixels": 3.947683569549554e-05,
+      "max_score_delta": 4.892578564508199e-10,
+      "preprocessing_opencv_max_difference": 1,
+      "preprocessing_opencv_mean_difference": 0.0460693359375
+    }
+  ]
+}

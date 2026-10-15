@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-15",
+  "package": "cn.acg138.robotphone",
+  "version": "1.0.0",
+  "minimum_android_api": 26,
+  "compile_android_api": 35,
+  "target_android_api": 35,
+  "build_tools": "35.0.0",
+  "jdk": "OpenJDK 17",
+  "native_java": true,
+  "webview": false,
+  "third_party_runtime_dependencies": false,
+  "apk_sha256": "32ecd35d56e6ca8f812195f9d33221ef9baeead557a31e112c9760822b19d54d",
+  "signature_schemes": [
+    "v2",
+    "v3"
+  ],
+  "zipalign_verified": true,
+  "host_tests": "PASS 31 Android host checks: private LAN, bounded synchronized video, selection ACK and telemetry races",
+  "real_server_protocol_probe": {
+    "passed": true,
+    "server_mode": "host demo",
+    "frames": 3,
+    "jpeg_size": [
+      864,
+      486
+    ],
+    "checks": [
+      "multipart bounded reader",
+      "JPEG decode",
+      "frame ID matches metadata",
+      "age_ms present",
+      "detections present"
+    ]
+  },
+  "phone_or_emulator_run": false,
+  "real_camera_imu_motor_wifi_test": false,
+  "sources": {
+    "AndroidManifest.xml": "74f6346b41409794b6581f4c3994896db85e46fa76e02d24b606558851706ab0",
+    "build-apk.sh": "5f1f4b9f913f1d7fb727f7db5a457c1e66e391057776d0eb3a6790d5f5b864af",
+    "res/xml/network_security_config.xml": "01bcc99f81aaa51ab09e0e1e49c9647ca8846051bbf412c6fefe94f314f7b88a",
+    "src/cn/acg138/robotphone/DashboardView.java": "37f34ea97b9367ce702facaddf999c25a79811b0f8fb8abc84290119c458105f",
+    "src/cn/acg138/robotphone/LanAddress.java": "7e7ff5a73b58e08f7a7aad37a81d3d88acd9165f6a56e1609f5d41acc9b14306",
+    "src/cn/acg138/robotphone/MainActivity.java": "964e3152950fd17e19ea3471afc7fe7d89870673a49a10d27bccba39f6c5f18d",
+    "src/cn/acg138/robotphone/MultipartReader.java": "b37193faa11bf6661f0c28e8a0bdf31c33e0eaa1fa89e982084ae4f8634546db",
+    "src/cn/acg138/robotphone/RobotClient.java": "c581bc93ccefe68209cc574955db201c1199fe89c71578df5a97e6f1e99bd766",
+    "src/cn/acg138/robotphone/SelectionGate.java": "b2fe2376766ce31fb7bc6ed97d40096f3c1a67c00f75645a4b94a0b5fa833423",
+    "test-host.sh": "8ad46ef068b01f75375059705206cacf5e671085b730fbdca8821f9909235fe1",
+    "tests/HostTests.java": "4de3e9eb1771a9147beb298cb37f8967ca8bde5c9f41180154c14ff59cdec579",
+    "tests/ProtocolProbe.java": "b95fc7434d10beb15d8f9177e4feb9b8155e9c1de8b4ffb65cca9ae53d739e87"
+  },
+  "selection_safety": {
+    "idle_heartbeat_preserves_target": true,
+    "idle_does_not_renew_motion_lease": "server-side contract; requires backend API verification",
+    "new_tap_cancels_motion_intent": true,
+    "follow_requires_latest_selection_ack": true,
+    "old_telemetry_cannot_erase_pending_or_newly_acked_selection": true
+  }
+}

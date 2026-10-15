@@ -1,0 +1,27 @@
+{
+  "architecture": "aarch64",
+  "interpreter": "/lib/ld-linux-aarch64.so.1",
+  "sha256": "c5257290a5239ccc038b5b0f4de143e6644f614032b939a2441c710a4f78c1b8",
+  "needed": [
+    "libwayland-client.so.0",
+    "librknnrt.so",
+    "libdl.so.2",
+    "libm.so.6",
+    "libpthread.so.0",
+    "libc.so.6"
+  ],
+  "rpath": [
+    "$ORIGIN/lib"
+  ],
+  "glibc_versions": [
+    "GLIBC_2.17",
+    "GLIBC_2.29",
+    "GLIBC_2.33"
+  ],
+  "physical_board_verified": false,
+  "host_tests": "passed",
+  "headless_wayland_test": "passed",
+  "runtime_libraries_bundled": false,
+  "launcher_mock_tests": "16 passed",
+  "legacy_board_startup_adapted": true
+}

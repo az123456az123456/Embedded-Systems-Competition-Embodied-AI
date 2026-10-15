@@ -1,0 +1,55 @@
+{
+  "tool": "Gowin V1.9.12.03",
+  "device": "GW5AT-LV60PG484AC1/I0",
+  "hardware_tested": false,
+  "sources": {
+    "build.tcl": "976942582da81ef0bdec4b6946c78a06b12b3f4e362fece07f2fed52101e130d",
+    "build_motor_only.tcl": "dc6ab96a1531b5803a5116d6a5532683093fcf56bdc2bdf2476d1ef9f7da893e",
+    "camera/CRC32_D8.v": "003fcd97bee8d308ff4dfa06e0b305a36195bb5f96e2c045b4e5ca96f02426a1",
+    "camera/Camera_ETH_Formator.v": "76c6dab3bce60506b0c2ffd910ae6f6bd1b9543e4a8a15520b88c6587f632020",
+    "camera/UDP_Send.v": "4b78976c426b131d0c4a439c05896871e56d892f847d62c759a5563343ebca8b",
+    "camera/cache.v": "72339fadfb6a4375f1970352740db6a80cc2c7bfee9e6136950a27d4de0972f6",
+    "camera/camera_diag.v": "04a6069222ff283038037ae5a1f244123e09999892abdbb1b427261f7caac7e7",
+    "camera/camera_init.v": "75c69c7ab1e57b53fd004fe3a5c0b161cbe7afb4cc5f211680c39aa00837c4d8",
+    "camera/controller.v": "4e38ff7c7ad71df74d07e3b2a19f5d8ce719f3b3a37416f3bbb1df8dd46466f3",
+    "camera/controller_top.v": "88d24c6349ef2f5c3e2107b0944ca87d1e689f80e175679b722045ab47bdeb6a",
+    "camera/dc_fifo.v": "e734141b17c73969872529c59f556bc21c76677268492e6361f51b9a81bd287f",
+    "camera/eth_dcfifo.v": "f9c1aaab3444417cee68b2aac1a3c586eec45d453e93e4b8f6d21c33668c33e8",
+    "camera/gmii_to_rgmii.v": "c9f78ff19601b875489a225e03572f8b9155a7c3ba38bc6d453951e2b1ae7b38",
+    "camera/gowin_pll.v": "d384fc2a8cd3f691058a02a6b2e659c891e116d81e31e04d0aa6ff52f56d46c8",
+    "camera/gowin_pll_mod.v": "daebad7395a2177ba0ba7c913f14bd9d3042eec26163899b860f6047e68d9c98",
+    "camera/i2c_bit_shift.v": "1b57b36f00c5d5ee3748640217becf9dd44ec9a126f048b55a18fbc41943e234",
+    "camera/i2c_control.v": "33ff146d3517983111059211609e20ef38199706efe958f187f45809c43596c2",
+    "camera/mdio_bit_shift.v": "f2ef1aa9f4f06171d5083a2e7c4d4cd0af88e4dc1aaa7068cf739141844d373c",
+    "camera/ov5640_af_loader.v": "13e90d72267157c5fb27101f172b43954bb34dc0c80988d8bccd2462491ddfcb",
+    "camera/ov5640_init_table_jpeg.v": "2a547f2352c169c6f726ae5e952b8301f5378ec71cf44a01fbbed8e3bbc1eed8",
+    "camera/ov5640_init_table_raw.v": "ec48c8053145d6ca67fe1bb888f891776025ae0c5b0fbd61d1652df77b37b2d2",
+    "camera/ov5640x2_udp_rgmii.v": "61aee8076f135b10004d7ac47243ace6e3a51bad469619da1a2709e58ece0a57",
+    "camera/ov7725_init_table_rgb.v": "0ed862c79e570b3391f5ca0822d4e649b111a3f14ed164d598516173d1f9b42f",
+    "camera/phy_reg_config.v": "86c7d6c43ebc4009253b0c5d16161028bdd16fa083cd8f249bb3368620668b0d",
+    "camera/pll_init.v": "3fc6bef9a7086f0920bfa47265b1766854a53f6ca1c0f75084eaf6b6ef4d6258",
+    "fmc_remote_motor_only.cst": "dfd72f10c650ae41a18793e2e7a333dfdcb84650816b9bb6754ffc35a813a11c",
+    "fmc_remote_motor_only.sdc": "06de29e00b69953777eefdd47576a999219a68ba340a90cca891d91d159a7dae",
+    "imu/i2c_reg_master.v": "66344937b84ef38eb9ee80055564b8354f860c6a6acc216a94fa0dc18b1f9c25",
+    "imu/imu_ethernet_tx.v": "697d16634f012400e9c5c79267ee41b5d467638f4213c578938c1a109980a416",
+    "imu/imu_gmii_source.v": "27565b171de2ae78dca6c633cb36eebdfa862da2f35d5457cfbb137d29525d7c",
+    "imu/mpu9250_reader.v": "f5a30a3f2b1db6ab37f702402f7217797f5dcd6392261bd4b981aaa7c974d160",
+    "robot_fmc_remote.cst": "01b47c47af5ff98c9bfdd09306808c555694a27fe6ea011b0b1f4bb6409d5d27",
+    "robot_fmc_remote.sdc": "9a4a2b4c2494d79f0b39214b3d675c42e0d74035a82c572064bfda57f3b4d32f",
+    "rtl/fmc_remote_motor_only_top.v": "6bb67c44487164a311a9f014d938b166d7199222e4d56b9a7e3e032bc3ebd4c0",
+    "rtl/motor_packet_rx.v": "eae9b8b42dc2464bac91a26bd0adb35a371f733e8483b78f2d2ce89a21855929",
+    "rtl/motor_remote_control.v": "fe4123b1953e1e80b55c84f144ac98437588ccbcbaf537b04f2698b51a51d771",
+    "rtl/motor_status_tx.v": "fd7bb58dcec06cfbfaea8265f586b1b99bccbaeb8abeb1d643367446b97a7148",
+    "rtl/robot_fmc_remote_top.v": "8e168ca951efea075d1d6b9ee73ccae395452c63e00142869953e7f80874d438"
+  },
+  "bitstreams": {
+    "robot_fmc_remote": {
+      "path": "impl/pnr/robot_fmc_remote.fs",
+      "sha256": "f24ad0f88a42b778578bfd95510894d7abf5fab92f2505cbc39eecb90dec7bd3"
+    },
+    "fmc_remote_motor_only": {
+      "path": "impl/pnr/fmc_remote_motor_only.fs",
+      "sha256": "3998da3029e163b15cda305bf0415f7eab3ffe6de0ff6a87ed0081fb9228c351"
+    }
+  }
+}
