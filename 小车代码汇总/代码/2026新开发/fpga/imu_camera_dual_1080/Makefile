@@ -4,6 +4,12 @@ test:
 	iverilog -g2012 -s tb_shared_tx -o build/tb_shared_tx camera/UDP_Send.v camera/CRC32_D8.v imu/imu_ethernet_tx.v rtl/gmii_frame_share.v tests/tb_shared_tx.v
 	vvp build/tb_shared_tx
 	python3 tests/check_shared_frames.py
+	iverilog -g2012 -s tb_shared_tx -Ptb_shared_tx.FRAME_GAP_CYCLES=256 -o build/tb_shared_legacy camera/UDP_Send.v camera/CRC32_D8.v imu/imu_ethernet_tx.v rtl/gmii_frame_share.v tests/tb_shared_tx.v
+	vvp build/tb_shared_legacy
+	python3 tests/check_shared_frames.py
+	iverilog -g2012 -s tb_shared_tx -Ptb_shared_tx.FRAME_GAP_CYCLES=1 -o build/tb_shared_min camera/UDP_Send.v camera/CRC32_D8.v imu/imu_ethernet_tx.v rtl/gmii_frame_share.v tests/tb_shared_tx.v
+	vvp build/tb_shared_min
+	python3 tests/check_shared_frames.py
 	iverilog -g2012 -s camera_raw1080_pair_tb -o build/tb_pair camera/controller.v tests/camera_raw1080_pair_tb.sv
 	vvp build/tb_pair
 	iverilog -g2012 -s tb_sensor -o build/tb_sensor imu/i2c_reg_master.v imu/mpu9250_reader.v tests/tb_sensor.v

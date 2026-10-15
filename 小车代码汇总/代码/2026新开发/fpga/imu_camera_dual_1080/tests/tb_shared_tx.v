@@ -11,12 +11,13 @@ module eth_dcfifo(input [7:0] Data,input Reset,WrClk,RdClk,WrEn,RdEn,
   if(Reset)rp<=0;else if(RdEn)begin if(Empty)$fatal(1,"FIFO underflow");rp<=rp+1;end
 endmodule
 module tb_shared_tx;
+ parameter integer FRAME_GAP_CYCLES=12;
  reg clk=0,rst_n=0;always #4 clk=~clk;
  reg wr=0;reg[7:0] data=0;
  wire cam_busy,cam_valid,cam_allow,imu_ready,imu_allow,imu_valid,dv;
  wire [7:0] cam_data,imu_data,out_data;
  reg pending=0;reg[511:0] payload=0;
- UDP_Send camera(.tx_allow(cam_allow),.tx_busy(cam_busy),.Clk(clk),.Rst_n(rst_n),.Tx_Done(),
+ UDP_Send #(.FRAME_GAP_CYCLES(FRAME_GAP_CYCLES)) camera(.tx_allow(cam_allow),.tx_busy(cam_busy),.Clk(clk),.Rst_n(rst_n),.Tx_Done(),
  .des_mac(48'hffffffffffff),.src_mac(48'h000a3501fec0),.des_port(16'd6102),.src_port(16'd5000),
  .des_ip(32'hc0a80003),.src_ip(32'hc0a80002),.data_length(16'd1922),
  .GMII_GTXC(clk),.GMII_TXD(cam_data),.GMII_TXEN(cam_valid),
@@ -28,7 +29,13 @@ module tb_shared_tx;
  .camera_allow(cam_allow),.imu_allow(imu_allow),.gmii_data(out_data),.gmii_valid(dv));
  integer f,frames=0,gap=1000,count=0,cam_frames=0,imu_frames=0;
  reg previous=0,frame_imu=0;
+ integer max_pending=0,pending_cycles=0;
  always @(negedge clk)if(rst_n)begin
+  if(pending && !imu_valid) begin
+   pending_cycles=pending_cycles+1;
+   if(pending_cycles>max_pending)max_pending=pending_cycles;
+   if(pending_cycles>2400+FRAME_GAP_CYCLES)$fatal(1,"IMU arbitration starvation");
+  end else pending_cycles=0;
   if(cam_valid && imu_valid)$fatal(1,"Transmit collision");
   if(dv)begin
    if(!previous)begin if(gap<12)$fatal(1,"Short cross-source IFG: %d",gap);frame_imu=imu_valid;end
@@ -71,7 +78,7 @@ module tb_shared_tx;
    wait(!imu_ready);wait(imu_ready);
   end
   wait(cam_frames==8 && imu_frames==8);repeat(20)@(negedge clk);
-  $fclose(f);$display("PASS complete camera/IMU frames, arbitration, backpressure, cross-source IFG");$finish;
+  $fclose(f);$display("gap setting=%0d max IMU wait=%0d cycles",FRAME_GAP_CYCLES,max_pending);$display("PASS complete camera/IMU frames, arbitration, backpressure, cross-source IFG");$finish;
  end
  initial begin #1000000;$fatal(1,"timeout camera=%d imu=%d",cam_frames,imu_frames);end
 endmodule

@@ -14,7 +14,10 @@
 ===========================================================================*/
 
 `timescale 1 ns/ 1 ns
-module UDP_Send(
+module UDP_Send #(
+    // Minimum Ethernet IFG at 125 MHz; 256 restores the original pacing.
+    parameter integer FRAME_GAP_CYCLES = 12
+)(
     tx_allow, tx_busy,
 	Clk,
 	Rst_n,
@@ -46,7 +49,7 @@ module UDP_Send(
 
 	input tx_allow;
     output tx_busy;
-    // Include the original post-frame guard and final pipeline registers.
+    // Busy includes the post-frame guard and final pipeline registers.
 	input Clk;
 	input Rst_n;
 
@@ -167,7 +170,9 @@ module UDP_Send(
 
 
 	reg [1:0]ctrl_state;
-	reg [7:0]delay_cnt;
+	localparam integer GAP_CYCLES = FRAME_GAP_CYCLES < 12 ? 12 : FRAME_GAP_CYCLES;
+    localparam integer GAP_WIDTH = $clog2(GAP_CYCLES + 1);
+    reg [GAP_WIDTH-1:0] delay_cnt;
     assign tx_busy = Rst_n && ((ctrl_state != 0) || Go || GMII_TXEN || GMII_TXEN_reg);
 
 	
@@ -199,7 +204,7 @@ module UDP_Send(
 				end
 				
 			2:
-				if(delay_cnt == 8'd255)begin
+				if(delay_cnt == GAP_CYCLES - 1)begin
 					ctrl_state <= #1 2'd3;
 					delay_cnt <= #1 0;
 				end

@@ -1,5 +1,5 @@
 // Sources must honor allow ONLY at frame start and include IFG in busy.
-// Camera busy includes its 256-cycle guard; IMU busy includes 12-cycle IFG.
+// Camera busy includes its configured frame guard; IMU busy includes 12-cycle IFG.
 // Pending IMU wins the next frame boundary. An in-flight camera frame finishes.
 module gmii_frame_share (
     input camera_busy,camera_valid,input [7:0] camera_data,
