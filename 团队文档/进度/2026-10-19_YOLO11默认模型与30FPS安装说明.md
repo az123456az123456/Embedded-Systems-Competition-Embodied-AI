@@ -1,0 +1,89 @@
+# ACG138 默认 YOLO11s INT8＋双目30FPS测试
+
+> 日期：2026-10-19 · 基于现有fast-v10.1、已跑通20FPS位流和用户验证的YOLO11s INT8模型 · 30FPS需实板验收
+
+## 📦 文件用途
+
+| 文件 | 用途 |
+|---|---|
+| `imu_camera_dual_1080_30fps.fs` | 电脑上用Gowin下载到FPGA，双目摄像头＋IMU，目标30FPS |
+| `acg138-yolo11-30fps-rk3588-20261019.tar.gz` | 拷到RK3588 `/root/`安装，更新默认模型、窗口、接收程序及启动入口 |
+| `ACG138_双目IMU_30FPS_YOLO11_完整工程_20261019.zip` | 电脑上保存，含完整源码、验证报告、板端更新内容与20FPS回退位流 |
+
+使用你刚刚验证效果好的同一份YOLO11s INT8模型：SHA256 `96489da6be36fd7700ad0df127c6e91c22b251b17f0f68877b2dc778f5b522b7`。模型输入仍为每眼640×640，双目都识别，摄像头完整预览仍为1920×1080。IMU算法、接线、三核流水线和运行库沿用已验证版本。
+
+## 🔧 1. 更新 RK3588
+
+先在当前窗口终端按Ctrl+C退出。将板端更新包拷到`/root/`，逐行执行：
+
+```sh
+cd /root
+tar -xzf acg138-yolo11-30fps-rk3588-20261019.tar.gz
+cd acg138-yolo11-30fps-rk3588-20261019
+sh scripts/install-update.sh
+```
+
+安装器会校验包、确认已知版本的启动脚本、拒绝仍在运行的窗口，停止指定隔离目录内的ISP接收进程；备份原文件后更新默认模型、窗口二进制、启动脚本、标签和接收程序。请保存输出中的真实备份目录。安装不自动启动窗口或烧录硬件。
+
+默认目录为`/root/perception-dashboard`和`/opt/fpga-camera-isp-1080`。若有自定义安装目录，使用`DASHBOARD_DIR`和`ISP_DIR`指定。根启动入口默认为`/root/run-yolo.sh`，也会备份后更新为转发到同一个窗口的薄脚本；`ROOT_YOLO_SCRIPT`可指定其它入口路径。自定义过且无法识别的`run-perception.sh`会被保护，不能把版本检查报错当安装成功。
+
+模型实际安装为`/root/perception-dashboard/model/yolo11s-int8-rk3588.rknn`，不会用YOLOv8文件名伪装。原`/root/rknn_yolov8_demo/model/yolov8s.rknn`保留。默认选择改为新模型，显式`MODEL_PATH`或`--model`仍可覆盖；如果以前在当前Shell导出了旧`MODEL_PATH`，请先执行`unset MODEL_PATH`。
+
+## 🎥 2. 烧录30FPS位流
+
+在电脑上使用原Gowin下载方式与器件配置，选择`imu_camera_dual_1080_30fps.fs`。建议先用SRAM下载验证，保持原接线，按原工程复位方式完成摄像头初始化，再启动板上窗口。SRAM下载掉电后会丢失，需要重新下载。
+
+30FPS版不再提高像素时钟：PCLK仍约84.135MHz；VTS由1680缩短至1120，配套曝光上限改为1116行，理论帧率30.048FPS。暗光下可能更暗或增益噪声增大，需要看实际画面。
+
+## ▶️ 3. 启动与验收
+
+先确认采集链路：
+
+```sh
+cd /root/perception-dashboard
+./run-dashboard.sh -0 --no-detect
+```
+
+横置用`-90`。稳定运行约30秒后，在另一终端查看：
+
+```sh
+grep 'FASTPATH' /tmp/fpga-isp.log | tail -n 3
+```
+
+期望`rx_fps`、`output_fps`和窗口`capture_fps`都接近30。`incomplete`允许启动时少量累计，但稳定后不应持续明显增长；`malformed`应为0。单看V4L2标称30FPS不算验收。
+
+然后退出纯预览，直接启动默认新模型：
+
+```sh
+cd /root/perception-dashboard
+./run-dashboard.sh -0
+```
+
+横置仍用`./run-dashboard.sh -90`。原`yolo`若指向`/root/run-yolo.sh`，也会使用新模型；可直接执行`sh /root/run-yolo.sh -90`。启动输出中的`Model:`应指向`model/yolo11s-int8-rk3588.rknn`，版本为`v10.2-yolo11-30fps`。
+
+请贴出稳定后的3行`FASTPATH`以及3组`PERF/STAGE camera_frame/STAGE npu_worker`。30FPS是采集目标，双目识别能达到多少取决于推理耗时，不能保证同步30FPS。
+
+## ↩️ 回退到安装前状态和20FPS
+
+退出窗口，在更新包目录运行，使用安装时输出的真实备份目录：
+
+```sh
+cd /root/acg138-yolo11-30fps-rk3588-20261019
+sh scripts/rollback-update.sh /实际备份目录
+```
+
+如果安装时指定了`DASHBOARD_DIR/ISP_DIR/ROOT_YOLO_SCRIPT`，回退也使用相同设置。随后电脑烧回完整工程包`rollback-20fps/imu_camera_dual_1080_20fps.fs`，再启动原窗口。回退会恢复安装前的程序、默认模型选择和根入口；恢复20FPS需要两端一并恢复。
+
+原INT8对比包没有改动。若回退后仍想在20FPS下用YOLO11s，可继续原来的`run-model-compare.sh -0 --variant v11-int8`。
+
+## ✅ 本次改动与证据
+
+用户提供的20FPS日志显示，YOLO11s INT8三核已经跟上当前采集，稳定窗口识别约20FPS；这是用户实板证据，不是本次30FPS结果。模型文件保持完全相同。
+
+新FPGA仅变更摄像头ROM的8个寄存器字节；46路引脚、PLL/PCLK、ROI、UDP行格式、IMU和共享发送逻辑均保留。完成完整259条SCCB初始化仿真、双目1080行配对、CRC/IFG、复位、I²C、IMU滤波回归、Gowin综合布局布线及内部时序检查（setup/hold均0违例）。平均线上预算约518.19Mbit/s，活动行峰值约537.38Mbit/s。内部STA不能代替外部IO和实物吞吐验收。
+
+接收程序真实交叉编译为默认30FPS，继续关闭loopback补帧/超时图像并统计实际完整RAW和ISP输出。FakeCam隔离库不替换，仍要求已安装此前最终fastpath专用库；其离线25FPS曝光描述不是RAW限流器，曝光效果仍需实测。
+
+窗口保留33ms目标渲染间隔，改为按下一刷新期限缩短轮询，避免固定10ms等待把预览压到约25Hz；保留Wayland回调和实际图像时间戳计数，不把统计值伪造成30。检测、IMU和界面绘制算法不变。主机回归、模拟Wayland及ARM64构建通过，真实屏幕刷新率待上板测量。
+
+原设计FIFO无源背压、行协议无帧号、双目曝光未硬同步的限制保留。本包没有增加电机逻辑；30FPS稳定性、低光图像质量、持续丢行及真实YOLO速度须在小车上确认。

@@ -1,7 +1,7 @@
 IVERILOG ?= iverilog
 VVP ?= vvp
 GOWIN_IDE ?= ../../../../../Gowin_V1.9.12.03/IDE
-.PHONY: test test-camera test-gowin test-real-clock test-all clean
+.PHONY: test test-camera test-gap test-gowin test-real-clock test-all clean
 test:
 	mkdir -p build reports
 	$(IVERILOG) -g2012 -s tb_packet_rx -o build/packet rtl/motor_packet_rx.v tests/tb_packet_rx.v
@@ -23,6 +23,14 @@ test-camera:
 	python3 tests/check_shared_frames.py
 	$(IVERILOG) -g2012 -s camera_raw1080_pair_tb -o build/pair camera/controller.v tests/camera_raw1080_pair_tb.sv
 	$(VVP) build/pair
+test-gap:
+	mkdir -p build
+	$(IVERILOG) -g2012 -s tb_udp_gap -o build/udp-gap camera/UDP_Send.v camera/CRC32_D8.v tests/tb_shared_tx.v tests/tb_udp_gap.v
+	$(VVP) build/udp-gap
+	$(IVERILOG) -g2012 -s tb_udp_gap -Ptb_udp_gap.GAP=256 -o build/udp-gap-old camera/UDP_Send.v camera/CRC32_D8.v tests/tb_shared_tx.v tests/tb_udp_gap.v
+	$(VVP) build/udp-gap-old
+	$(IVERILOG) -g2012 -s tb_controller_equivalence -o build/controller-equivalence camera/controller.v tests/controller_reference.v tests/tb_controller_equivalence.v
+	$(VVP) build/controller-equivalence
 test-all: test test-camera test-gowin test-real-clock
 test-gowin:
 	mkdir -p build reports

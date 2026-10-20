@@ -1,0 +1,8 @@
+{
+  "setup": 0,
+  "hold": 0,
+  "frequency_tables": [
+    "NO. Clock Name Constraint Actual Fmax Logic Level Entity 1 clk50m 50.000(MHz) 103.630(MHz) 4 TOP 2 cam1_pclk 100.000(MHz) 187.766(MHz) 6 TOP 3 cam2_pclk 100.000(MHz) 185.165(MHz) 2 TOP 4 core/your_instance_name/u_pll/PLLA_inst/CLKOUT0.default_gen_clk 125.000(MHz) 125.664(MHz) 9 TOP 5 core/your_instance_name/u_pll/PLLA_inst/CLKOUT1.default_gen_clk 50.000(MHz) 121.915(MHz) 6 TOP"
+  ],
+  "pins_verified": 58
+}

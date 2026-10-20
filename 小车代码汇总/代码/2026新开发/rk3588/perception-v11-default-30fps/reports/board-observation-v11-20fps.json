@@ -1,0 +1,28 @@
+{
+  "date": "2026-10-19",
+  "source": "user pasted RK3588 log",
+  "model": "yolo11s-int8-rk3588.rknn",
+  "model_sha256": "96489da6be36fd7700ad0df127c6e91c22b251b17f0f68877b2dc778f5b522b7",
+  "capture_fps": [
+    20.06,
+    19.69,
+    20.27,
+    20.16
+  ],
+  "result_fps": [
+    20.84,
+    19.5,
+    20.04,
+    20.0
+  ],
+  "inference_ms": [
+    56.66,
+    62.15,
+    83.42,
+    74.08
+  ],
+  "npu_workers": 3,
+  "core_binding": "pinned",
+  "user_says_result_good": true,
+  "limits": "Short user log demonstrates successful existing 20FPS use; not a 30FPS hardware test or quantitative accuracy evaluation."
+}

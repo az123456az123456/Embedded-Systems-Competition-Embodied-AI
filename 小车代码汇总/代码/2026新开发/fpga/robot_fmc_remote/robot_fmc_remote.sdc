@@ -58,3 +58,7 @@ report_timing -removal -max_paths 100
 set_false_path -from [get_pins {core/Camera_ETH_Formator*/fifo_aclr*/Q}] -to [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/reset_r_*/PRESET}]
 report_timing -setup -from [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.wptr*/Q}] -to [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.rq1_wptr*/D*}] -max_paths 100
 report_timing -setup -from [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.rptr*/Q}] -to [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.wq1_rptr*/D*}] -max_paths 100
+
+# Synthesized vendor FIFO read-pointer source (rptr alias can map to rbin_num).
+# Still bound to the FIRST write-domain synchronizer; downstream logic is timed.
+set_max_delay 8.000 -from [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/rbin_num*/Q}] -to [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.wq1_rptr*/D*}]

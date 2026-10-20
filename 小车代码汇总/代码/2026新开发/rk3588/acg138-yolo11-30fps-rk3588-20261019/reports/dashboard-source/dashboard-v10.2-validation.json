@@ -1,0 +1,58 @@
+{
+  "version": "v10.2-yolo11-30fps",
+  "date": "2026-10-19",
+  "hardware_tested": false,
+  "base": "perception-dashboard-fast-v10.1",
+  "changed_source": [
+    "src/main.c",
+    "src/perception_version.h",
+    "src/ui_schedule.h",
+    "src/vision.cc",
+    "run-perception.sh"
+  ],
+  "changes": [
+    "Preserve33ms UI render interval; no60Hz default",
+    "Calculate 1..10ms poll timeout from fresh monotonic clock at poll call and next render deadline",
+    "Only configured and no pending Wayland callback uses shortened deadline; all other states retain10ms maximum",
+    "Due/late deadline uses minimum1ms poll, avoiding zero-time busy loop",
+    "--version/help/main startup/vision startup share version header",
+    "src/vision.cc modification only includes version header and changes startup string",
+    "Default launcher selects the verified named YOLO11s INT8 model and camera target30; environment/CLI overrides retained"
+  ],
+  "preserved": [
+    "IMU data/filter/quaternion/calibration code",
+    "Detector/preprocess/input-memory/postprocess",
+    "Camera conversion/acquisition/timestamp handling",
+    "Three NPU worker queues/paired detection scheduling",
+    "Display drawing/transform/pixel contents",
+    "Existing run-dashboard.sh angle interface retained"
+  ],
+  "checks": {
+    "make -j4 PYTHON=/usr/bin/python3 test test-launcher test-stage-timing test-input-memory test-ui-render": "PASS",
+    "make PYTHON=/usr/bin/python3 test-window": "PASS six mock compositor modes: fullscreen/windowed,0/90/180/270deg",
+    "ui_schedule": "PASS10ms IMU cadence with17ms rendering simulation: fixed10ms poll25 renders/s, adaptive31; configured/callback gates, backward/late clock,1..10ms bounds",
+    "host --version": "perception-dashboard v10.2-yolo11-30fps 20261019",
+    "sh scripts/build-arm64.sh": "PASS BSP aarch64 gcc10.3 cross compile with RKNN and Wayland, strict warnings",
+    "ELF": "AArch64 Linux, /lib/ld-linux-aarch64.so.1, stripped",
+    "sandbox_note": "Mock Wayland bind initially blocked by sandbox; approved rerun passed local Unix sockets only",
+    "updated default launcher": "PASS18 isolated tests against the source launcher; same bytes as installation payload"
+  },
+  "reports": [
+    "reports/host-validation-v10.2.log",
+    "reports/wayland-validation-v10.2.log",
+    "reports/cross-build-v10.2.log"
+  ],
+  "limitations": [
+    "Scheduling simulation is not RK3588 hardware performance",
+    "Actual UI30FPS depends on Wayland callbacks and available rendering CPU budget",
+    "Physical sensor30FPS and real inference rate must be validated separately"
+  ],
+  "binary_sha256": "5f31feaf59f4c20c7b63a324a7861a67ac5bf3df6d7aa428a4008992654d8768",
+  "source_sha256": {
+    "src/main.c": "f2b01ccc9aa862e0830c0156df6ecf3f5e880a078dad1939f0bd8e0a9293afc7",
+    "src/perception_version.h": "91cc1af752ebdd5a76619c0f2ee5dabd071586f72e9aaa32052fc476f8f2dcb4",
+    "src/ui_schedule.h": "0362bc7903b9b9cf98d0e87a633e93b6afe209560cf37d46e575568682730c69",
+    "src/vision.cc": "7b0fc037c79aaa1835c6a55fc1ed0f69e6f9281f9d3ba159f3914cf66c6c4497",
+    "run-perception.sh": "10975ba87ce03b551ca76f659f6d4e7c5f33178bebdc4f68e9de05b9a44f67ff"
+  }
+}

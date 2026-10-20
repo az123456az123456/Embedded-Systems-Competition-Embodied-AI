@@ -1,0 +1,49 @@
+{
+  "date": "2026-10-19",
+  "device": "GW5AT-LV60PG484AC1/I0",
+  "build_exit_code": 0,
+  "hardware_tested": false,
+  "wheel_map": {
+    "M1": "右后",
+    "M2": "左后",
+    "M3": "右前",
+    "M4": "左前"
+  },
+  "invert_mask": "0101",
+  "source_sha256": {
+    "build.tcl": "7baa01318b337b9e0e1391c655197cfd54baf325c0f435adda00d498ef2d6e32",
+    "rtl/four_motor_ramp_test.v": "c46a7fa457e7c58c59ffc55fac3d51c38b147de9b50b2eedfe99d0e666a94c9b",
+    "rtl/fmc_motor_load_diag.v": "c455c449f89ecadd119fa49ad5cfe6589da3b2516516f5d6a285b33cbf485e57",
+    "fmc_motor_load_diag.cst": "a1328b2cbaaf2c7ca9440fd22fdff777fa505b27c36a9687797cc04b43b5bb4d",
+    "fmc_motor_load_diag.sdc": "bf2fff93c12f0a8aef35b373d212a7cf5f086ea7ec6d4d777afb396bd2359ef6"
+  },
+  "bitstream_sha256": "93bd4f531c2c2761fa6ab77900e417b8f8e7451e90d6ca59128232613f2fcd21",
+  "verified_pins": {
+    "clk50m": "F13",
+    "led[0]": "E13",
+    "led[1]": "E14",
+    "led[2]": "D14",
+    "led[3]": "D15",
+    "motor_pwm[0]": "J15",
+    "motor_in1[0]": "H15",
+    "motor_in2[0]": "Y21",
+    "motor_pwm[1]": "Y22",
+    "motor_in1[1]": "AB21",
+    "motor_in2[1]": "AA19",
+    "motor_pwm[2]": "AB20",
+    "motor_in1[2]": "M16",
+    "motor_in2[2]": "K21",
+    "motor_pwm[3]": "G20",
+    "motor_in1[3]": "G17",
+    "motor_in2[3]": "N18"
+  },
+  "timing": {
+    "clock_mhz": 50,
+    "fmax_mhz": 164.107,
+    "setup_violations": 0,
+    "hold_violations": 0
+  },
+  "warnings": [
+    "PR1014: clk50m_d uses generic clock routing; unchanged constraints, static timing passed"
+  ]
+}

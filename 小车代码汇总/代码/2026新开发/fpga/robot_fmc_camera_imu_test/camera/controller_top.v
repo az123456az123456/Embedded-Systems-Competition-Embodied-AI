@@ -69,10 +69,15 @@ module controller_top(
 		.rdusedw			(rdusedw2		)
 	);
 	
+    // Both camera FIFO resets can deassert in unrelated PCLK domains.
+    // Keep their combined assertion immediate, but release the row scheduler locally.
+    wire controller_async_reset_n=rst_n && !fifo1_aclr && !fifo2_aclr;
+    wire controller_reset_n;
+    camera_reset_release controller_reset(.clk(clk),.async_reset_n(controller_async_reset_n),.reset_n(controller_reset_n));
 	controller controller(
         .pair_fault(pair_fault),
 		.clk				(clk  	     	),
-		.rst_n				(rst_n & !fifo1_aclr & !fifo2_aclr),
+		.rst_n				(controller_reset_n),
 		.rdclk				(cache_rdclk	),
 		.rdreq1				(cache1_rdreq	),
 		.rddata1			(cache1_rddata	),

@@ -1,0 +1,382 @@
+{
+  "input": [
+    [
+      1,
+      3,
+      640,
+      640
+    ]
+  ],
+  "outputs": [
+    [
+      1,
+      64,
+      80,
+      80
+    ],
+    [
+      1,
+      80,
+      80,
+      80
+    ],
+    [
+      1,
+      1,
+      80,
+      80
+    ],
+    [
+      1,
+      64,
+      40,
+      40
+    ],
+    [
+      1,
+      80,
+      40,
+      40
+    ],
+    [
+      1,
+      1,
+      40,
+      40
+    ],
+    [
+      1,
+      64,
+      20,
+      20
+    ],
+    [
+      1,
+      80,
+      20,
+      20
+    ],
+    [
+      1,
+      1,
+      20,
+      20
+    ]
+  ],
+  "opsets": [
+    {
+      "domain": "",
+      "version": 12
+    }
+  ],
+  "node_count": 319,
+  "operators": [
+    "Add",
+    "Clip",
+    "Concat",
+    "Constant",
+    "Conv",
+    "MatMul",
+    "MaxPool",
+    "Mul",
+    "ReduceSum",
+    "Reshape",
+    "Resize",
+    "Sigmoid",
+    "Softmax",
+    "Split",
+    "Transpose"
+  ],
+  "model": "yolo11s",
+  "target_platform": "rk3588",
+  "quantized": true,
+  "build_do_quantization": true,
+  "optimization_level": 3,
+  "toolkit_version": "2.0.0b0+9bab5682",
+  "normalization": {
+    "mean": [
+      0,
+      0,
+      0
+    ],
+    "std": [
+      255,
+      255,
+      255
+    ]
+  },
+  "source": "https://github.com/airockchip/rknn_model_zoo/tree/main/examples/yolo11",
+  "onnx_sha256": "691f87bd7eccb272ba0e8c884ab960964b10bd192c3d46bfb8a4d63ff91e2cc0",
+  "rknn_sha256": "96489da6be36fd7700ad0df127c6e91c22b251b17f0f68877b2dc778f5b522b7",
+  "rknn_bytes": 11322710,
+  "calibration_count": 20,
+  "calibration_list_sha256": "442ae848ff1575bf178c4858870886f9aad45a5b25778bb3faf5c292d73fd0cc",
+  "calibration_manifest_sha256": "fc8d323d6ddd2e6a909b3628fe5d46f3f11549dd3a200f29f83595b1a642a722",
+  "calibration_images": [
+    {
+      "name": "000000005001.png",
+      "sha256": "c2396aaeae4a2b21189c27a845275ac856aef03df15087c45c2ad8e040c0423e"
+    },
+    {
+      "name": "000000038829.png",
+      "sha256": "0ad931f6019f914f6ab379c65c31643206ecab658884ddd36ce743dc98890d7b"
+    },
+    {
+      "name": "000000052891.png",
+      "sha256": "010bfa610cc9f5f3aeb94e184747da20b13fd5341c1f79f6eaf7ce6908563599"
+    },
+    {
+      "name": "000000075612.png",
+      "sha256": "18f11b09466c60ec7096da857aa46bef64f4545ab5ba030f44be5d3e22f57927"
+    },
+    {
+      "name": "000000098261.png",
+      "sha256": "7c5e0fcb145f02ea8bcd3e2fb7ce0376ac4b4e159fff239b15c222fd0262fd71"
+    },
+    {
+      "name": "000000181542.png",
+      "sha256": "c670ec4b0fc07cf897fc1f3b8c6c01f3fc900a211082ea4c14c92507df01d77a"
+    },
+    {
+      "name": "000000215245.png",
+      "sha256": "8749ced77a994cdecbc87b1eea17d6e4f495f2696613bbd6145eb45db679f9d0"
+    },
+    {
+      "name": "000000277005.png",
+      "sha256": "04ca2f7a39315d7a2a1095bd0782617d65d1fa9a4c0d126c402d769481d68cdb"
+    },
+    {
+      "name": "000000288685.png",
+      "sha256": "f7d6b5469cb7a01ba9072bf8a592da6e668f31ebc170e4b15b3d4ce9f3050f7e"
+    },
+    {
+      "name": "000000301421.png",
+      "sha256": "2647b1fe32ffa010f7aeeffdc8ffdf35860f84e41847bcd4ec5be1da581c4713"
+    },
+    {
+      "name": "000000334371.png",
+      "sha256": "e936136da0748e58c7afaf59e7a12d53456968f73900327fd2c14ce4ea284a80"
+    },
+    {
+      "name": "000000348481.png",
+      "sha256": "d154cdee430c93789afc97d9d6b54295f4e9b1e13bfc1343db9812b6d6537bd9"
+    },
+    {
+      "name": "000000373353.png",
+      "sha256": "823de4c341d88974b100e9c9e7cd880c57fd0ed9c29c8edd9f042e1948be5082"
+    },
+    {
+      "name": "000000397681.png",
+      "sha256": "80b680d150377aa6c534aed53938412c81aa934951bc72f24dba2d5d07a5f302"
+    },
+    {
+      "name": "000000414673.png",
+      "sha256": "edd84aa1737fef10a724b54a186fe74b6b1a931afa5a98d213aeb51dcb013cef"
+    },
+    {
+      "name": "000000419312.png",
+      "sha256": "80bdf31734b7a5279d1276adbf9f255716d77040769c30d5497369660210b5f5"
+    },
+    {
+      "name": "000000465822.png",
+      "sha256": "d209d2a41a5289844487774fb8f7f378f3a43777337969ae24fc61d63712c506"
+    },
+    {
+      "name": "000000475732.png",
+      "sha256": "a1fd81b160cc7d727ab56606a56700ec774fc2b695718ca7ca0e0f829257475b"
+    },
+    {
+      "name": "000000559707.png",
+      "sha256": "dd9732e75f0c4df10188b83e0bd594184b1504b3eb74cdc2b7d9baaae5eb2a80"
+    },
+    {
+      "name": "000000574315.png",
+      "sha256": "2d83ef5d817b7260c4180f2489673b50dce8a4c6ea16ed4ebff0e9dd65b74769"
+    }
+  ],
+  "build_seconds": 16.33228530499946,
+  "pc_simulator_smoke": [
+    {
+      "image": "000000005001.png",
+      "finite": true,
+      "output_shapes": [
+        [
+          1,
+          64,
+          80,
+          80
+        ],
+        [
+          1,
+          80,
+          80,
+          80
+        ],
+        [
+          1,
+          1,
+          80,
+          80
+        ],
+        [
+          1,
+          64,
+          40,
+          40
+        ],
+        [
+          1,
+          80,
+          40,
+          40
+        ],
+        [
+          1,
+          1,
+          40,
+          40
+        ],
+        [
+          1,
+          64,
+          20,
+          20
+        ],
+        [
+          1,
+          80,
+          20,
+          20
+        ],
+        [
+          1,
+          1,
+          20,
+          20
+        ]
+      ]
+    },
+    {
+      "image": "000000038829.png",
+      "finite": true,
+      "output_shapes": [
+        [
+          1,
+          64,
+          80,
+          80
+        ],
+        [
+          1,
+          80,
+          80,
+          80
+        ],
+        [
+          1,
+          1,
+          80,
+          80
+        ],
+        [
+          1,
+          64,
+          40,
+          40
+        ],
+        [
+          1,
+          80,
+          40,
+          40
+        ],
+        [
+          1,
+          1,
+          40,
+          40
+        ],
+        [
+          1,
+          64,
+          20,
+          20
+        ],
+        [
+          1,
+          80,
+          20,
+          20
+        ],
+        [
+          1,
+          1,
+          20,
+          20
+        ]
+      ]
+    },
+    {
+      "image": "000000052891.png",
+      "finite": true,
+      "output_shapes": [
+        [
+          1,
+          64,
+          80,
+          80
+        ],
+        [
+          1,
+          80,
+          80,
+          80
+        ],
+        [
+          1,
+          1,
+          80,
+          80
+        ],
+        [
+          1,
+          64,
+          40,
+          40
+        ],
+        [
+          1,
+          80,
+          40,
+          40
+        ],
+        [
+          1,
+          1,
+          40,
+          40
+        ],
+        [
+          1,
+          64,
+          20,
+          20
+        ],
+        [
+          1,
+          80,
+          20,
+          20
+        ],
+        [
+          1,
+          1,
+          20,
+          20
+        ]
+      ]
+    }
+  ],
+  "hardware_tested": false,
+  "accuracy_validated": false
+}

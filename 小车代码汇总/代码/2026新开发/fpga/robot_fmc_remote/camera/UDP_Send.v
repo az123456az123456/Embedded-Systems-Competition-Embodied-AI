@@ -14,7 +14,9 @@
 ===========================================================================*/
 
 `timescale 1 ns/ 1 ns
-module UDP_Send(
+// At 125MHz keep >=12 idle byte clocks between complete Ethernet frames.
+// 16 guard cycles leave margin for the output pipeline and source arbiter.
+module UDP_Send #(parameter POST_FRAME_GAP=16)(
     tx_allow, tx_busy,
 	Clk,
 	Rst_n,
@@ -199,7 +201,7 @@ module UDP_Send(
 				end
 				
 			2:
-				if(delay_cnt == 8'd255)begin
+				if(delay_cnt == POST_FRAME_GAP-1)begin
 					ctrl_state <= #1 2'd3;
 					delay_cnt <= #1 0;
 				end

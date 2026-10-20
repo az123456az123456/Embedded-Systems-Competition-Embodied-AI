@@ -14,3 +14,19 @@ test:
 	vvp build/tb_motor
 	iverilog -g2012 -s tb_staggered_pwm -o build/tb_staggered motor/four_motor_ramp_test.v tests/tb_staggered_pwm.v
 	vvp build/tb_staggered
+
+.PHONY: test-camera-reset test-gap
+test-camera-reset:
+	mkdir -p build
+	iverilog -g2012 -s tb_camera_reset -o build/camera_reset camera/ov5640x2_udp_rgmii.v camera/controller_top.v camera/controller.v tests/tb_camera_reset.v
+	vvp build/camera_reset
+test-gap:
+	mkdir -p build
+	iverilog -g2012 -s tb_udp_gap -o build/udp-gap camera/UDP_Send.v camera/CRC32_D8.v tests/tb_shared_tx.v tests/tb_udp_gap.v
+	vvp build/udp-gap
+
+.PHONY: test-controller-equivalence
+test-controller-equivalence:
+	mkdir -p build
+	iverilog -g2012 -s tb_controller_equivalence -o build/controller-equivalence camera/controller.v tests/controller_reference.v tests/tb_controller_equivalence.v
+	vvp build/controller-equivalence

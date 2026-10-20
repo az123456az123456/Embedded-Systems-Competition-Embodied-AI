@@ -13,3 +13,30 @@ set_min_delay 0.000 -from [get_pins {imu/mailbox/held*/Q}] -to [get_pins {imu/se
 set_false_path -to [get_pins {imu/mailbox/req_sync_0_s0/D}]
 set_false_path -to [get_pins {imu/mailbox/ack_sync_0_s0/D}]
 set_false_path -to [get_pins {core/init_done_tx_0_s0/D}]
+
+# Camera IP CDC boundaries: only two generated FIFO pointer synchronizer inputs.
+# Bound each encoded pointer bus to < both 10ns camera and 8ns reader periods.
+# No false path is applied to their downstream synchronized pointer logic.
+set_max_delay 8.000 -from [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.wptr*/Q}] -to [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.rq1_wptr*/D*}]
+set_max_delay 8.000 -from [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.rptr*/Q}] -to [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.wq1_rptr*/D*}]
+# The dedicated reset-release synchronizers intentionally accept async assertion.
+set_false_path -to [get_pins {core/*reset/release_sync*/CLEAR}]
+set_false_path -to [get_pins {core/controller_top/controller_reset/release_sync*/CLEAR}]
+set_false_path -to [get_pins {core/pclk1_init_sync_0_s0/D}]
+set_false_path -to [get_pins {core/pclk2_init_sync_0_s0/D}]
+# Inspect every negative endpoint instead of just the default 25 paths.
+report_timing -setup -max_paths 100
+report_timing -recovery -max_paths 100
+report_timing -hold -max_paths 100
+report_timing -removal -max_paths 100
+
+# Vendor FIFO's dedicated read-reset synchronizer, two stages per camera.
+# Only these PRESET pins receive asynchronous PCLK reset; subsequent read logic
+# uses the synchronized reset and remains fully timed.
+set_false_path -from [get_pins {core/Camera_ETH_Formator*/fifo_aclr*/Q}] -to [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/reset_r_*/PRESET}]
+report_timing -setup -from [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.wptr*/Q}] -to [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.rq1_wptr*/D*}] -max_paths 100
+report_timing -setup -from [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.rptr*/Q}] -to [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.wq1_rptr*/D*}] -max_paths 100
+
+# Synthesized vendor FIFO read-pointer source (rptr alias can map to rbin_num).
+# Still bound to the FIRST write-domain synchronizer; downstream logic is timed.
+set_max_delay 8.000 -from [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/rbin_num*/Q}] -to [get_pins {core/controller_top/cache*/dc_fifo/fifo_inst/Equal.wq1_rptr*/D*}]

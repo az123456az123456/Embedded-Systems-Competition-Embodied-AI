@@ -1,0 +1,48 @@
+$ /usr/bin/python3 tests/test_update.py
+test_active_dashboard_is_not_killed_and_blocks_update (__main__.UpdateTest) ... ok
+test_exact_target_receiver_is_stopped_before_replacement (__main__.UpdateTest) ... ok
+test_foreign_receiver_not_killed (__main__.UpdateTest) ... ok
+test_install_reinstall_and_restore_old_files_and_modes (__main__.UpdateTest) ... ok
+test_installed_root_wrapper_passes_orientation_and_quoted_arguments (__main__.UpdateTest) ... ok
+test_missing_model_directory_is_removed_on_restore (__main__.UpdateTest) ... ok
+test_missing_root_entry_removed_on_restore (__main__.UpdateTest) ... ok
+test_package_corruption_refused_before_backup (__main__.UpdateTest) ... ok
+test_partial_explicit_rollback_failure_recovers_installed_update (__main__.UpdateTest) ... ok
+test_partial_update_failure_restores_every_old_file (__main__.UpdateTest) ... ok
+test_real_package_binaries_and_labels_install_and_restore (__main__.UpdateTest) ... ok
+test_rollback_corruption_refused_without_changes (__main__.UpdateTest) ... ok
+test_shared_symlink_target_is_refused (__main__.UpdateTest) ... ok
+test_unknown_launcher_changes_refused_before_backup (__main__.UpdateTest) ... ok
+test_wrong_model_refused_even_with_updated_manifest (__main__.UpdateTest) ... ok
+
+----------------------------------------------------------------------
+Ran 15 tests in 3.152s
+
+OK
+
+$ /usr/bin/python3 tests/test_launcher_defaults.py
+test_board_defaults_start_isp_and_rediscover_until_nv12 (__main__.UpdatedLauncherTest) ... ok
+test_demo_preview_help_have_no_camera_side_effects (__main__.UpdatedLauncherTest) ... ok
+test_environment_overrides_are_preserved (__main__.UpdatedLauncherTest) ... ok
+test_existing_isp_is_reused (__main__.UpdatedLauncherTest) ... ok
+test_explicit_cli_options_override_environment_and_discovery (__main__.UpdatedLauncherTest) ... ok
+test_explicit_skip_isp_keeps_camera_discovery (__main__.UpdatedLauncherTest) ... ok
+test_invalid_camera_rate_fails_before_any_side_effect (__main__.UpdatedLauncherTest) ... ok
+test_invalid_device_never_opens_or_launches_gui (__main__.UpdatedLauncherTest) ... ok
+test_invalid_settings_fail_without_launching_gui (__main__.UpdatedLauncherTest) ... ok
+test_invalid_wait_is_rejected_before_isp_startup_checks (__main__.UpdatedLauncherTest) ... ok
+test_missing_option_values_fail_before_camera_preparation (__main__.UpdatedLauncherTest) ... ok
+test_missing_required_isp_helper_fails_clearly (__main__.UpdatedLauncherTest) ... ok
+test_missing_v4l2_command_reports_dependency (__main__.UpdatedLauncherTest) ... ok
+test_native_architecture_binary_lookup_and_missing_sets_id (__main__.UpdatedLauncherTest) ... ok
+test_package_model_fallback_and_auto_without_isp (__main__.UpdatedLauncherTest) ... ok
+test_preview_value_is_preserved_even_if_it_looks_like_an_option (__main__.UpdatedLauncherTest) ... ok
+test_readiness_timeout_is_bounded_and_never_launches_gui (__main__.UpdatedLauncherTest) ... ok
+test_requested_camera_rate_environment_remains_authoritative (__main__.UpdatedLauncherTest) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.846s
+
+OK
+
+PASS sh -n for all release/fixture shell files.

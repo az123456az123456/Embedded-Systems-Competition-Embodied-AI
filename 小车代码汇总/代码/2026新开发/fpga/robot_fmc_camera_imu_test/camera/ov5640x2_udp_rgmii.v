@@ -98,7 +98,17 @@ module camera_dual_gmii(
 	wire clk_50m;
 	wire clk_24m;
 	wire locked;
-	wire global_rst_n = locked;
+	wire camera_async_reset_n = locked && rst_n;
+    wire global_rst_n,tx_reset_n,pclk1_reset_n,pclk2_reset_n;
+    camera_reset_release cfg_reset(.clk(clk_50m),.async_reset_n(camera_async_reset_n),.reset_n(global_rst_n));
+    camera_reset_release tx_reset(.clk(clk_125m),.async_reset_n(camera_async_reset_n),.reset_n(tx_reset_n));
+    camera_reset_release pclk1_reset(.clk(camera1_pclk),.async_reset_n(camera_async_reset_n),.reset_n(pclk1_reset_n));
+    camera_reset_release pclk2_reset(.clk(camera2_pclk),.async_reset_n(camera_async_reset_n),.reset_n(pclk2_reset_n));
+    (* syn_async_reg=1 *) reg [1:0] pclk1_init_sync=0,pclk2_init_sync=0;
+    always @(posedge camera1_pclk or negedge pclk1_reset_n)
+        if(!pclk1_reset_n)pclk1_init_sync<=0;else pclk1_init_sync<={pclk1_init_sync[0],Init_Done};
+    always @(posedge camera2_pclk or negedge pclk2_reset_n)
+        if(!pclk2_reset_n)pclk2_init_sync<=0;else pclk2_init_sync<={pclk2_init_sync[0],Init_Done};
 	assign camera1_xclk = clk_24m;
 	assign camera2_xclk = clk_24m;
 
@@ -177,8 +187,8 @@ module camera_dual_gmii(
 	wire [7:0] fifo2_wrdata;
 	Camera_ETH_Formator Camera_ETH_Formator1(
 		.PCLK		    	(camera1_pclk   ),
-		.Rst_n				(locked     	),
-		.Init_Done			(Init_Done		),
+		.Rst_n(pclk1_reset_n),
+		.Init_Done(pclk1_init_sync[1]),
 		.HREF	     		(camera1_href   ),
 		.VSYNC		    	(camera1_vsync	),
 		.DATA			    (camera1_data	),
@@ -188,8 +198,8 @@ module camera_dual_gmii(
 	),
 	Camera_ETH_Formator2(
 		.PCLK			    (camera2_pclk   ),
-		.Rst_n				(locked     	),
-		.Init_Done			(Init_Done		),
+		.Rst_n(pclk2_reset_n),
+		.Init_Done(pclk2_init_sync[1]),
 		.HREF       		(camera2_href	),
 		.VSYNC      		(camera2_vsync	),
 		.DATA       		(camera2_data	),
@@ -212,7 +222,7 @@ module camera_dual_gmii(
 	controller_top controller_top(
         .pair_fault(pair_fault),
         .clk(GMII_GTXC),
-        .rst_n(rst_n),
+        .rst_n(tx_reset_n),
         
         .wrclk1(camera1_pclk),
         .fifo1_aclr(fifo1_aclr),
@@ -235,8 +245,8 @@ module camera_dual_gmii(
 	wire GMII_TXEN;
     // Synchronize camera init completion into the shared 125MHz scheduler.
     (* syn_async_reg=1 *) reg [1:0] init_done_tx=0;
-    always @(posedge GMII_GTXC or negedge global_rst_n)
-        if(!global_rst_n) init_done_tx<=0;
+    always @(posedge GMII_GTXC or negedge tx_reset_n)
+        if(!tx_reset_n) init_done_tx<=0;
         else init_done_tx<={init_done_tx[0],Init_Done};
 
 	UDP_Send UDP_Send(
@@ -270,4 +280,12 @@ module camera_dual_gmii(
     assign eth_gtxc=1'b0;
     assign eth_txd=4'b0;
     assign eth_txen=1'b0;
+endmodule
+
+// Dedicated reset boundary: assert asynchronously, release after two local edges.
+module camera_reset_release(input wire clk,async_reset_n,output wire reset_n);
+    (* syn_async_reg=1 *) reg [1:0] release_sync=0;
+    always @(posedge clk or negedge async_reset_n)
+        if(!async_reset_n)release_sync<=0;else release_sync<={release_sync[0],1'b1};
+    assign reset_n=release_sync[1];
 endmodule

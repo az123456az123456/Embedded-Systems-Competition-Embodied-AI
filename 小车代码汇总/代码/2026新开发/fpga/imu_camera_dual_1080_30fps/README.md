@@ -1,0 +1,38 @@
+# ACG138 双目摄像头＋IMU：30 FPS 测试工程
+
+> 日期：2026-10-19 · 基于已上板接收20FPS的工程 · 配套默认YOLO11s INT8 · 30FPS实板待验收
+
+## 🎥 摄像头配置
+
+双 OV5640 各输出 960×1080 RAW8，拼接1920×1080。保留20FPS版的PLL、84.135MHz PCLK、259条初始化、引脚、摄像头ROI、IMU滤波及共享RGMII协议。本次仅修改摄像头ROM中的8个寄存器字节。
+
+| 项目 | 20FPS版 | 30FPS版 |
+|---|---:|---:|
+| XCLK / PCLK | 24.038 / 84.135 MHz | 相同 |
+| PLL倍频3036 / 分频3035 | 0x69 / 0x11 | 相同 |
+| HTS / VTS | 2500 / 1680 | 2500 / 1120 |
+| 理论帧率 | 20.032 | 30.048 |
+| AEC曝光上限 | 1676行 | 1116行，约33.16ms |
+| 50/60Hz步长 | 336 / 280行 | 相同 |
+| 50/60Hz最大周期数 | 4 / 5 | 3 / 3 |
+
+显式禁止夜景延长帧周期的配置保留。减少垂直空白使真实输入目标变为30FPS；没有提高已跑通的PCLK，也没有通过重复帧改变统计。暗光曝光变短，实际亮度、增益噪声及条纹需检查。
+
+## 🔧 构建
+
+Gowin V1.9.12.03，器件GW5AT-LV60PG484AC1/I0，顶层`imu_camera_dual_top`。命令行入口`build_30fps.tcl`，GUI入口`imu_camera_dual_1080_30fps.gprj`；建议使用不含中文/空格的构建目录。
+
+```sh
+gw_sh build_30fps.tcl
+make PYTHON=python3 test test-camera-reset test-gap test-controller-equivalence test-imu-filter test-30fps
+```
+
+位流在`impl/pnr/imu_camera_dual_1080_30fps.fs`，验证、引脚、时序及源码哈希在`reports/30fps/`。现有46路引脚与20FPS版相同，不含电机。
+
+## 📊 验收与回退
+
+需安装本次默认30FPS的RK3588接收程序，仍保留原FakeCam隔离库。先运行`./run-dashboard.sh -0 --no-detect`，核对真实`FASTPATH rx_fps/output_fps`与窗口`capture_fps`，再开启默认YOLO11s INT8。标称V4L2 FPS不是物理帧率验收。
+
+理论平均链路约518.19Mbit/s，活动行峰值约537.38Mbit/s；行服务15.968µs小于29.714µs行周期。内部STA通过不等于板级IO验收。原FIFO无源背压、UDP行协议没有帧号、双目曝光无硬同步，30FPS持续丢行、撕裂和IMU新鲜状态需上板检查。
+
+完整交付包包含原20FPS位流；回退时恢复板端备份并烧回20FPS位流。具体安装与回退见交付包顶层说明。

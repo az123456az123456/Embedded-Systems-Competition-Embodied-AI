@@ -49,10 +49,32 @@ module controller #(parameter IMG_WIDTH=480, IMG_HEIGHT=1080)(
   default:state<=WAIT;
   endcase
  end
+ // Predict next-cycle FIFO enables and register them at the boundary.
+ // This preserves the FWFT byte schedule while removing the FSM decode
+ // from the vendor FIFO's memory clock-enable critical path.
+ always @(posedge clk or negedge rst_n)begin
+  if(!rst_n)begin rdreq1<=0;rdreq2<=0;end
+  else begin
+   rdreq1<=0;rdreq2<=0;
+   case(state)
+   WAIT:begin
+    rdreq1<=!have1 && rdusedw1>=IMG_WIDTH*2+2;
+    rdreq2<=!have2 && rdusedw2>=IMG_WIDTH*2+2;
+   end
+   H0:begin rdreq1<=take1;rdreq2<=take2;end
+   CHECK:if(have1 && have2 && !(row1==row2 && row1<IMG_HEIGHT && (!resync || row1==0)))begin
+    rdreq1<=row1!=0;rdreq2<=row2!=0;
+   end
+   O1:rdreq1<=1;
+   A:begin rdreq1<=count!=IMG_WIDTH*2-1;rdreq2<=count==IMG_WIDTH*2-1;end
+   B:rdreq2<=count!=IMG_WIDTH*2-1;
+   DROP:begin rdreq1<=drop1 && count!=IMG_WIDTH*2-1;rdreq2<=drop2 && count!=IMG_WIDTH*2-1;end
+   default:begin end
+   endcase
+  end
+ end
  always @* begin
-  // Parallel decode avoids a priority mux on the FIFO read-enable paths.
-  rdreq1=((state[1] || state[2]) && take1) || state[6] || (state[8] && drop1);
-  rdreq2=((state[1] || state[2]) && take2) || state[7] || (state[8] && drop2);
+  // The output byte mux follows the unchanged FWFT row schedule.
   fifo_wrreq=0;fifo_wrdata=0;
   case(state)
   O0:begin fifo_wrreq=1;fifo_wrdata=row1[7:0];end

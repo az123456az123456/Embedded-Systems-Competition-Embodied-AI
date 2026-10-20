@@ -1,0 +1,54 @@
+RK3588 30 FPS receiver validation
+
+{
+  "date": "2026-10-19",
+  "scope": "RK3588 receiver-only 30 FPS experiment; FPGA validation separate",
+  "hardware_tested": false,
+  "source_default_fps": 15,
+  "binary_default_fps": 30,
+  "runtime_override_fps": [
+    15,
+    20,
+    30
+  ],
+  "build_command": "CAMERA_DEFAULT_FPS=30 sh scripts/build-arm64.sh",
+  "compiler": "BSP aarch64-none-linux-gnu GCC 10.3-2021.07, -O2 -std=gnu11 -Wall -Wextra -Werror",
+  "elf": "AArch64 Linux, dynamically linked, /lib/ld-linux-aarch64.so.1",
+  "needed": [
+    "librkaiq.so",
+    "libm.so.6",
+    "libpthread.so.0",
+    "libc.so.6"
+  ],
+  "checks": {
+    "make test": "PASS full 1920x1080 UDP row simulation, continuous reception during slow consumer, latest complete frame, bounded queues, reorder/missing/truncated rows, stride padding and stop/join",
+    "make test-fps": "PASS compile defaults 15,20,30; runtime 15/20/30; exact output intervals, negotiated rate, NV12 contract; sustain_framerate and timeout disabled; one write per actual frame, no synthetic repetition; invalid rate/foreign device guards; launcher validates before commands",
+    "sh -n run_isp_camera.sh scripts/build-arm64.sh": "PASS",
+    "sandbox_note": "make test initially blocked socketpair send EPERM; approved rerun passed using local simulated datagrams only"
+  },
+  "preserved": [
+    "No source protocol or pipeline code changes relative to 20FPS receiver",
+    "Original camera launcher can remain installed",
+    "Combined 1920x1080 NV12 output only; no synthetic separate-eye nodes",
+    "Real FASTPATH counters count completed RAW input and ISP output",
+    "Existing isolated FakeCam v4 library and IQ file; no system library replacement",
+    "No sleeps limiting camera receive loop to 15/20/25 FPS"
+  ],
+  "limitations": [
+    "Nominal V4L2 interval does not change physical camera rate; matching FPGA sensor configuration required",
+    "FakeCam get_sensor_fps remains 25 for offline exposure metadata/pixel-clock calculation, not an input-frame generator; brightness/exposure behavior at30 requires hardware test",
+    "Source row protocol carries row numbers without frame identifiers; hardware frame-loss attribution and stereo timing are separate limitations",
+    "Existing dashboard UI target interval33ms plus rendering and callback overhead may show fewer than30 preview submissions; acquisition and FASTPATH counters remain independent",
+    "Actual 30FPS reception/output, pixel integrity and sustained stability require board validation"
+  ],
+  "sha256": {
+    "build/isp-probe": "5f0153d83aadea60b863803e7160b05c882c4d0acb59dd39471bae810de2255a",
+    "Makefile": "04dd5edabad17db7ecfe86ed437a320f5b760f5e4f2ca31559300e8ca561e2fc",
+    "src/isp_probe.c": "2ceb284845673edd0f2aceb9b6e7a38469925a47f0c48338ae82b008f12a2b38",
+    "src/isp_smoke.h": "149f1949bbf56f7f7c49ad0b72fe9ec2d4696ae9eb1d39683fb4348d31878a07",
+    "src/camera_rate.h": "c08216b0e31d7e709b82c9c9cca3b606d8cf5ca18e56805d7d674fc75a788c22",
+    "src/v4l2_output.h": "8748cf351c8dc136c2bc3be0ab2542433cb8e9da957405f1d1da5fe698173979",
+    "scripts/build-arm64.sh": "310dedef619675e69e5ca7e37db8e9d0e89f2d10da2773fe7942654a415950cf",
+    "run_isp_camera.sh": "f3ab566844fdf43d6fcc8b5dae62a7aa7b1b85d69cb0adfa811ace9bdd9c6ef2"
+  }
+}
