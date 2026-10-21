@@ -1,0 +1,40 @@
+# ACG138 双目摄像头 30FPS 接收源码
+
+> 2026-10-19 · 双 OV5640 RAW8 → RGMII/UDP → RKAIQ ISP → 1920×1080 NV12
+
+## 🎥 当前链路
+
+接收线程按行号重组 1080 行 RAW，只交付完整帧；两张有界缓冲保存最新完整图像，避免旧视频积压。ISP 在完成回调后才复用输入，输出 NV12；不补造图像。现有 UDP 行协议没有帧号，不能检测所有跨帧错配，也不提供硬件双目曝光同步。
+
+当前配套是 [30FPS FPGA 工程](../../fpga/imu_camera_dual_1080_30fps/README.md) 和相邻 [YOLO11s／30FPS 更新目录](../acg138-yolo11-30fps-rk3588-20261019/README.md)。板端继续使用 `/opt/fpga-camera-isp-1080` 的已有启动器、IQ 文件和最终 fastpath FakeCam 隔离库，不替换系统 RKAIQ。
+
+## 🔧 构建与测试
+
+在本目录执行：
+
+```sh
+make test test-fps
+python3 tests/test_fps_installer.py
+make arm64-30fps
+```
+
+源码通用默认 `CAMERA_DEFAULT_FPS=15`；`make arm64-30fps` 显式以 30 编译，输出 `build/isp-probe`。构建需要匹配板端的 BSP 与 RKAIQ，可设置 `BSP_SDK`、`ARM64_CC`、`RKAIQ_INCLUDE`、`RKAIQ_LIB`。
+
+运行时 `CAMERA_TARGET_FPS=15|20|30` 可覆盖 V4L2 标称间隔，不会配置 FPGA 摄像头。程序关闭专用 loopback 的补帧与超时图像功能，实际速率以完整 RAW 接收和 ISP 完成次数为准。
+
+需要重建 FakeCam 隔离库时使用 `scripts/build-fakecam.sh`，依赖匹配 BSP 的 `camera_engine_rkaiq`。保留 RAW_DATA 拷贝、回调修复和 5ms 待处理缓冲轮询；轮询只唤醒真实 RAW，不生成帧。其 25FPS 离线曝光描述不是 RAW 限流器，真实亮度与曝光仍需上板检查。
+
+## 📊 板端验收
+
+先启动窗口纯预览，再开启识别：
+
+```sh
+cd /root/perception-dashboard
+./run-dashboard.sh -0 --no-detect
+```
+
+检查 `/tmp/fpga-isp.log` 的 `FASTPATH`：`rx_fps` 是完整 RAW 帧率，`output_fps` 是实际 ISP 输出；窗口 `capture_fps` 应与之相近。`incomplete`、`malformed`、`rx_superseded` 分别记录行不完整、格式错误与主动替换旧完整帧。
+
+已有 20FPS 实板日志为 `rx_fps/output_fps=20.00～20.05`，稳定后 `incomplete=1` 不再增加，`malformed=0`、`rx_superseded=0`。当前 30FPS 是传感器与构建目标，现有记录未包含完整实板验收；V4L2 声明 30FPS 不算验收。
+
+`scripts/diagnose-fps.sh` 默认仅读取诊断信息；其 `capture /dev/videoN` 模式会占用指定视频节点，运行前关闭其他消费者。参考启动器仍有原资料包设备布局，应优先保留已经在板上跑通的启动器。旧 15／20FPS 更新脚本供对应版本回退，不作为当前 30FPS 的安装入口。

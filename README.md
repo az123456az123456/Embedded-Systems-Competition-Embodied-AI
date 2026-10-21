@@ -1,53 +1,38 @@
-# 2026 嵌入式系统竞赛 · 具身智能机器人
+# ACG138 具身智能小车
 
-> 选题三：基于 FPGA 的具身智能机器人实时感知与自主控制系统设计
-> 平台：小梅哥 ACG138-RK3588-CORE（RK3588 + 高云 GW5AT-60K FPGA）
-
-## 快速开始
-
-```bash
-# 1. 先读团队文档导航
-#    -> 团队文档/README.md
-
-# 2. FPGA 全量仿真
-bash 小车代码汇总/代码/2026新开发/fpga/run_all_sim.sh
-
-# 3. 无板卡完整闭环（摄像头 + Deep ReID + 虚拟 FPGA）
-cd 小车代码汇总/代码/2026新开发/rk3588
-bash run_virtual_demo.sh
-
-# 4. 任务4 导航模拟（A* + 里程计 + 虚拟 FPGA）
-cd 小车代码汇总/代码/2026新开发/rk3588
-python nav_demo.py --instruction "走到右上角"
-```
-
-## 当前状态（2026-09-12）
-
-- ✅ 通信协议 v2（CRC16、SET_TWIST、STATUS、心跳、看门狗）
-- ✅ FPGA 双电机差速 RTL 仿真（`top_robot_v2`）
-- ✅ RK 视觉 + 任务 6 状态机 PC 端闭环
-- ✅ 虚拟 FPGA 无板卡联调
-- ✅ 任务4 PC 导航模拟（A* + 里程计 + 虚拟 FPGA）
-- ✅ 中文语义解析（`--instruction`）
-- ✅ 摄像头普通水瓶识别实测
-- ✅ 动作日志去抖
-- ⏳ 高云综合、实板联调、机械臂
-
-## 目录
+2026嵌入式竞赛项目，平台为 RK3588 + 高云 GW5AT-60K FPGA。
 
 ```text
-团队文档/              团队文档导航、需求、规范、进度、技能库
-小车代码汇总/代码/
-├── FPGA_pangu/        2025 旧框架（紫光 Pango，只读参考）
-├── ultralytics-main/  2025 旧视觉代码（只读参考）
-├── usb.arm/           2025 机械臂代码（只读参考）
-└── 2026新开发/
-    ├── fpga/          FPGA 协议 v2、双电机、传感器模块
-    └── rk3588/        RK 视觉、任务 6、虚拟 FPGA、协议通信层
+fpga/     FPGA工程、传感器驱动与仿真
+rk3588/   感知、手机控制、导航与Python原型
+docs/     比赛需求、开发环境和最新技术报告
 ```
 
-## 注意事项
+## 工程入口
 
-- 比赛源码私有，请勿公开
-- 模型权重 `.pt/.pth/.onnx/.rknn` 不提交 Git
-- 详细协作规范见 [`团队文档/团队规范/团队Git协作规范.md`](团队文档/团队规范/团队Git协作规范.md)
+| 功能 | 代码 |
+|---|---|
+| 双目＋MPU9250，30FPS目标 | [fpga/imu_camera_dual_1080_30fps](fpga/imu_camera_dual_1080_30fps/README.md) |
+| YOLO11s INT8感知窗口 | [rk3588/robot_perception_v12](rk3588/robot_perception_v12/README.md) |
+| 摄像头RAW接收与ISP | [rk3588/camera-fastpath-30fps](rk3588/camera-fastpath-30fps/README.md) |
+| 感知板端更新 | [rk3588/acg138-yolo11-30fps-rk3588-20261019](rk3588/acg138-yolo11-30fps-rk3588-20261019/README.md) |
+| 手机控制与跟随 | [rk3588/robot_phone](rk3588/robot_phone/README.md) ＋ [fpga/robot_fmc_remote](fpga/robot_fmc_remote/README.md) |
+| 电机诊断 | [最新方向修正](fpga/motor/fmc_four_load_diag_direction_v2_20261019/README.md)；[FMC引脚与顺序测试](fpga/motor/fmc_four_test/README.md) |
+| 三向超声波导航 | [rk3588/sonar_nav_sim](rk3588/sonar_nav_sim/README.md) ＋ [A02YYUW驱动](fpga/ultrasonic/a02yyuw/README.md) |
+
+高速感知与手机远控是独立工程，目前没有合成同一个30FPS四电机版本。30FPS感知保留源码和报告，工作区原本缺少对应位流与RKNN模型；完整部署需另外准备。Python任务4/6与UART v2仍是待集成原型，入口见 [RK3588说明](rk3588/README.md)。
+
+## 开发验证
+
+从仓库根目录运行；Python使用现有 `.venv`，主机测试需要编译器，FPGA仿真需要 `iverilog` 和 `vvp`。
+
+```bash
+source .venv/bin/activate
+bash fpga/run_all_sim.sh
+make -C fpga/robot_fmc_remote test test-camera
+make -C rk3588/robot_phone test test-api
+make -C rk3588/robot_perception_v12 test-ui-schedule test-fast
+python -m unittest discover -s rk3588/sonar_nav_sim/tests -v
+```
+
+[比赛需求](docs/requirements.md) · [环境与依赖](docs/environment.md) · [最新技术报告](docs/技术报告_20261020.docx)

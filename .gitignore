@@ -75,3 +75,12 @@ runs/
 *.rknn
 *.engine
 *.bin
+
+# ===== 当前工程的可再生成产物 =====
+build/
+impl/gwsynthesis/
+impl/pnr/
+*.gprj.user
+*.ses
+core
+core.[0-9]*

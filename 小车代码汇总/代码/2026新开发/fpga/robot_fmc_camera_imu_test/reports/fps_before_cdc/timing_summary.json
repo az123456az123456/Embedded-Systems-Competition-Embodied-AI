@@ -1,8 +1,0 @@
-{
-  "project": "robot_fmc_camera_imu_test",
-  "setup_violated_endpoints": 102,
-  "hold_violated_endpoints": 0,
-  "frequency_tables": [
-    "NO. Clock Name Constraint Actual Fmax Logic Level Entity 1 clk50m 50.000(MHz) 102.382(MHz) 6 TOP 2 cam1_pclk 100.000(MHz) 205.357(MHz) 6 TOP 3 cam2_pclk 100.000(MHz) 159.399(MHz) 2 TOP 4 core/your_instance_name/u_pll/PLLA_inst/CLKOUT0.default_gen_clk 125.000(MHz) 125.169(MHz) 11 TOP 5 core/your_instance_name/u_pll/PLLA_inst/CLKOUT1.default_gen_clk 50.000(MHz) 126.460(MHz) 6 TOP"
-  ]
-}
