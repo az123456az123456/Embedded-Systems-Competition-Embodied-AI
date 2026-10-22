@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-17",
+  "target": {
+    "usb_id": "0bda:c820",
+    "arch": "aarch64",
+    "kernel": "6.1.75"
+  },
+  "source": {
+    "repository": "https://github.com/morrownr/8821cu-20210916",
+    "commit": "5b39398e2de146edeb76716420f3288f508bea61",
+    "archive_sha256": "3ccec54462a8668142a9c2b2ddfffe4e0434feebe6caf6a7de6812dc8713c37f",
+    "license": "GPL-2.0",
+    "unmodified_upstream_files_verified": 730
+  },
+  "bsp": {
+    "name": "ACG138-Offline-BSP-20260923-r4",
+    "runtime_config_sha256": "7114825305fb4b5f032a523d009ae4eaa321f1c816ff60f44eeaca3b9a0ec20f",
+    "prepared_config_sha256": "d0b361c902eb80e12b8eb1462d397643e27bbc6e4b5d71607414d4d3e4eead2d",
+    "symvers_sha256": "ac81968d24f0c3885e824263897c46ad0f1c990c80ce5186bae3a19df85d41fa",
+    "symvers_source": "rk3588_acg138/13_FPGA_RGMII/03_测试模块/Module.symvers",
+    "symvers_source_commit": "1ccf6a8559a963e97328228704fd9e08ece3f830",
+    "compiler": "aarch64-none-linux-gnu-gcc (GNU Toolchain for the A-profile Architecture 10.3-2021.07 (arm-10.29)) 10.3.1 20210621"
+  },
+  "board_evidence": {
+    "source": "User supplied terminal output, 2026-10-17",
+    "config_matches": true,
+    "kernel_build": "#1 SMP Wed Sep 23 06:54:46 UTC 2026",
+    "driver_load_test": "NOT PERFORMED: board not accessible from this workspace"
+  },
+  "module": {
+    "sha256": "c0cd3b12d1d36905977758cab202255b9ef88fb95a2cbc17533c6f1ab18dc1b9",
+    "size": 4321848,
+    "vermagic": "6.1.75 SMP mod_unload aarch64",
+    "srcversion": "94E22DDFC21FC4A76E27889",
+    "dependencies": [],
+    "firmware": "embedded in module",
+    "usb_alias_c820": true,
+    "undefined_symbols": 191,
+    "missing_exports": [],
+    "nonbuiltin_dependencies": {}
+  },
+  "build": {
+    "external_module_only": true,
+    "bsp_source_modified": false,
+    "warnings": 0,
+    "errors": 0
+  }
+}
