@@ -20,7 +20,7 @@ docs/     比赛需求、开发环境和最新技术报告
 | 电机诊断 | [最新方向修正](fpga/motor/fmc_four_load_diag_direction_v2_20261019/README.md)；[FMC引脚与顺序测试](fpga/motor/fmc_four_test/README.md) |
 | 三向超声波导航 | [rk3588/sonar_nav_sim](rk3588/sonar_nav_sim/README.md) ＋ [A02YYUW驱动](fpga/ultrasonic/a02yyuw/README.md) |
 
-高速感知与手机远控是独立工程，目前没有合成同一个30FPS四电机版本。30FPS感知保留源码和报告，工作区原本缺少对应位流与RKNN模型；完整部署需另外准备。Python任务4/6与UART v2仍是待集成原型，入口见 [RK3588说明](rk3588/README.md)。
+已归档的高速感知与手机远控仍是独立工程。10月22日新增v13软核和v14.1 A02传感器整合位流；团队确认未完整同步的新版功能正在测试，定版后同步完整工程与验证记录。30FPS感知位流、Android APK及部分部署程序已补入旧路径 `小车代码汇总/代码/2026新开发/`，RKNN模型仍需另外准备。Python任务4/6与UART v2仍为独立原型，入口见 [RK3588说明](rk3588/README.md)。
 
 ## 开发验证
 
@@ -35,4 +35,4 @@ make -C rk3588/robot_perception_v12 test-ui-schedule test-fast
 python -m unittest discover -s rk3588/sonar_nav_sim/tests -v
 ```
 
-[比赛需求](docs/requirements.md) · [环境与依赖](docs/environment.md) · [最新技术报告](docs/技术报告_20261020.docx)
+[比赛需求](docs/requirements.md) · [环境与依赖](docs/environment.md) · [最新技术报告](docs/技术报告_20261025.docx)
