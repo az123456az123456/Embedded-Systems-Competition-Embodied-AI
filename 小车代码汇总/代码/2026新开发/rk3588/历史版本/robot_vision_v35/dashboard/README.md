@@ -1,0 +1,15 @@
+本目录为 v28 软核分层闭环配套版本。安装与运行以根目录“v28更新与源码说明.txt”为准。自主控制必须配套 v28 FPGA，现有 APK 无需更新。历史实现说明保留作接口背景。
+
+# RK3588 unified perception + navigation view v16.1
+
+This isolated source tree reproduces the released v12.5 baseline exactly before adding the navigation view. See `reports/recovered-v125-source.json` and `reports/navigation-ui-verification.json`.
+
+The camera panel now has Camera / Navigation tabs. Mapping data comes from the companion navigation process's `/tmp/robot-navigation/map.json` (schema 1). A background reader parses at 2 Hz; UI copies are nonblocking. Stale/invalid localization is never displayed as a live robot pose.
+
+The same YOLO11s INT8 stereo three-NPU pipeline, phone stream/control, IMU filter, acceleration plots and SNS1 telemetry remain active in either view. The camera image is unchanged and uncropped. Normal/90-degree rotation and both touch/pointer input use the original display transform.
+
+Build on the host with `make -j4`, or cross-build with `sh scripts/build-arm64.sh -j4`. Existing BSP runtime libraries are required; no additional library or Python runtime is needed on the board. Install via the outer navigation update package.
+
+Tests: `make test test-navigation test-sensors test-sensor-ui`, `make test-window`, `PERCEPTION_NAVIGATION_TEST=1 python3 tests/check_wayland.py`, `make test-phone test-phone-publish test-unified-navigation`. Network/UI harnesses require local socket permissions, not physical hardware. Generated previews are simulation fixtures.
+
+Chinese instructions: `使用说明.txt`.

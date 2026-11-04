@@ -1,38 +1,35 @@
-# ACG138 具身智能小车
+# ACG138 具身智能移动机器人
 
-2026嵌入式竞赛项目，平台为 RK3588 + 高云 GW5AT-60K FPGA。
+2026 嵌入式竞赛项目源码：**高云 GW5AT-60 FPGA + RK3588 + Android**。系统集成多传感采集、视觉识别、手机遥控、ROS 2 建图导航、语义任务与目标跟随。
 
-```text
-fpga/     FPGA工程、传感器驱动与仿真
-rk3588/   感知、手机控制、导航与Python原型
-docs/     比赛需求、开发环境和最新技术报告
-```
+**正式代码主入口：[小车代码汇总/代码/2026新开发](小车代码汇总/代码/2026新开发/README.md)。**
 
-## 工程入口
+| 平台 | 当前版本 | 入口 |
+| --- | --- | --- |
+| FPGA | v54 · 150/70 mm 冻结工程 | [FPGA 源码与版本](小车代码汇总/代码/2026新开发/fpga/README.md) |
+| RK3588 | v143 · 前超声波 0.3 m 跟随 | [RK 源码与版本](小车代码汇总/代码/2026新开发/rk3588/README.md) |
+| Android | v143 / 1.2.43 / versionCode 56 | [手机上位机源码与版本](小车代码汇总/代码/2026新开发/上位机/README.md) |
 
-| 功能 | 代码 |
-|---|---|
-| 双目＋MPU9250，30FPS目标 | [fpga/imu_camera_dual_1080_30fps](fpga/imu_camera_dual_1080_30fps/README.md) |
-| YOLO11s INT8感知窗口 | [rk3588/robot_perception_v12](rk3588/robot_perception_v12/README.md) |
-| 摄像头RAW接收与ISP | [rk3588/camera-fastpath-30fps](rk3588/camera-fastpath-30fps/README.md) |
-| 感知板端更新 | [rk3588/acg138-yolo11-30fps-rk3588-20261019](rk3588/acg138-yolo11-30fps-rk3588-20261019/README.md) |
-| 手机控制与跟随 | [rk3588/robot_phone](rk3588/robot_phone/README.md) ＋ [fpga/robot_fmc_remote](fpga/robot_fmc_remote/README.md) |
-| 电机诊断 | [最新方向修正](fpga/motor/fmc_four_load_diag_direction_v2_20261019/README.md)；[FMC引脚与顺序测试](fpga/motor/fmc_four_test/README.md) |
-| 三向超声波导航 | [rk3588/sonar_nav_sim](rk3588/sonar_nav_sim/README.md) ＋ [A02YYUW驱动](fpga/ultrasonic/a02yyuw/README.md) |
+[完整项目说明](小车代码汇总/代码/2026新开发/项目说明.md) · [构建与复现](小车代码汇总/代码/2026新开发/文档/构建与复现.md) · [通信接口](小车代码汇总/代码/2026新开发/文档/通信与接口.md) · [版本沿革](小车代码汇总/代码/2026新开发/文档/版本沿革.md) · [验证与验收](小车代码汇总/代码/2026新开发/文档/验证与验收.md) · [比赛材料说明](小车代码汇总/代码/2026新开发/文档/比赛材料说明.md)
 
-已归档的高速感知与手机远控仍是独立工程。10月22日新增v13软核和v14.1 A02传感器整合位流；团队确认未完整同步的新版功能正在测试，定版后同步完整工程与验证记录。30FPS感知位流、Android APK及部分部署程序已补入旧路径 `小车代码汇总/代码/2026新开发/`，RKNN模型仍需另外准备。Python任务4/6与UART v2仍为独立原型，入口见 [RK3588说明](rk3588/README.md)。
+## 当前状态
 
-## 开发验证
+RK 原生主程序/网关已与串口读取的板端身份核对，ROS 源码和启动脚本已从板端归集；原生 C/C++ 源码由匹配构建记录的本地工程补齐。最终 FPGA v54 具有工具布局布线/时序通过记录，但尚未烧录并完成该版本实车验收。Android 1.2.43 的源码和构建入口齐备，手机实装与最终组合动态验收待完成。
 
-从仓库根目录运行；Python使用现有 `.venv`，主机测试需要编译器，FPGA仿真需要 `iverilog` 和 `vvp`。
+当前跟随使用视觉选框与水平对准、前超声波距离，目标约 0.3 m、静止区间 0.25–0.35 m；取消与观测失效走停车路径。雷达仍用于建图/导航/语义搜索。该描述是当前实现和验证状态，不是整车全部比赛任务实测通过的声明。
+
+## 纯源码与复现
+
+当前树只包含代码、必要说明、配置/约束和测试源码；不包含位流、APK、可执行程序、预编译库、模型、SDK/rootfs、签名私钥或运行令牌。固定传感器初始化表与编译输出的区分见主目录说明。历史 Git 提交仍可能含旧产物，本次保留历史，不强制重写。
 
 ```bash
-source .venv/bin/activate
-bash fpga/run_all_sim.sh
-make -C fpga/robot_fmc_remote test test-camera
-make -C rk3588/robot_phone test test-api
-make -C rk3588/robot_perception_v12 test-ui-schedule test-fast
-python -m unittest discover -s rk3588/sonar_nav_sim/tests -v
+cd 小车代码汇总/代码/2026新开发
+python3 tools/verify_source_tree.py
+python3 tools/run_smoke_tests.py
 ```
 
-[比赛需求](docs/requirements.md) · [环境与依赖](docs/environment.md) · [最新技术报告](docs/技术报告_20261025.docx)
+主机回归需要 Python 3.10+、GCC/G++、make、JDK 17 和 Icarus Verilog。GitHub Actions 自动检查源码规则与当前组件回归；完整构建还需厂商/Android/ROS 环境，见构建说明。
+
+历史快照、实验工程及局部源码补丁分别标记；未找到完整源文件的旧版本如实记录，不用新源码改名填补。第三方和自研授权范围见 [第三方与许可](小车代码汇总/代码/2026新开发/文档/第三方与许可.md)。仓库作为比赛的源码/技术说明材料之一，实际演示、正式表单与实车验证材料按官方要求另行配套。
+
+旧报告在 `docs/` 中保留作阶段材料；其中旧版状态不覆盖本次项目说明。整理日期：2026-11-04。

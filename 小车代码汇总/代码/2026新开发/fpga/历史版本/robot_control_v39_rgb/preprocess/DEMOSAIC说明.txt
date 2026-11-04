@@ -1,0 +1,20 @@
+v35 RAW8去马赛克模块
+
+bayer_demosaic.v 为独立3×3双线性实现，不是AMD Mini-ISP的5×5 Malvar-He-Cutler算法。已阅读AMD Mini-ISP官方MIT源码的流式行缓存和同步RAM写法作为设计参考，没有AMD/Xilinx专用原语或整帧存储；原参考链接：
+https://github.com/amd/mini-isp
+https://github.com/amd/mini-isp/blob/main/rtl/demosaic.sv
+https://github.com/amd/mini-isp/blob/main/rtl/linebuffer.sv
+
+默认每眼960×1080、RAW8，BAYER=0(BGGR)，另外1=GBRG，2=GRBG，3=RGGB。原相机工程IMAGE_FLIP_EN=1、MIRROR=0，寄存器3820=46、3821=00；默认BGGR沿用当前已运行RK端camera模式的相位契约，并不是新实拍标定结论。四相位均经独立测试。如实际镜头/寄存器配置变化，应重新核对色彩相位。
+
+输入in_valid/in_sof/in_eol/in_pixel，每行恰好WIDTH像素、每帧HEIGHT行；valid可随机插空。新SOF优先接受，前帧未完成时out_abort通知下游丢部分帧。短行、缺EOL、in_abort、底行flush期间没有SOF的新像素都会中止当前帧，等待下一SOF。
+
+输出RGB888顺序R:G:B，out_x/y为源图坐标，out_sof标第一像素，out_eol标行末，out_eof标完整最后像素。底部边缘通过一行内部重放完成，in_ready在最后原始像素后约WIDTH+2拍保持低，正常使用相机垂直消隐完成；新SOF不等待ready，而是抢占flush并发out_abort。集成必须将out_abort串给缩放、补边和组帧模块，不能把部分旧帧与下一帧拼成完整图。
+
+四边使用reflect101镜像，保持Bayer奇偶相位。只有3个960×8bit RAW行bank，全部同步读，三bank轮换避免读写同一行的旧数据歧义。连续输入可持续一像素/时钟，不需要人为行间空拍。底行flush是内部生成，不从输入误吃下一帧。
+
+独立验证：tests/test_bayer_demosaic.py --full。28场景/1,068,324个RGB像素逐字节匹配独立NumPy同算法黄金值，maxerr=0，包括实际960×1080随机整帧、四CFA、小尺寸/奇数尺寸、随机valid间隔、行长异常、显式abort、新SOF抢占活动帧/底行flush。合成RGB平滑样本相对原RGB PSNR=57.37dB，锐边样本29.78dB；这只是两个人工样本，并不代表相机实拍质量或与旧RK ISP等效。
+
+同器件GW5AT-LV60PG484AC1/I0、Gowin V1.9.12.03独立综合资源：393 LUT、92 ALU、185寄存器、3 BSRAM、0 DSP；实际网表3个SDPB。双眼单纯去马赛克预计6 BSRAM。此为独立模块综合，尚不能替代完整顶层布局布线、125MHz时序、CDC和实板颜色验证。
+
+该模块不做镜头阴影、自动白平衡、自动曝光、去噪、完整颜色矩阵或gamma。后续颜色调整应显式参数化并单独验证，不能把RAW8插值后的RGB冒称为原RK ISP等质输出。

@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "profile": {
+    "schema": 1,
+    "profile": "navigation-v41-user-approved-80KiB-20261030",
+    "ram_bytes": 81920,
+    "low_bank_bytes": 65536,
+    "tail_bank_bytes": 16384,
+    "stack_bytes": 4096,
+    "image_end_limit": 76504,
+    "reserved_gap_below_stack_bytes": 1320,
+    "authorization": "User explicitly approved 80KiB RAM, unchanged 4KiB stack, and 76504B image limit on 2026-10-30."
+  },
+  "input_binary_bytes": 42384,
+  "input_sha256": "ce05b49187b6cb6ab3dcfc90a9d479fdf38a4b6903f2d74d6b03a3f4c39e15b1",
+  "complete_image_sha256": "4e233b86a63485414759448a2fbc69f886fcf711331248331ce28c635203e775",
+  "memory_profile_sha256": "d260ba5cdee686f8d21a4e60f92535961891900d3f74b80aac3c9f4da64684b8",
+  "outputs": {
+    "firmware.hex": {
+      "width_bits": 32,
+      "words": 20480,
+      "byte_offset": 0,
+      "sha256": "49a5736ea1a3091d405dbcf9e37619fa3e3779b957c33d8c9a48558658b2aaf3"
+    },
+    "firmware_low.hex": {
+      "width_bits": 32,
+      "words": 16384,
+      "byte_offset": 0,
+      "sha256": "8016634cedb4716f1c388baf4b8b264010202353119c7ac729a7f87f1bac8d8f"
+    },
+    "firmware_lane0.hex": {
+      "width_bits": 8,
+      "words": 20480,
+      "byte_offset": 0,
+      "sha256": "a7668e872eba44532abfb99222cdb6d624fa2cc6277eba42a30d12129c1f84bf"
+    },
+    "firmware_tail_lane0_lo.hex": {
+      "width_bits": 4,
+      "words": 4096,
+      "byte_offset": 65536,
+      "sha256": "fbdadfc49edbe2da54bd8d9106e70852b42e99c28e89bc32ab199e6432ee9040"
+    },
+    "firmware_tail_lane0_hi.hex": {
+      "width_bits": 4,
+      "words": 4096,
+      "byte_offset": 65536,
+      "sha256": "fbdadfc49edbe2da54bd8d9106e70852b42e99c28e89bc32ab199e6432ee9040"
+    },
+    "firmware_lane1.hex": {
+      "width_bits": 8,
+      "words": 20480,
+      "byte_offset": 1,
+      "sha256": "fad7bd919ac542239a3e1fef54a545cd08afbcc647f2038d64448120bc0bff2d"
+    },
+    "firmware_tail_lane1_lo.hex": {
+      "width_bits": 4,
+      "words": 4096,
+      "byte_offset": 65537,
+      "sha256": "fbdadfc49edbe2da54bd8d9106e70852b42e99c28e89bc32ab199e6432ee9040"
+    },
+    "firmware_tail_lane1_hi.hex": {
+      "width_bits": 4,
+      "words": 4096,
+      "byte_offset": 65537,
+      "sha256": "fbdadfc49edbe2da54bd8d9106e70852b42e99c28e89bc32ab199e6432ee9040"
+    },
+    "firmware_lane2.hex": {
+      "width_bits": 8,
+      "words": 20480,
+      "byte_offset": 2,
+      "sha256": "d2677cdd534117613caf52900d69e2f9df5ffb63224dcf21dbbc52e59930aa01"
+    },
+    "firmware_tail_lane2_lo.hex": {
+      "width_bits": 4,
+      "words": 4096,
+      "byte_offset": 65538,
+      "sha256": "fbdadfc49edbe2da54bd8d9106e70852b42e99c28e89bc32ab199e6432ee9040"
+    },
+    "firmware_tail_lane2_hi.hex": {
+      "width_bits": 4,
+      "words": 4096,
+      "byte_offset": 65538,
+      "sha256": "fbdadfc49edbe2da54bd8d9106e70852b42e99c28e89bc32ab199e6432ee9040"
+    },
+    "firmware_lane3.hex": {
+      "width_bits": 8,
+      "words": 20480,
+      "byte_offset": 3,
+      "sha256": "ed12c5f2a889db106165e9128662e3a78b735474d62c44ad3b2d5d57935a385b"
+    },
+    "firmware_tail_lane3_lo.hex": {
+      "width_bits": 4,
+      "words": 4096,
+      "byte_offset": 65539,
+      "sha256": "fbdadfc49edbe2da54bd8d9106e70852b42e99c28e89bc32ab199e6432ee9040"
+    },
+    "firmware_tail_lane3_hi.hex": {
+      "width_bits": 4,
+      "words": 4096,
+      "byte_offset": 65539,
+      "sha256": "fbdadfc49edbe2da54bd8d9106e70852b42e99c28e89bc32ab199e6432ee9040"
+    }
+  },
+  "scope": "Initialization bytes only; whole ELF/BSS size and runtime/RTL are separate gates"
+}

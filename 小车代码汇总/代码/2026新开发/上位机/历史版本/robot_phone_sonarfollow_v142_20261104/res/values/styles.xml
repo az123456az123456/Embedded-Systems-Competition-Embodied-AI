@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="RobotCalm" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:colorAccent">#111111</item>
+        <item name="android:colorControlNormal">#111111</item>
+        <item name="android:colorControlActivated">#111111</item>
+        <item name="android:colorControlHighlight">#22000000</item>
+        <item name="android:colorBackground">#FFFFFF</item>
+        <item name="android:textColorPrimary">#141414</item>
+        <item name="android:textColorSecondary">#63636C</item>
+        <item name="android:navigationBarColor">#F2F2F7</item>
+        <item name="android:statusBarColor">#FFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:buttonBarButtonStyle">@style/RobotDialogButton</item>
+    </style>
+    <style name="RobotDialogButton" parent="android:style/Widget.Material.Button">
+        <item name="android:backgroundTint">@color/robot_button_background</item>
+        <item name="android:textColor">@color/robot_button_foreground</item>
+    </style>
+</resources>

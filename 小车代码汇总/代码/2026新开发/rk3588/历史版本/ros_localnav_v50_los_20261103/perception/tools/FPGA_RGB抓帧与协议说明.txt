@@ -1,0 +1,110 @@
+v35 FPGA RGB 输入、独立抓帧与兼容回退
+
+新模式：FPGA 产生两张已预处理的 640×640 RGB888 模型输入；RK 合并成
+1280×640 RGB 预览。每眼保持模型原有的 35 像素左灰边、36 像素右灰边，
+有效图像为 569×640，填充值 114。RK 不再做 Bayer ISP、YUV/RGB 颜色
+转换、resize 或第二次 letterbox，仍有接收/校验/复制、显示/手机编码开销。
+模型的 /255 归一化留在 RKNN 模型/运行时输入转换中，不能再在 FPGA
+把 UINT8 像素先除以 255。不能称这是端到端零拷贝。
+
+默认运行原入口：
+  sh /root/perception-dashboard/run-dashboard.sh -0
+
+v35 launcher 默认 PERCEPTION_CAMERA_SOURCE=fpga-rgb；接口默认 eth0。
+CAMERA_TARGET_FPS 默认 40，也接受 15/20/30；该变量只供旧 V4L2 发布器使用，
+新 raw 路径真正帧率由 FPGA 位流决定，设置该变量不会改变传感器时序。
+也可明确设置 PERCEPTION_RGB_INTERFACE，或传 --camera fpga-rgb:eth0。
+只支持 both/left/right；single 会把两眼当单图缩放，故明确拒绝。
+原 V4L2/ISP 路径保留：
+  PERCEPTION_CAMERA_SOURCE=v4l2 sh /root/perception-dashboard/run-dashboard.sh -0
+回退须使用与旧 Bayer 通路匹配的 FPGA 文件，不能把新 RGP1 包当 V4L2。
+
+新模式使用 raw Ethernet EtherType 0x88ba，未使用 IP/UDP，不占用导航
+0x88b9。默认 FPGA 源 MAC 为 02:ac:13:80:00:01，数据目的为广播。
+需要 root/CAP_NET_RAW。只对选定的内部 Ethernet 接口检查 IFF_UP，
+必要时置 UP；不设置 IP、DHCP、默认路由或 WLAN。若接口无法置 UP，
+明确报错。程序优先请求 16MiB SO_RCVBUFFORCE（需 CAP_NET_ADMIN），
+否则尝试普通 SO_RCVBUF，并打印实际分配值；不修改全局 sysctl。
+真实内核 socket 队列往往会显示请求值的两倍，不能把这项当实际流量。
+
+RGP1 数据格式（全部多字节字段为大端）：
+  0..3   ASCII RGP1
+  4      版本 1
+  5      eye：0 左、1 右
+  6      format：1=RGB888，通道顺序 R/G/B
+  7      bit0：RESET_EPOCH；其他位必须 0
+  8..11  双目源帧序号 uint32；两眼相同，支持自然回绕
+  12..15 FPGA capture uptime ms uint32；同一配对分片相同
+  16..17 行号 0..639
+  18     行内分片 0/1
+  19     每行分片数 2
+  20..21 宽 640
+  22..23 高 640
+  24..25 payload 长 960
+  26..27 当前会话 epoch uint16，非零
+  28..31 应用 CRC32
+  32..991 320 个 RGB 像素，共 960 字节
+
+应用 CRC32 使用 IEEE reflected 0xedb88320、初值/最终异或均 ffffffff，
+覆盖 header[0..27] + payload[0..959]，不包含 CRC 字段自身。完整 Ethernet
+帧不含 FCS 为 1006 字节，NIC 负责发送/检查链路 FCS；RK 不手工追加它。
+
+启动时 RK 随机生成非零 16 位 epoch，向 FPGA MAC 发送 RGC1 START：
+EtherType 同为 0x88ba，payload 为 16 字节：
+  0..3 RGC1，4=版本1，5=START1，6..7 epoch，8..11全0，
+  12..15 CRC32（同算法覆盖前12字节）。
+发送缓冲明确补零到 60 字节 Ethernet（不含 FCS），后续 FCS 由 NIC 生成。
+同 epoch START 是幂等的；没有当前 epoch 数据时约250ms重试一次，健康
+接收时不反复重置流。物理 FPGA 重启导致 RESET、序号和 uptime 回退时，
+RK 换新 epoch 重握手，丢弃旧 NIC 残片。这些 START 只控制图像会话，
+不会使能电机，也不发送 MOT、IMU 或导航指令。
+
+接收器固定两个在途槽和一个最新完整槽；每对需要两眼共 2560 分片，
+按序号/源时间/epoch 严格分组。支持乱序和一致重复，冲突重复、CRC
+错误、错版本、错尺寸、错 epoch、过期或掉片不会当作完整配对发布。
+只发布 complete_mask=3 的完整双目。默认部分帧和完整结果年龄上限为
+250ms。设备时间按主机最小传输偏移映射，仅为年龄的下界估计，不代表
+两块设备的曝光时钟已经同步。日志 FPGA_RGB 含 CRC、掉片、过期、
+socket drops、epoch 和实际 rcvbuf，可据此诊断。
+
+独立抓帧（不加载 NPU，不访问电机）
+
+先退出正在运行的 dashboard。两个程序同时用新 epoch 会互相更换图像
+会话，抓帧工具不能与窗口一起运行。将 capture-fpga-rgb.aarch64 拷到 RK，
+运行：
+  chmod +x /root/capture-fpga-rgb.aarch64
+  /root/capture-fpga-rgb.aarch64 --interface eth0 --timeout 10 --output /root/rgb-capture-001
+
+输出目录必须不存在、父目录须存在。约10秒没有完整双目就失败，不保存
+缺片图像。成功后有 stereo.ppm(1280×640)、left/right.ppm(640×640)、
+对应 RGB 原始字节及 metadata.json，包含源序号、epoch、时钟与文件 CRC。
+把整个目录拷回 PC，再运行（仅 Python 标准库）：
+  python3 check_fpga_rgb_capture.py /path/rgb-capture-001 --expect-letterbox
+
+这会检查尺寸、文件校验、两眼顺序、整图/单眼一致性及灰边。不能用它
+宣称颜色标定、识别精度或真实 FPS 已达标。真实画面还应检查色彩、方向、
+稳定性和模型效果，FPGA 简化 ISP 与原 RK ISP 的外观可能不同。
+
+RTL 与生产 C++ 互操作
+
+rgb-codec-probe 用同一生产 Assembler；支持 records（BE32长度+Ethernet）、
+hex（每行完整帧十六进制）、gmii（固定1018字节，含8B前导+1010B帧/FCS）。
+例如：
+  rgb-codec-probe --epoch 1 --format records --input full40fps.records --with-fcs --output decoded-newdir
+对含 FCS 的记录独立验证并去除 FCS 后才交给生产 RGP1 解析器。
+测试回放的主机时间是 synthetic，只证明协议与像素，不是实物帧率。
+tests/fixtures/rgp1-zlib-golden.json 为独立 Python zlib 生成的 CRC 对照。
+
+跟随角度
+
+预览/识别/手机选框一直使用 tensor 视图坐标。只有物理航向几何输入作
+逆映射：u=(tensor_u-35)*960/569，v=tensor_v*1080/640。
+原来 960×1080 的镜头内参/FOV、安装偏置校准保持相同含义。纯灰边
+内的假框不能跟随，跨灰边框裁到有效图像区，避免把灰边当额外视场。
+
+带宽限制
+
+双目640平方RGB888每帧2,457,600字节，v35目标40FPS，纯RGB约786Mbps，
+加上包头、Ethernet/FCS/前导/间隔约844Mbps。相比旧1920×1080单通道 Bayer，纯
+数据并未缩小，增加约18.5%；收益主要是省去 RK ISP/预处理。不能将
+离线仿真吞吐当成 RK 板或真实双目已经达到的帧率。

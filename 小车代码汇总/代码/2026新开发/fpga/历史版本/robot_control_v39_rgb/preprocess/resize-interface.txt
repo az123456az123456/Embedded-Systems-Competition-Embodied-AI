@@ -1,0 +1,45 @@
+v35 RGB resize + letterbox 集成接口
+
+输入：rgb_bilinear_resize
+  clk / rst_n：摄像头处理时钟 / 低有效同步复位。
+  in_valid：该拍一个RGB24像素，允许任意空拍，不支持反压。
+  in_rgb[23:0]：R[23:16]、G[15:8]、B[7:0]，无归一化/通道交换。
+  in_x/y[10:0]：源图0..959、0..1079，按完整逐行顺序。
+  in_sof/eol/eof：与像素同拍，首像素/源行末/源图末。
+  in_abort：放弃正在处理的整帧，等待下一个合法SOF。
+
+resize输出：569x640稀疏RGB24像素，out_x/y[9:0]、out_valid、
+out_sof/eol/eof、out_abort。直接接rgb_letterbox同名in_*。
+letterbox输出：640x640，左35、右36列为RGB(114,114,114)，无上下边框。
+letterbox具有fifo_peak[6:0]诊断输出，可不连接。默认64像素FIFO。
+没有out_ready；后级必须持续接受valid像素或在自身溢出时整帧丢弃。
+
+每个bank独立同步读寄存器后才做mux。处理输入(x,y)时只写当前行
+bank[x]，只读另一bank[x]；下一拍算水平插值、再算垂直插值并输出。
+没有“收齐行后再扫读”过程，不依赖RAM同地址读写的OLD_DATA行为。
+读写bank永远不同；后续算术只使用寄存器，旧bank被下一行复用安全。
+
+采样：标准half-pixel，Q11权重，无运行时除法。
+X为960词x12位同步ROM，文件preprocess/resize_x_q11.hex，必须随工程保留。
+Y为固定27源行/16目标行的27相位查表逻辑，无大Y ROM。
+生成脚本preprocess/generate_resize_coeffs.py可重建ROM和系数描述。
+固定缩小比例的4个tap均在源图内，resize不访问越界坐标；Bayer边界的
+reflect101由上游demosaic完成。
+框逆变换：x=(u-35)*960/569，y=v*1080/640，两轴使用实际舍入后比例。
+
+错误：in_abort、非顺序坐标、缺像素或不正确EOL会输出out_abort。
+新的SOF可中断不完整帧；输出下游应丢弃旧帧直到新out_sof。
+letterbox FIFO满时不会覆盖数据，而是out_abort并清FIFO等待新SOF。
+连续完整源图、无Hblank、无帧间空拍已测试30帧，FIFO实际峰值42/64；
+另有任意valid空拍和故意超出输入时序包络的FIFO溢出恢复测试。
+
+带宽：每眼RGB tensor 640*640*3*30=36,864,000 B/s，两眼589.824 Mbps，
+不包含以太网头/协议开销。不是1.09 Gbps；后者是原RAW+tensor同时传输。
+吞吐下限：仅active源像素每眼需960*1080*30=31.104 MHz输入时钟；
+这不等于已验证100MHz物理时序，须以整个工程官方Gowin P&R报告为准。
+
+独立Yosys GW2A映射resize每眼：5 SPX9、3 MULT18X18、6 MULT9X9、280 LUT4。
+该数字非官方Gowin整工程资源，不包含demosaic、letterbox、网络FIFO等。
+
+复验：python3 tests/preprocess/run_resize_tests.py
+结果：build/resize-verification.json、build/resize-reference.json。

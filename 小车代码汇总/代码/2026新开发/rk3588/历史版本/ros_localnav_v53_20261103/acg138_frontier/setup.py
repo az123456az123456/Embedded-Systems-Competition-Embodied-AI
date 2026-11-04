@@ -1,0 +1,3 @@
+from setuptools import setup
+from glob import glob
+setup(name='acg138_frontier',version='0.1.0',packages=['acg138_frontier'],data_files=[('share/ament_index/resource_index/packages',['resource/acg138_frontier']),('share/acg138_frontier',['package.xml']),('share/acg138_frontier/config',glob('config/*.yaml')),('share/acg138_frontier/launch',glob('launch/*.launch.py'))],entry_points={'console_scripts':['frontier_node=acg138_frontier.node:main','mapping_coordinator=acg138_frontier.mapping_node:main','mapping_explorer=acg138_frontier.mapping_explorer:main','dynamic_map=acg138_frontier.dynamic_map_node:main','lidar_recorder=acg138_frontier.lidar_recorder:main','mapping_scan_filter=acg138_frontier.scan_filter_node:main']})

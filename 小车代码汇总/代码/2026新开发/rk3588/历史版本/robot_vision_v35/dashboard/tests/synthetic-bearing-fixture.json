@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "source_eye_width_px": 960,
+  "enabled": true,
+  "lookahead_m": 1.0,
+  "eyes": [
+    {
+      "calibrated": true,
+      "fx_px": 600,
+      "cx_px": 480,
+      "yaw_right_deg": 0,
+      "lateral_right_m": 0,
+      "min_u_px": 0,
+      "max_u_px": 959,
+      "max_error_deg": 0
+    },
+    {
+      "calibrated": true,
+      "fx_px": 600,
+      "cx_px": 480,
+      "yaw_right_deg": 0,
+      "lateral_right_m": 0,
+      "min_u_px": 0,
+      "max_u_px": 959,
+      "max_error_deg": 0
+    }
+  ]
+}

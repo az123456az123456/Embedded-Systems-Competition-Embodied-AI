@@ -1,0 +1,36 @@
+RGP1 双目 RGB888 发送器（v35）
+
+文件：rgb_packet_tx.v。本文仅描述 RTL 仿真和单模块综合结果，不宣称板上吞吐、整工程时序或实拍画质已验证。
+
+输入输出
+125 MHz 时钟域；两路 FWFT FIFO，36 位数据格式为 tag[35:32]+data[31:0]。
+tag=1：SOF，data 是同一次采集的 32 位序号；tag=2：采集时的毫秒 uptime；tag=0：RGB888（R 位23:16）；tag=3：EOF；tag=15：ABORT。
+每眼一帧必须依次为 SOF、uptime、640×640 个像素、EOF。序号允许32位自然回绕到0。
+两眼必须同序号，uptime 的模时间差不超过 STAMP_TOLERANCE_MS（默认8ms）。共同时间戳取模时间较早者，包含32位毫秒计时回绕。序号不同时只继续寻找较旧一眼的下一帧；持续缺失有 WAIT_CYCLES 超时（默认100ms）。
+
+仲裁与内存
+输出 tx_pending 表示完整待发包，tx_busy 只覆盖已取得链路的 Ethernet 帧及 IFG，不能因等待 tx_allow 而占住链路。
+tx_allow 仅在启动新包时检查；取得所有权后必须允许连续输出完整包。上层可在两包之间让电机、IMU 等消息优先。
+两块1024×8同步读写 RAM 交替装包与发送，无整帧缓存。正在发送的 RAM 不允许装包者写入；包的992字节（RGP1头32+载荷960）和CRC全部就绪后才发布 ready。
+125MHz 下两眼640×640 RGB888：30fps有效像素73.728MB/s（589.824Mbit/s），40fps有效像素98.304MB/s（786.432Mbit/s）。每包320像素，每眼每帧1280包，两眼30fps共76800包/s，40fps共102400包/s；包括8字节前导、14字节Ethernet头、32字节RGP1头、960字节像素、4字节FCS及12字节最短IFG，线路预算30fps为632.832Mbit/s、40fps为843.776Mbit/s，尚不包含其他消息和实现空闲周期。40fps留给控制/诊断及实现额外空闲的余量较小，不能由链路理论带宽直接承诺整工程不丢帧。
+
+线格式
+EtherType 0x88ba；目的 ff:ff:ff:ff:ff:ff，源02:ac:13:80:00:01（参数可改）。8字节前导为55×7+d5。RGP1头32字节，多字节字段一律大端：
+0..3 RGP1；4版本1；5眼0/1；6格式1(RGB888)；7标志，序号1时bit0=1，否则0。
+8..11序号；12..15共同采集uptime_ms；16..17行；18半行0/1；19每行2包。
+20..21宽640；22..23高640；24..25载荷长度960；26..27非零epoch；28..31应用CRC32。
+应用CRC覆盖头0..27拼接960字节像素，跳过头28..31；IEEE反射EDB88320、初值与末异或均ffffffff。另对14字节Ethernet头+全部992字节RGP1包计算Ethernet FCS，FCS按低字节先发。CRC算法已由独立Python zlib和真实RK生产解析器交叉核对。
+
+异常与恢复
+校验前读到错误tag、新SOF、ABORT、等待超时会取消当前帧尚未发出的包，保留已在链路中的完整Ethernet帧，重新找两眼下一组元数据。最终半行只有实际收到EOF后才允许发送，防止短帧被误拼为完整图像。
+epoch改变时停止继续读/装旧FIFO，允许当前Ethernet帧及FCS发送完，再清包状态。顶层负责清跨时钟FIFO，防止旧epoch残留像素进入新epoch。
+有限FIFO不能保证容纳任意8ms双目偏移：一眼平均36.864MB/s，8ms约295KB。8ms只定义时间戳配对容差。上层实际FIFO满必须产生ABORT并丢弃该帧；相机不同步可能丢帧，应结合完整工程FIFO溢出计数诊断。
+
+验证边界
+运行 tests/test_rgb_packet_tx.py --full 可复验：双CRC、全部像素、行/半行覆盖、IFG、序号不同步、时间偏差拒绝、ABORT、缺EOF、超时、新epoch抢占、32位序号/uptime回绕，以及有其他消息优先占用的连续3组完整30fps双目数据。
+reports/rgb-packet-v35/verification.json 绑定生产RTL和测试源SHA256；full30fps.records 可交给RK生产 rgb-codec-probe --with-fcs 解码。仿真中的数据源使用可计算彩色纹理，RK解析输出必须逐像素匹配。
+单模块Gowin综合并非整工程PnR，不替代整工程125MHz时序报告和实际双目同步/画质/吞吐验收。
+
+40FPS扩展压力验证
+命令：python3 tests/test_rgb_packet_tx.py --full --fps 40 --reports reports/rgb-packet-v35-40fps
+40FPS测试源周期固定3,125,000个125MHz时钟，像素以7周期/像素突发（每眼约22.94ms）后消隐，两眼时间戳间隔25ms。控制仲裁仍每5000周期阻塞160周期。结果独立保存在reports/rgb-packet-v35-40fps/，不可与完整板测混同。

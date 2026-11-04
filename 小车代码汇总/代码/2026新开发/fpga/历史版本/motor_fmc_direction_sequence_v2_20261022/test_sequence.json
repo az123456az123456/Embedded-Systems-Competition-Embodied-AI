@@ -1,0 +1,212 @@
+{
+  "wheel_map": {
+    "M1": "right_front",
+    "M2": "left_rear",
+    "M3": "right_rear",
+    "M4": "left_front"
+  },
+  "left_mask": 10,
+  "invert_mask": 15,
+  "physical_directions_verified": false,
+  "baseline_user_observation": {
+    "version": "v1",
+    "invert_mask": 9,
+    "fronts_M1_M4": "forward",
+    "rears_M2_M3": "backward",
+    "correction_xor_mask": 6
+  },
+  "steps": [
+    {
+      "step": 1,
+      "name": "M1_ONLY",
+      "expected_action": "M1 单轮：右前",
+      "duties_percent_M1_to_M4": [
+        40,
+        0,
+        0,
+        0
+      ],
+      "led_D3_D2_D1_D0": "0001",
+      "in1_hex": "0",
+      "in2_hex": "1",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    },
+    {
+      "step": 2,
+      "name": "M2_ONLY",
+      "expected_action": "M2 单轮：左后",
+      "duties_percent_M1_to_M4": [
+        0,
+        40,
+        0,
+        0
+      ],
+      "led_D3_D2_D1_D0": "0010",
+      "in1_hex": "0",
+      "in2_hex": "2",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    },
+    {
+      "step": 3,
+      "name": "M3_ONLY",
+      "expected_action": "M3 单轮：右后",
+      "duties_percent_M1_to_M4": [
+        0,
+        0,
+        40,
+        0
+      ],
+      "led_D3_D2_D1_D0": "0011",
+      "in1_hex": "0",
+      "in2_hex": "4",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    },
+    {
+      "step": 4,
+      "name": "M4_ONLY",
+      "expected_action": "M4 单轮：左前",
+      "duties_percent_M1_to_M4": [
+        0,
+        0,
+        0,
+        40
+      ],
+      "led_D3_D2_D1_D0": "0100",
+      "in1_hex": "0",
+      "in2_hex": "8",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    },
+    {
+      "step": 5,
+      "name": "FORWARD",
+      "expected_action": "前进",
+      "duties_percent_M1_to_M4": [
+        40,
+        40,
+        40,
+        40
+      ],
+      "led_D3_D2_D1_D0": "0101",
+      "in1_hex": "0",
+      "in2_hex": "F",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    },
+    {
+      "step": 6,
+      "name": "BACKWARD",
+      "expected_action": "后退",
+      "duties_percent_M1_to_M4": [
+        -40,
+        -40,
+        -40,
+        -40
+      ],
+      "led_D3_D2_D1_D0": "0110",
+      "in1_hex": "F",
+      "in2_hex": "0",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    },
+    {
+      "step": 7,
+      "name": "SPIN_LEFT_CCW",
+      "expected_action": "原地左转／逆时针",
+      "duties_percent_M1_to_M4": [
+        40,
+        -40,
+        40,
+        -40
+      ],
+      "led_D3_D2_D1_D0": "0111",
+      "in1_hex": "A",
+      "in2_hex": "5",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    },
+    {
+      "step": 8,
+      "name": "SPIN_RIGHT_CW",
+      "expected_action": "原地右转／顺时针",
+      "duties_percent_M1_to_M4": [
+        -40,
+        40,
+        -40,
+        40
+      ],
+      "led_D3_D2_D1_D0": "1000",
+      "in1_hex": "5",
+      "in2_hex": "A",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    },
+    {
+      "step": 9,
+      "name": "FRONT_LEFT_ARC",
+      "expected_action": "向左前方弧线行驶",
+      "duties_percent_M1_to_M4": [
+        40,
+        20,
+        40,
+        20
+      ],
+      "led_D3_D2_D1_D0": "1001",
+      "in1_hex": "0",
+      "in2_hex": "F",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    },
+    {
+      "step": 10,
+      "name": "FRONT_RIGHT_ARC",
+      "expected_action": "向右前方弧线行驶",
+      "duties_percent_M1_to_M4": [
+        20,
+        40,
+        20,
+        40
+      ],
+      "led_D3_D2_D1_D0": "1010",
+      "in1_hex": "0",
+      "in2_hex": "F",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    },
+    {
+      "step": 11,
+      "name": "BACK_LEFT_ARC",
+      "expected_action": "倒向左后方",
+      "duties_percent_M1_to_M4": [
+        -40,
+        -20,
+        -40,
+        -20
+      ],
+      "led_D3_D2_D1_D0": "1011",
+      "in1_hex": "F",
+      "in2_hex": "0",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    },
+    {
+      "step": 12,
+      "name": "BACK_RIGHT_ARC",
+      "expected_action": "倒向右后方",
+      "duties_percent_M1_to_M4": [
+        -20,
+        -40,
+        -20,
+        -40
+      ],
+      "led_D3_D2_D1_D0": "1100",
+      "in1_hex": "F",
+      "in2_hex": "0",
+      "observed_wheel_or_motion": "",
+      "observed_correct": null
+    }
+  ]
+}

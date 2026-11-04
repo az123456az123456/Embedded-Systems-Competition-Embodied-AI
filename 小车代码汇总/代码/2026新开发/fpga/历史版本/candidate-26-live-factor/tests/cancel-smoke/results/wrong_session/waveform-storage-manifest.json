@@ -1,0 +1,8 @@
+[
+  {
+    "original_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/wrong_session/trace.vcd",
+    "gzip_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/wrong_session/trace.vcd.gz",
+    "uncompressed_sha256": "6e8677482977c4edc2da23aaadcfeb3ea11a3997f7a6b9d6961fdaf7fac3a919",
+    "verified_exact_decompression": true
+  }
+]

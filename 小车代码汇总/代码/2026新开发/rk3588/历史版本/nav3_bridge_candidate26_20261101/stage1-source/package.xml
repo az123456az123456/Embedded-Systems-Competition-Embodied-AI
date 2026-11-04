@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>acg138_fpga_map_bridge</name><version>0.1.0</version>
+  <description>Conservative OccupancyGrid crop and existing ACG138 NAV2 Ethernet planner bridge. No motor commands.</description>
+  <maintainer email="robot@example.invalid">ACG138 robot project</maintainer>
+  <license>Apache-2.0</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend><depend>nav_msgs</depend><depend>geometry_msgs</depend>
+  <depend>std_msgs</depend><depend>tf2</depend><depend>tf2_ros</depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>ament_index_python</exec_depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

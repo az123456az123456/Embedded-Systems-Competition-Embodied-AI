@@ -1,0 +1,63 @@
+{
+  "status": "PASS",
+  "case_count": 1,
+  "cancel_records": 1,
+  "qualified_shutdown_samples": 1,
+  "temporary_parser_idle_limit_ns": 1000,
+  "distribution": {
+    "parser_first_idle": {
+      "n": 1,
+      "min_ns": 110.0,
+      "median_ns": 110.0,
+      "max_ns": 110.0,
+      "max_case": "nav3_phase0",
+      "max_frame": 1
+    },
+    "gmii_eof": {
+      "n": 1,
+      "min_ns": 118.0,
+      "median_ns": 118.0,
+      "max_ns": 118.0,
+      "max_case": "nav3_phase0",
+      "max_frame": 1
+    },
+    "rgmii_first_idle_high": {
+      "n": 1,
+      "min_ns": 138.0,
+      "median_ns": 138.0,
+      "max_ns": 138.0,
+      "max_case": "nav3_phase0",
+      "max_frame": 1
+    },
+    "rgmii_last_fcs_high": {
+      "n": 1,
+      "min_ns": 146.0,
+      "median_ns": 146.0,
+      "max_ns": 146.0,
+      "max_case": "nav3_phase0",
+      "max_frame": 1
+    },
+    "rgmii_sfd_high": {
+      "n": 1,
+      "min_ns": 2354.0,
+      "median_ns": 2354.0,
+      "max_ns": 2354.0,
+      "max_case": "nav3_phase0",
+      "max_frame": 1
+    }
+  },
+  "source_unchanged": true,
+  "source_file_count": 158,
+  "official_IDDR_model": true,
+  "real_status_consumers": true,
+  "real_RV32": false,
+  "coverage_not_run": [
+    "full 810-record regression",
+    "full L7",
+    "SDF/PVT",
+    "physical hardware",
+    "full SDF back-annotated simulation"
+  ],
+  "prior_snapshot_evidence": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-13-status-snapshot/tests/results/result.json",
+  "physical_timing_note": "This functional smoke does not supersede PNR reports or establish a physical bound."
+}

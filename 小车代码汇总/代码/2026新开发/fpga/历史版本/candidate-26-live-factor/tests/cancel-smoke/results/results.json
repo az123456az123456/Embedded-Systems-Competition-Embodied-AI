@@ -1,0 +1,502 @@
+{
+  "trials": [
+    {
+      "case": "nav3_phase0",
+      "expect": "off",
+      "options": {
+        "MODE": 0,
+        "PHASE": 0
+      },
+      "returncode": 0,
+      "wall_s": 1.4100611330068205,
+      "failures": [],
+      "waveform_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/nav3_phase0/trace.vcd",
+      "boundary_checks": [
+        {
+          "check": "no_direction_overlap_observed",
+          "pass": true,
+          "time_ps": 190200000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "000",
+          "owner_reason": 2,
+          "owner_event_id": 1,
+          "nav_epoch": 3,
+          "nav_live": 0,
+          "drive_live": 0
+        },
+        {
+          "check": "real_motor_status_and_NAV1_consumer_exercised",
+          "pass": true,
+          "time_ps": 194240000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "000",
+          "owner_reason": 1,
+          "owner_event_id": 2,
+          "nav_epoch": 4,
+          "nav_live": 0,
+          "drive_live": 0
+        }
+      ],
+      "records": 1,
+      "hard_event_count": 1,
+      "qualified": 1,
+      "latencies_ns": [
+        110.0
+      ],
+      "telemetry": {
+        "status": "PASS",
+        "packets": 2,
+        "same_valid_bundle_and_crc_ok": true,
+        "NAV1_source": "explicit synthetic changing marker; not RV32",
+        "real_motor_ACK_source": true
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "nav3_phase13",
+      "expect": "off",
+      "options": {
+        "MODE": 0,
+        "PHASE": 13
+      },
+      "returncode": 0,
+      "wall_s": 1.412574839006993,
+      "failures": [],
+      "waveform_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/nav3_phase13/trace.vcd",
+      "boundary_checks": [
+        {
+          "check": "no_direction_overlap_observed",
+          "pass": true,
+          "time_ps": 190213000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "000",
+          "owner_reason": 2,
+          "owner_event_id": 1,
+          "nav_epoch": 3,
+          "nav_live": 0,
+          "drive_live": 0
+        },
+        {
+          "check": "real_motor_status_and_NAV1_consumer_exercised",
+          "pass": true,
+          "time_ps": 194253000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "000",
+          "owner_reason": 1,
+          "owner_event_id": 2,
+          "nav_epoch": 4,
+          "nav_live": 0,
+          "drive_live": 0
+        }
+      ],
+      "records": 1,
+      "hard_event_count": 1,
+      "qualified": 1,
+      "latencies_ns": [
+        107.0
+      ],
+      "telemetry": {
+        "status": "PASS",
+        "packets": 2,
+        "same_valid_bundle_and_crc_ok": true,
+        "NAV1_source": "explicit synthetic changing marker; not RV32",
+        "real_motor_ACK_source": true
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "nva1_phase1",
+      "expect": "off",
+      "options": {
+        "MODE": 3,
+        "PHASE": 1
+      },
+      "returncode": 0,
+      "wall_s": 1.3991043249989161,
+      "failures": [],
+      "waveform_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/nva1_phase1/trace.vcd",
+      "boundary_checks": [
+        {
+          "check": "no_direction_overlap_observed",
+          "pass": true,
+          "time_ps": 190201000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "000",
+          "owner_reason": 4,
+          "owner_event_id": 1,
+          "nav_epoch": 3,
+          "nav_live": 0,
+          "drive_live": 0
+        },
+        {
+          "check": "real_motor_status_and_NAV1_consumer_exercised",
+          "pass": true,
+          "time_ps": 194241000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "000",
+          "owner_reason": 1,
+          "owner_event_id": 2,
+          "nav_epoch": 4,
+          "nav_live": 0,
+          "drive_live": 0
+        }
+      ],
+      "records": 1,
+      "hard_event_count": 1,
+      "qualified": 1,
+      "latencies_ns": [
+        111.0
+      ],
+      "telemetry": {
+        "status": "PASS",
+        "packets": 2,
+        "same_valid_bundle_and_crc_ok": true,
+        "NAV1_source": "explicit synthetic changing marker; not RV32",
+        "real_motor_ACK_source": true
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "nva1_phase16",
+      "expect": "off",
+      "options": {
+        "MODE": 3,
+        "PHASE": 16
+      },
+      "returncode": 0,
+      "wall_s": 1.392046566994395,
+      "failures": [],
+      "waveform_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/nva1_phase16/trace.vcd",
+      "boundary_checks": [
+        {
+          "check": "no_direction_overlap_observed",
+          "pass": true,
+          "time_ps": 190216000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "000",
+          "owner_reason": 4,
+          "owner_event_id": 1,
+          "nav_epoch": 3,
+          "nav_live": 0,
+          "drive_live": 0
+        },
+        {
+          "check": "real_motor_status_and_NAV1_consumer_exercised",
+          "pass": true,
+          "time_ps": 194256000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "000",
+          "owner_reason": 1,
+          "owner_event_id": 2,
+          "nav_epoch": 4,
+          "nav_live": 0,
+          "drive_live": 0
+        }
+      ],
+      "records": 1,
+      "hard_event_count": 1,
+      "qualified": 1,
+      "latencies_ns": [
+        110.0
+      ],
+      "telemetry": {
+        "status": "PASS",
+        "packets": 2,
+        "same_valid_bundle_and_crc_ok": true,
+        "NAV1_source": "explicit synthetic changing marker; not RV32",
+        "real_motor_ACK_source": true
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "duplicate_0",
+      "expect": "duplicate",
+      "options": {
+        "KEY_CASE": 1,
+        "MODE": 0
+      },
+      "returncode": 0,
+      "wall_s": 1.43735245600692,
+      "failures": [],
+      "waveform_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/duplicate_0/trace.vcd",
+      "boundary_checks": [
+        {
+          "check": "no_direction_overlap_observed",
+          "pass": true,
+          "time_ps": 192560000,
+          "frame_id": 2,
+          "cdc_generation": 2,
+          "outputs": "000",
+          "owner_reason": 2,
+          "owner_event_id": 1,
+          "nav_epoch": 3,
+          "nav_live": 0,
+          "drive_live": 0
+        },
+        {
+          "check": "real_motor_status_and_NAV1_consumer_exercised",
+          "pass": true,
+          "time_ps": 196600000,
+          "frame_id": 2,
+          "cdc_generation": 2,
+          "outputs": "000",
+          "owner_reason": 1,
+          "owner_event_id": 2,
+          "nav_epoch": 4,
+          "nav_live": 0,
+          "drive_live": 0
+        }
+      ],
+      "records": 2,
+      "hard_event_count": 1,
+      "qualified": 1,
+      "latencies_ns": [
+        110.0
+      ],
+      "telemetry": {
+        "status": "PASS",
+        "packets": 2,
+        "same_valid_bundle_and_crc_ok": true,
+        "NAV1_source": "explicit synthetic changing marker; not RV32",
+        "real_motor_ACK_source": true
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "duplicate_3",
+      "expect": "duplicate",
+      "options": {
+        "KEY_CASE": 1,
+        "MODE": 3
+      },
+      "returncode": 0,
+      "wall_s": 1.4250147589918924,
+      "failures": [],
+      "waveform_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/duplicate_3/trace.vcd",
+      "boundary_checks": [
+        {
+          "check": "no_direction_overlap_observed",
+          "pass": true,
+          "time_ps": 192560000,
+          "frame_id": 2,
+          "cdc_generation": 2,
+          "outputs": "000",
+          "owner_reason": 4,
+          "owner_event_id": 1,
+          "nav_epoch": 3,
+          "nav_live": 0,
+          "drive_live": 0
+        },
+        {
+          "check": "real_motor_status_and_NAV1_consumer_exercised",
+          "pass": true,
+          "time_ps": 196600000,
+          "frame_id": 2,
+          "cdc_generation": 2,
+          "outputs": "000",
+          "owner_reason": 1,
+          "owner_event_id": 2,
+          "nav_epoch": 4,
+          "nav_live": 0,
+          "drive_live": 0
+        }
+      ],
+      "records": 2,
+      "hard_event_count": 1,
+      "qualified": 1,
+      "latencies_ns": [
+        110.0
+      ],
+      "telemetry": {
+        "status": "PASS",
+        "packets": 2,
+        "same_valid_bundle_and_crc_ok": true,
+        "NAV1_source": "explicit synthetic changing marker; not RV32",
+        "real_motor_ACK_source": true
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "bad_fcs",
+      "expect": "reject",
+      "options": {
+        "KEY_CASE": 2
+      },
+      "returncode": 0,
+      "wall_s": 1.4471663139993325,
+      "failures": [],
+      "waveform_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/bad_fcs/trace.vcd",
+      "boundary_checks": [
+        {
+          "check": "no_direction_overlap_observed",
+          "pass": true,
+          "time_ps": 190200000,
+          "frame_id": 1,
+          "cdc_generation": 0,
+          "outputs": "f0e",
+          "owner_reason": 0,
+          "owner_event_id": 0,
+          "nav_epoch": 2,
+          "nav_live": 1,
+          "drive_live": 1
+        },
+        {
+          "check": "real_motor_status_and_NAV1_consumer_exercised",
+          "pass": true,
+          "time_ps": 194240000,
+          "frame_id": 1,
+          "cdc_generation": 0,
+          "outputs": "000",
+          "owner_reason": 1,
+          "owner_event_id": 1,
+          "nav_epoch": 3,
+          "nav_live": 0,
+          "drive_live": 0
+        }
+      ],
+      "records": 1,
+      "hard_event_count": 0,
+      "qualified": 0,
+      "latencies_ns": [],
+      "telemetry": {
+        "status": "PASS",
+        "packets": 2,
+        "same_valid_bundle_and_crc_ok": true,
+        "NAV1_source": "explicit synthetic changing marker; not RV32",
+        "real_motor_ACK_source": true
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "wrong_session",
+      "expect": "reject",
+      "options": {
+        "KEY_CASE": 3
+      },
+      "returncode": 0,
+      "wall_s": 1.422715013002744,
+      "failures": [],
+      "waveform_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/wrong_session/trace.vcd",
+      "boundary_checks": [
+        {
+          "check": "no_direction_overlap_observed",
+          "pass": true,
+          "time_ps": 190200000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "f0e",
+          "owner_reason": 0,
+          "owner_event_id": 0,
+          "nav_epoch": 2,
+          "nav_live": 1,
+          "drive_live": 1
+        },
+        {
+          "check": "real_motor_status_and_NAV1_consumer_exercised",
+          "pass": true,
+          "time_ps": 194240000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "000",
+          "owner_reason": 1,
+          "owner_event_id": 1,
+          "nav_epoch": 3,
+          "nav_live": 0,
+          "drive_live": 0
+        }
+      ],
+      "records": 1,
+      "hard_event_count": 0,
+      "qualified": 0,
+      "latencies_ns": [],
+      "telemetry": {
+        "status": "PASS",
+        "packets": 2,
+        "same_valid_bundle_and_crc_ok": true,
+        "NAV1_source": "explicit synthetic changing marker; not RV32",
+        "real_motor_ACK_source": true
+      },
+      "status": "PASS"
+    },
+    {
+      "case": "busy_two_new_tasks",
+      "expect": "busy",
+      "options": {
+        "BUSY": 1,
+        "SETTLE": 1
+      },
+      "returncode": 0,
+      "wall_s": 4.968106949003413,
+      "failures": [],
+      "waveform_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/busy_two_new_tasks/trace.vcd",
+      "boundary_checks": [
+        {
+          "check": "no_direction_overlap_observed",
+          "pass": true,
+          "time_ps": 599600000,
+          "frame_id": 178,
+          "cdc_generation": 174,
+          "outputs": "000",
+          "owner_reason": 4,
+          "owner_event_id": 2,
+          "nav_epoch": 5,
+          "nav_live": 0,
+          "drive_live": 0
+        },
+        {
+          "check": "real_motor_status_and_NAV1_consumer_exercised",
+          "pass": true,
+          "time_ps": 603640000,
+          "frame_id": 178,
+          "cdc_generation": 174,
+          "outputs": "000",
+          "owner_reason": 1,
+          "owner_event_id": 3,
+          "nav_epoch": 6,
+          "nav_live": 0,
+          "drive_live": 0
+        }
+      ],
+      "records": 174,
+      "hard_event_count": 2,
+      "qualified": 2,
+      "latencies_ns": [
+        102.0,
+        110.0
+      ],
+      "telemetry": {
+        "status": "PASS",
+        "packets": 2,
+        "same_valid_bundle_and_crc_ok": true,
+        "NAV1_source": "explicit synthetic changing marker; not RV32",
+        "real_motor_ACK_source": true
+      },
+      "busy_ifg": {
+        "sampled_adjacent_intervals": 177,
+        "strict_12_count": 177,
+        "two_distinct_legal_tasks": true,
+        "legal_preceding_ifg": [
+          12,
+          12
+        ]
+      },
+      "status": "PASS"
+    }
+  ],
+  "scope": "targeted functional simulation only; no SDF/PVT/physical latency guarantee",
+  "temporary_limit_ns": 1000,
+  "source_manifest": {
+    "baseline_manifest": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/design-manifest.json",
+    "baseline_manifest_sha256": "6edfbc82316867bacfc8af4b6e887e707dfd2329e9e095e5116f461c35daacc3",
+    "testbench_sha256": "89dfe70f9395af79f8cc1046c73f412bf15dccadd68a09caba627a7e5f3f71f7",
+    "setup_tasks_sha256": "b7576a0d3bd4166f9d637d5acc18e8466c72c23cf05294720f11ebe035db5d39"
+  }
+}

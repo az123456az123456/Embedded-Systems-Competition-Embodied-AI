@@ -1,0 +1,88 @@
+ACG138 RK3588 感知更新 v34（2026-10-28）
+
+一、文件与作用
+robot-perception-v34-rk3588-20261028.tar.gz：可拷到现有RK系统安装的ARM64更新，包含新INT8模型、对应标签、推理程序、匹配的原v33导航程序、安装/回退及测速工具。
+acg138-perception-v34-source-20261028.zip：本次源码、模型导出/量化脚本、模型来源说明、离线验证记录和上述安装包。
+不需要重装Buildroot，不需要烧录FPGA，不需要更换APK。继续使用现有摄像头/IMU/超声波/手机功能。控制、导航、车辆参数、Wi-Fi驱动、配对码、截图文件、地图不因本次更新而改变。
+更新针对已安装robot-perception + robot-navigation的完整统一环境；安装器校验已知配套版本，拒绝不完整或混装文件，不启动任何电机。
+
+二、安装（先停车并退出现有窗口和导航进程）
+把tar.gz拷至板子/root，然后逐行执行：
+cd /root
+tar -xzf robot-perception-v34-rk3588-20261028.tar.gz
+cd /root/robot-perception-v34-rk3588-20261028
+sh install.sh --check-only
+sh install.sh
+sh /root/perception-dashboard/run-dashboard.sh -0
+横置仍使用同一入口：sh /root/perception-dashboard/run-dashboard.sh -90
+不要只拷贝单个可执行文件或只替换模型；需要同时更新匹配标签和导航的dashboard校验信息。
+安装器保留原run-perception.sh的相机准备、帧率、桌面设置，仅改已识别的模型及标签默认赋值；环境变量MODEL_PATH/LABELS_PATH或命令行--model/--labels仍可以显式覆盖。若使用自定义覆盖，要同时给出匹配的模型和标签。
+
+启动时检查：
+Model: /root/robot-perception/model/acg138-best-e7f26253-int8-rk3588.rknn
+PERCEPTION v34-model-fair-preprocess
+MODEL ... input=640x640x3 ... quantized_outputs=9/9
+INPUT ... preprocess=cached-rb64 ...（或CPU等价回退）
+新模型SHA256：46aa5ac6ba8f4869225636f5fce3a571cf978ae4abe68d153045d27627ff371a。
+
+三、新模型事实与验证范围
+原文件：/home/tan/Downloads/best.pt；SHA256=e7f262533220fd682c32822923d88769964c11fb8f1dc11e4c468bbd520eb5e4。
+它实际是YOLOv8n尺度（depth=.33,width=.25，3,140,919参数），不是旧的YOLOv8s。保留这个新训练结果的真实结构，没有改名冒充s。
+RKNN：RK3588 INT8，640×640，13类；应用输入RGB UINT8 NHWC，补边114，/255由模型内部执行，不能重复归一化。9输出检测头与原生Detect在8400个预测上的数值等价已核对。
+类别顺序仍为 helmet,no_helmet,no_vest,person,vest,Gauge,Hole,Leak,rust,Glass_Bottles,can,plastic,backpack；no_vest仍为2，现有手机截图功能可继续匹配。
+校准使用本机历史数据集的320张train图，覆盖每类至少20图；验证图与这批量化校准图分开。但新checkpoint记录的训练源在Windows E盘，本机没有完整副本，不能证明本地验证图从未被新模型训练见过。因此对比属于导出/量化数值检查，不是新模型mAP或现场精度认证。
+60图PC模拟：量化输出保留ONNX参考74个检测中的72个（97.3%），INT8共86框，阈值附近仍存在新增/丢失框；这不是“精度97.3%”。该批图没有检出no_vest，不能据此承诺该类检出效果。MMSE可选试验耗时过长已中止，不存在已完成的MMSE性能对比。
+新模型本身更轻，后续帧率变化应区分“换模型”和“流水线优化”两部分。
+
+四、当前瓶颈与四项策略的实际改动
+用户旧日志的三个worker单眼平均周期约54.6ms，其中resize/letterbox约16.8ms、NPU run约33.6ms、取输出约4ms。camera color_ms约5.94ms是NV12到RGB，单独计时；wait_ms主要等相机，不能直接视作CPU计算。
+busy_ms是worker累计的CPU+输入+NPU+输出总忙时，不是NPU硬件占用率；不能把累计busy_ms直接除最近window_ms。单眼55ms×三worker约54.5眼/秒，完整双目理论约27.3对/秒；单眼降到40ms约37.5对/秒，还受约32fps采集限制。不会承诺70个完整双目结果/秒。
+
+1. 预处理
+旧代码未使用RGA预处理，主要CPU双线性RGB缩放+114补边+写复用RKNN输入。原始camera颜色转换和模型内部归一化不在这17ms里。
+默认CPU使用共享定点权重、R/B打包运算，缓存几何和输入缓冲，保持旧参考逐字节一致。三worker主机基准预处理均值约下降12.1%，这不是RK整机FPS实测。
+新增PERCEPTION_PREPROCESS=auto/rga路径：动态加载板上已有librga，检查IM2D API和uncached DMA heap；复用每worker的DMA缓冲，RGA做精确RGB letterbox/resize。第一帧与CPU参考核对，插值差异过大或API/heap/geometry/运行错误都回退CPU并重写整个输入。
+由于当前相机帧是CPU RGB vector，RGA路径有ROI复制及输出复制两次明确拷贝，日志zero_copy=no；保留原RKNN persistent IO memory，不谎称端到端零拷贝。不替换系统RGA/RKNN库。默认先CPU，RGA需要板上A/B确认确实更快且输出正确再使用。
+新增PREPROCESS子项和worker均值：plan/fill/resize/rga/copy/validate；输入input_ms、run_ms、output_ms等保留。
+
+2. 左右眼调度
+原本已经是3个持久NPU worker从全局队列主动取任务，最多2个双目帧在途，问题是每对固定先L后R。现在交替首眼，优先补齐已经开工的最老配对，并保留任务原始source/frame/time。右眼等待不会凭空消失，交替减少固定眼长期吃等待的偏置；记录两眼实际queue均值。
+
+3. 配对结果
+保持同帧两眼完成才发布给界面/手机跟随。现有跟随与图像框对齐共用一套source timestamp，混用上一帧另一眼会把不同时间的框当同步观测，且不提高真实NPU完成吞吐，所以本轮不默认引入混合帧临时配对。
+超过350ms的整对不再发布可用结果；记录published_pairs、expired_pairs、out_of_order_pairs、每眼完成任务数/eye_fps。result_fps只计算真实完整双目发布；eye_fps不会冒充双目帧率。
+旧discarded_pairs主要是较旧配对晚于新配对完成，不是50ms超时。新日志把过龄和乱序等原因拆开。
+
+4. ai_skipped
+原本没有固定比例跳帧。相机只有一个latest帧槽，容量释放时取最新帧，ai_skipped是期间被新帧替代的ID数量。该策略保留，处理更快会自然减少被替代帧数，不通过排长队制造更高计数。
+新策略只撤销还没任何一眼开始且已经过龄的pair；已开始的pair完成后依据真实源龄决定可否发布。队列保持有界，最多2个双目帧，不把深度无限拉大。新增capture_superseded等统计便于区分容量不足、过龄和乱序。
+
+五、板上对比
+先退出当前窗口；使用安装包内benchmark-perception-v34.sh（--help查看）分别测同一新模型的CPU默认、旧pixel参考和RGA可选路径。工具不会控制电机；只在程序都退出后运行独立窗口。至少让窗口/画面内容、手机连接状态、CPU模式、散热相同，比较稳定阶段。
+默认CPU：PERCEPTION_PREPROCESS=cpu sh /root/perception-dashboard/run-dashboard.sh -0
+旧像素预处理：PERCEPTION_PREPROCESS=pixel sh /root/perception-dashboard/run-dashboard.sh -0
+可选RGA：PERCEPTION_PREPROCESS=rga sh /root/perception-dashboard/run-dashboard.sh -0
+RGA若显示fallback，就没有启用硬件预处理；不能把回退结果当RGA成绩。首次准备/输出校验会增加启动帧耗时，稳定统计应剔除热身。
+原来的CPU大核performance设置仍可使用，更新包不擅自改频率、电压或温控。当前真实FPS、NPU占用、热稳定性必须在板上复测，本机没有连接你的RK3588，不能给出虚构的提升后数值。
+
+六、FPGA卸载评估
+本轮不更换FPGA图像工程：目前RAW图先由RK ISP产生用于识别的RGB/NV12。直接在FPGA RAW线上做resize并不能等价代替ISP后的RGB预处理，需考虑Bayer去马赛克/曝光颜色、双目ROI、采样坐标、量化与传输协议。模型normalize已内置RKNN，再在FPGA做会重复归一化。
+若RGA/CPU优化后预处理仍占主导，再评估独立模型输入通道：双目640×640×3×2×32fps约78.6MB/s新增模型输入有效负载，还要与现有预览流共享RGMII，需先核算剩余带宽、缓存、时序/资源。可通过只传有效内容/复用已有图像数据等重新设计；不会直接把这个数量当作本板可用带宽。
+KR260研究和此Gowin平台/DPU/接口/ISP不同，不能搬用研究倍数承诺；没有本次可直接复用且已验证的FPGA预处理位流。
+
+七、回退
+退出窗口与导航后，执行安装器打印的完整回退命令：
+sh /root/robot-perception-v34-rk3588-20261028/rollback.sh /root/robot-perception-v34-backup.XXXXXX
+XXXXXX使用安装时真实备份目录。它恢复原可执行程序、run-perception模型默认、匹配校验及原资产状态，保留后来修改的导航配置/地图/手机配对等。版本化新资产原先不存在时会删除；旧模型文件从未覆盖。
+安装/回退做了失败恢复和幂等验证；多文件更新不是突然断电下的文件系统事务。若更新中意外断电，保持程序停止，用原备份恢复，勿绕过配套校验。
+
+八、参考资料（调研资料，不复制其代码、不当作本车实测）
+https://github.com/yuunnn-w/rknn-cpp-yolo
+该示例展示RGA/RKNN，README仍要求自行实现并发threadpool；不是可直接移植的双目配对调度。其仓库许可与README表述不一致，本次按官方API独立实现。
+https://github.com/vicharak-in/Axon-NPU-Guide
+https://blog.vicharak.in/3-models-walk-into-an-npu-fastsam-yolov8n-nanodet-pushing-the-axon/
+借鉴全局待处理任务思路；单模型/多模型演示和本车同帧双目协议不同。
+https://github.com/airockchip/librga/blob/main/docs/Rockchip_FAQ_RGA_EN.md
+官方说明buffer导入/复用、内存分配和缓存代价；本更新保持与BSP匹配运行库，缺支持回退。
+
+附：完整FPGA资源/带宽评估见同源码包 verification/FPGA预处理卸载资源评估.txt；这里只完成评估，没有生成新FPGA位流。

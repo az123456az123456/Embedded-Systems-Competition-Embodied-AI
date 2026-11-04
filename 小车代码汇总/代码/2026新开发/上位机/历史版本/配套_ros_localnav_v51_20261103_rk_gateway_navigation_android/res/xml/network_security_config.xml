@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- The client additionally restricts endpoints to private IPv4 LAN addresses. -->
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>

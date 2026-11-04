@@ -1,0 +1,31 @@
+本功能并入 robot-fpga-integration-20261102，随 deploy/run-stack.sh 启动和退出。
+板端模块目录：/root/robot-fpga-integration-20261102/alerts
+
+检测与播报对应：
+NO-Hardhat：检测到未穿安全帽
+NO-Mask：检测到未穿口罩
+NO-Safety Vest：检测到未穿反光衣
+
+连续至少 3 个不同检测结果、持续 300 ms 后播报；同类成功播报后间隔 15 秒。
+多类依次播放。忽略演示、低于阈值、过期和未完成检测结果。
+音频是板端本地 WAV，无需联网；自动选择已连接 HDMI 对应的音频输出。
+告警仅读取现有视频元数据，不连接控制会话，不发送电机指令。
+
+启动：
+sh /root/robot-fpga-integration-20261102/deploy/run-stack.sh
+
+临时关闭语音后启动：
+PPE_VOICE_ENABLED=0 sh /root/robot-fpga-integration-20261102/deploy/run-stack.sh
+
+参数文件：alerts/config.json
+min_confidence 默认 0.35；confirm_ms 默认 300；cooldown_ms 默认 15000；max_age_ms 默认 1000。
+修改后重新启动集成程序生效。
+
+状态：/run/robot-ppe-voice-status.json
+日志：/tmp/robot-ppe-voice.log，持久化在 /acg138-ros2/data/logs/integration/robot-ppe-voice.log。
+
+启动器原件备份：deploy/run-stack.sh.before-ppe-voice-20261102。
+回退时先退出集成程序，再用备份恢复 deploy/run-stack.sh。
+不会安装独立开机服务，不会修改 yolo 别名，不会替换感知模型或原有感知二进制。
+
+音频文案沿用用户给定措辞，生成使用 edge-tts；运行时不依赖该工具。

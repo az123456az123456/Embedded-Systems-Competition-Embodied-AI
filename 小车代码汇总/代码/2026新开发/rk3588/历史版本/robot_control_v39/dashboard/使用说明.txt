@@ -1,0 +1,41 @@
+RK 统一窗口导航视图 v16.1-navigation-ui-yolo11-30fps
+
+这是当前完整 v12.5 窗口上的导航显示更新。左侧摄像头卡片顶部有“摄像头 / 导航”两个选项。
+切换只改变本地显示，不会停止采集、YOLO 推理、手机视频、IMU、超声波或电机通信。
+原左右布局、右侧姿态角与三轴加速度曲线、下方前/左/右超声波距离保留。
+鼠标和触摸均支持，原启动参数 -0 / -90 的坐标变换保留。
+
+地图来源是同一 RK 上运行的 /root/robot-navigation/ 导航进程。
+默认读取 /tmp/robot-navigation/map.json，运行导航统一入口后自动更新。
+单独启动原 YOLO 而没有运行导航进程时，导航页显示“等待导航地图”。
+地图文件不存在/损坏、快照超过 2 秒、位姿失效或传感器无效时，隐藏实时车位并明确标记；
+已收到的历史栅格可灰显，不会把历史位置当成实时位置。
+地图展示栅格、车位/朝向、FPGA A* 路线、行驶轨迹及目标点；此页仅显示，不发运动命令。
+
+性能设计：独立线程以 2 Hz 读取和解析地图，UI 主线程只以 2 Hz trylock 复制快照。
+不会每帧读取文件，不在摄像头/NPU线程解析 JSON；内存分配与地图路径数量有上限。
+原 YOLO11s INT8、每眼640×640、30 FPS采集配置、三NPU流水线、目标框图像对齐、
+persistent UINT8 输入、SIMD JPEG 手机预览、IMU 零偏处理均保持原实现。
+STAGE 行新增 view=camera/navigation 与 nav_map=live/stale/waiting；导航页 video_submit_fps 为0是本地没有显示摄像头，PERF/手机视频仍继续。
+
+默认轮组参数与当前 v16 配置统一为 left_mask=10 / invert_mask=15。
+手机界面对应第一排 M2、M4；第二排四个全选。正式恢复包的启动器原先已经显式传入这组参数。
+原手机协议、配对持久化、使能与停车逻辑没有更改。
+
+源码来源验证：旧目录缺失 v12.5 源码，所以使用原 v12.4 发布源码和历史 v12.5 实际编辑记录恢复。
+在加入本次导航视图前，BSP 编译输出与已发布 v12.5 二进制逐字节一致：
+556ea3532034ba44d3083ea5e0e15b705ecbbbb873d7d139794f13d74f1a9274。
+详细基线记录见 reports/recovered-v125-source.json。
+本次实际改动集中在 dashboard/main 的导航页面和新 navigation_map 读取模块。
+
+构建：
+  make -j4
+  sh scripts/build-arm64.sh -j4
+交叉工具链与开发库自动从本仓库对应 BSP/YOLO/gst-dev 查找，也可按脚本中的环境变量覆盖。
+运行库仍使用原恢复包中的 Wayland、RKNN 及板上 C运行库，无新增 Python/Qt/浏览器依赖。
+新的 ARM64 程序位于 build/perception-dashboard.aarch64，正式安装由外层统一安装包处理。
+
+验证：原IMU、预处理、相机、流水线、图像框对齐、SNS1测试，原手机HTTP/视频/控制回归，
+真实本地Wayland鼠标公共坐标变换+触摸切换、0/90度绘制，Android JPEG读取兼容；
+地图严格解析、过期/无效状态、原子文件替换与session更新及ASan/UBSan测试。
+截图为程序仿真数据，实际新板/实车和真实 FPS 尚未验证。

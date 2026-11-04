@@ -1,0 +1,19 @@
+RK 安装状态（2026-11-03）
+
+已安装到原 dh 使用的 /opt/acg138_exploration_20261102 overlay。
+串口已释放，可以打开 PuTTY，执行 dh 后重新开始探索。
+安装完成后未自动启动程序，未发送电机运动指令。
+
+已经生效的修改：
+1. 探索第一次起步允许一次经新鲜雷达复核的低速直行探步，最多约8cm或3秒。
+   只临时放行少量未知格/孤立噪点，不改写地图；真实近回波仍会阻止运动。
+2. 已安装 FPGA 后退净空确认所需的 RK 桥接程序。
+   当前 v52 FPGA 可以继续使用；新增 FPGA 后退逻辑要烧录新位流后才生效。
+
+验证：原生 ROS 2 编译2包通过；探索回归341项、后方净空11项通过。
+安装文件 SHA256、Python 导入、动态库依赖已核对。
+安装明细与哈希：reports/install-summary.json
+最终起步逻辑复核：reports/install-straight-envelope.console
+备份：/root/model-validation-last-20261102/before-obstacle-reverse-v53-20261103/before.tgz
+
+FPGA 本轮尚未烧录，未进行实车运动验收。

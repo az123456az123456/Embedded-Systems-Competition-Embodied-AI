@@ -1,0 +1,8 @@
+target_sources(acg138_map_core PRIVATE src/nav3_ethernet.cpp)
+if(BUILD_TESTING)
+  add_library(nav3_guard_oracle STATIC tests/reference/nav3/candidate26/softcore/firmware/nav_exec_protocol.c)
+  add_executable(test_nav3_client tests/test_nav3_client.cpp)
+  target_compile_options(test_nav3_client PRIVATE -Wall -Wextra -Wpedantic)
+  target_link_libraries(test_nav3_client PRIVATE acg138_map_core nav3_guard_oracle nav3_golden_oracle)
+  add_test(NAME nav3_client_handshake COMMAND test_nav3_client ${CMAKE_CURRENT_BINARY_DIR}/nav3-client-results)
+endif()

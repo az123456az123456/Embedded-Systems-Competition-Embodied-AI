@@ -1,0 +1,125 @@
+ROS 2 rootfs 在哪里、怎么构建（2026-10-29）
+
+一、当前实际状态
+源码目录：/home/tan/qiansai/rk3588/rplidar_ros2_v37
+构建定义：deploy/Dockerfile
+构建脚本：deploy/build-image.sh
+导出脚本：deploy/export-userspace.sh
+现有交付包：outputs/.../rplidar-v37/acg138-rplidar-ros2-v37-20261029.tar.gz
+
+该交付包的顶层目录是 rplidar-ros2-v37，包含源码、配置、脚本与小工具，不含
+已完成的 ROS rootfs。现有工作区尚无 acg138-jazzy-v37-rootfs.tar.gz。
+本次未安装Docker、未拉镜像、未完成ROS节点编译或ROS端到端实机测试。
+当前这台开发电脑没检测到docker/podman，所在分区仅约5GiB空闲，不能直接
+运行完整镜像构建并把它描述成已完成。建议有至少20GiB可用存储的开发电脑，
+同时确认Docker数据目录与导出目标目录都有足够空间；仅cd到外接盘不能移动
+Docker默认的/var/lib/docker。实际需求由镜像层、构建缓存及rootfs大小决定。
+
+二、不要混淆两种 rootfs
+1. Buildroot系统rootfs：板子当前正常使用的系统，本流程不重编译、不刷写。
+2. 本项目ROS rootfs：Ubuntu24.04/Jazzy ARM64独立用户空间，复用原Linux6.1.75。
+   开发电脑导出为：<当前源码目录>/acg138-jazzy-v37-rootfs.tar.gz
+   同目录校验文件：acg138-jazzy-v37-rootfs.tar.gz.sha256
+   RK默认安装位置：/userdata/acg138-ros2/rootfs
+   RK地图保存位置：/userdata/acg138-ros2/maps
+   RK日志保存位置：/userdata/acg138-ros2/logs
+
+不要把该rootfs解压到RK的 /。Buildroot宿主没有Python3不影响这个方案，
+ROS需要的Python和Ubuntu运行库都在独立rootfs内，通过run-chroot.sh使用。
+不能把rootfs内的Ubuntu python/libc单独复制到Buildroot的/usr或/lib。
+
+三、开发电脑执行（不是RK终端）
+先按Docker官方文档安装Docker Engine与Buildx。需要能执行docker info，
+且构建器能构建linux/arm64。ARM64电脑可原生构建；x86电脑需QEMU/binfmt
+或ARM64构建节点。Docker Desktop通常已带仿真；仅BuildKit支持ARM64不一定
+表示docker run也能执行ARM64，因此先测试运行能力：
+
+  docker info
+  docker buildx inspect --bootstrap
+  docker run --rm --platform linux/arm64 --entrypoint uname ros:jazzy-ros-base-noble -m
+
+最后一条应输出aarch64；若exec format error，先按官方多平台文档配置QEMU/
+binfmt或改用ARM64开发机，再继续。本项目构建后的deb清单与ROS冒烟测试均需
+docker run能执行ARM64，不能忽略错误。Docker命令权限也须先配置正常。
+
+若直接使用当前工作区（扩容并准备Docker存储后）：
+  cd /home/tan/qiansai/rk3588/rplidar_ros2_v37
+
+若换另一台开发电脑，把整个rplidar_ros2_v37目录复制过去，或解压v37交付包，
+进入实际的rplidar-ros2-v37目录。后续脚本全部按自身目录定位，不依赖当前
+电脑的/home/tan前缀。
+
+记录官方镜像实际digest：
+  docker buildx imagetools inspect ros:jazzy-ros-base-noble
+首次构建：
+  sh deploy/build-image.sh
+
+构建输出的Docker镜像名：acg138-ros2:jazzy-v37
+报告目录：reports/image/，包含镜像ID与deb包版本。
+正式锁版时，可将真实digest设置为ROS_BASE后再构建；不要照抄虚构digest。
+构建会联网拉ROS/Ubuntu依赖，x86仿真编译较慢。任一步报错就停在该处检查，
+不能直接导出缺失ROS overlay的基础镜像。
+
+四、构建后先跑无真实硬件的ROS冒烟测试
+  mkdir -p reports/ros-smoke
+  docker run --rm --platform linux/arm64 --network none \
+    --mount "type=bind,src=$PWD/reports/ros-smoke,dst=/data" \
+    acg138-ros2:jazzy-v37 ros2 run acg138_bringup ros-smoke.sh
+
+预期输出PASS，且出现：
+  reports/ros-smoke/logs/ros-map-smoke.json
+  reports/ros-smoke/maps/smoke.yaml
+  reports/ros-smoke/maps/smoke.pgm
+验证链路是仿真LaserScan→slam_toolbox→OccupancyGrid→地图保存。
+该步骤不使能电机，不读雷达，不向FPGA下发目标。
+
+五、在开发电脑导出rootfs
+  sh deploy/export-userspace.sh acg138-jazzy-v37-rootfs.tar.gz
+  sha256sum -c acg138-jazzy-v37-rootfs.tar.gz.sha256
+
+脚本还会临时写一份未压缩tar，导出目标盘需同时容纳它和tar.gz。
+不能用docker save替代此步骤：docker save是镜像层归档，不能作为chroot
+根文件系统直接解压；本脚本使用docker export。
+
+六、复制并安装到RK3588
+把以下内容拷到板子：
+  /root/acg138-jazzy-v37-rootfs.tar.gz
+  /root/acg138-jazzy-v37-rootfs.tar.gz.sha256
+  /root/rplidar-ros2-v37/（整个v37源码/部署目录）
+
+RK终端执行：
+  cd /root/rplidar-ros2-v37
+  sh deploy/preflight.sh
+  df -h /userdata
+  sh deploy/install-userspace.sh /root/acg138-jazzy-v37-rootfs.tar.gz
+
+默认安装到/userdata/acg138-ros2/rootfs；至少4GiB空闲只是脚本最低门槛，
+实际应大于真实展开大小并另留地图/日志空间。安装脚本会拒绝覆盖已存在路径。
+若另选持久化ext4磁盘，可给install-userspace.sh第二参数指定rootfs目录，
+并在每次run-chroot.sh/exec-chroot.sh保持相同ROOTFS_DIR和DATA_DIR。
+
+先只验证雷达（C1固定460800）：
+  SERIAL_DEVICE=/dev/ttyUSB0 sh deploy/run-chroot.sh \
+    ros2 launch acg138_bringup scan.launch.py
+另一RK终端：
+  cd /root/rplidar-ros2-v37
+  sh deploy/exec-chroot.sh ros2 topic hz /scan
+
+退出前一个会话（Ctrl+C）后再运行建图：
+  SERIAL_DEVICE=/dev/ttyUSB0 sh deploy/run-chroot.sh
+另一RK终端：
+  cd /root/rplidar-ros2-v37
+  sh deploy/exec-chroot.sh ros2 topic hz /scan
+  sh deploy/exec-chroot.sh ros2 topic echo /map --once --field info
+  sh deploy/exec-chroot.sh ros2 run tf2_ros tf2_echo odom base_link
+  sh deploy/exec-chroot.sh ros2 run nav2_map_server map_saver_cli -f /data/maps/site01
+
+地图最终位于/userdata/acg138-ros2/maps/site01.yaml及site01.pgm。
+mapping默认地图桥dry_run=true、enable_plan=false，不自动启动电机导航。
+建图需真实编码器/IMU和正确TF；只看到/scan不代表移动建图已经正确。
+后续地图下发/重定位/导航切换遵循原README的单一规划器与协议验收步骤。
+
+官方参考：
+https://docs.docker.com/engine/install/ubuntu/
+https://docs.docker.com/build/building/multi-platform/
+本说明提供可执行的现有工程流程，不代表已在当前电脑构建成功或在RK上验收。

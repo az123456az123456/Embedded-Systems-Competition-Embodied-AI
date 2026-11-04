@@ -1,0 +1,39 @@
+{
+  "status": "FAIL",
+  "candidate": "candidate-26-live-factor",
+  "owner_sha256": "3b0da921c21cc67634e6a7ea9aff5e68b3eb9aa34b669500f0cc70755711a7c7",
+  "parent": "candidate-22-motor-pin-register",
+  "started_utc": "2026-11-01T09:45:09.707486+00:00",
+  "formal": {
+    "command": [
+      "yosys",
+      "-p",
+      "read_verilog nav_eq_lut4_sim.v /home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/nav_eq_lut.v miter.v; prep -top miter; flatten; sat -verify -prove mismatch 0 -set-def-inputs -show-inputs -show-outputs"
+    ],
+    "returncode": 0,
+    "elapsed_s": 0.05,
+    "log": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/results/formal.log",
+    "status": "PASS"
+  },
+  "compile": {
+    "command": [
+      "iverilog",
+      "-g2012",
+      "-s",
+      "tb_owner",
+      "-o",
+      "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/results/owner.vvp",
+      "nav_eq_lut4_sim.v",
+      "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/nav_eq_lut.v",
+      "owner_before.v",
+      "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/nav_owner_gate.v",
+      "tb_owner_equivalence.sv"
+    ],
+    "returncode": 8,
+    "elapsed_s": 0.03,
+    "log": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/results/compile.log"
+  },
+  "source_unchanged": true,
+  "scope": "All binary inputs combinational equivalence; actual complete owner dual instance with public MMIO and every-cycle output/key-state checks; ingress read transport modeled; no RV32, physical hardware or SDF.",
+  "finished_utc": "2026-11-01T09:45:09.792713+00:00"
+}

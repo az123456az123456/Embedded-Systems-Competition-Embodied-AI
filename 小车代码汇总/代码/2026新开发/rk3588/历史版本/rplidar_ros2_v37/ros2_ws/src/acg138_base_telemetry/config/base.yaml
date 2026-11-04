@@ -1,0 +1,15 @@
+base_telemetry:
+  ros__parameters:
+    interface: eth0
+    wheel_circumference_m: 0.20507
+    encoder_ticks_per_turn: 60527.7
+    encoder_signs: [-1, 1, -1, 1]
+    left_wheel_mask: 10
+    track_m: 0.180635
+    max_wheel_mps: 1.5
+    max_encoder_gap_s: 0.75
+    imu_yaw_sign: 1.0
+    odom_frame: odom
+    base_frame: base_link
+    imu_frame: imu_link
+    publish_direct_odom: false

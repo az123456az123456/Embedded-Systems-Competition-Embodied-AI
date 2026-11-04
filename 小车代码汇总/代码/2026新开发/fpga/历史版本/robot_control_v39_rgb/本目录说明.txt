@@ -1,0 +1,14 @@
+最新 FPGA 工程：robot_control_v39_rgb
+
+本目录是原有工程的独立副本；旧工程未删除或覆盖。
+工程：robot_control_v39_rgb.gprj；已生成的位流：robot_control_v39_rgb.fs。
+设备：GW5AT-LV60PG484AC1/I0；源码和固件初始化文件相对工程目录保留。
+Gowin IDE 打开工程后需要执行 project_settings.tcl；命令行在本目录执行 gw_sh build.tcl。
+Gowin IDE/编译器不是本目录的一部分。重新编译软核 C 固件还需要 RISC-V 交叉工具链。
+注意：部分 Makefile 验证目标引用原工作区下 integration/robot_rgb_v39；
+完整自动验证需原工作区及其工具依赖，不能保证脱离该工作区独立运行。
+本目录仅排除临时 build/、impl/、__pycache__/，其余源文件保留。
+对应 RK 与手机端版本、安装及回退见 v39_更新与替换说明.txt。
+源代码和位流匹配已发布的 v39 构建记录；实板画质及通信尚需验证。
+
+位流 SHA256：2cd171d365b1122dd83f5c77b458c977c3fdd6f83e914ab77ce6be29378e4917

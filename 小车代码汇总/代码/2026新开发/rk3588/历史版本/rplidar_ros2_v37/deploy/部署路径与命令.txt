@@ -1,0 +1,139 @@
+ACG138 Buildroot / RPLIDAR C1 / ROS 2 Jazzy 部署补充说明 v37
+日期：2026-10-29
+
+一、版本选择与现有系统
+优先 Jazzy。官方 Ubuntu24.04 ARM64 用户空间，支持到2029年5月；Humble
+对应Ubuntu22.04，支持到2027年5月。保留当前 Buildroot、Linux6.1.75、YOLO、
+IMU、网卡和电机程序，把ROS放进独立目录。这里不是刷Ubuntu新系统。
+
+当前 BSP kernel.config 的SHA256恰好与用户之前运行内核配置哈希一致：
+7114825305fb4b5f032a523d009ae4eaa321f1c816ff60f44eeaca3b9a0ec20f
+已开 namespace、cgroup device、seccomp、overlay、CP210x；未开VETH、BRIDGE、
+MEMCG、CGROUP_PIDS。Buildroot2024.02保存配置没有Docker，也没原生ROS包；
+Python保存配置未启用，但用户说板上有Python，具体版本以实机preflight为准。
+不能据此认定Docker现成可用。默认推荐chroot独立用户空间，后续再选OCI容器。
+
+Ubuntu24.04的glibc/标准C++库/Python3.12都留在rootfs内部。严禁把Ubuntu的
+/lib、ld-linux、libstdc++或.deb展开覆盖到Buildroot的系统目录；本BSP外部交叉
+工具链GCC10.3.1、glibc2.33不能直接加载按Noble编译的ROS包。
+
+二、先在板子做只读检查（不用stty、不写串口、不改权限）
+  cd /root/rplidar-ros2-v37
+  sh deploy/preflight.sh
+当前雷达固定460800；SDK直接设置termios，BusyBox stty不支持不是阻碍。
+preflight不读配对码、不输出Wi-Fi密码，不列出进程完整参数。
+
+三、在开发电脑构建ARM64用户空间（不要在2GiB RK3588上构建全ROS）
+开发机安装可用Docker/buildx。ARM64电脑可原生构建；x86需buildx已有ARM64
+QEMU/binfmt支持，或者连接ARM64构建节点。构建时联网，勿在剩余3.7GB的当前
+分区拉大镜像；换空间充足的开发机/外接构建盘。推荐至少12GB空闲构建空间。
+
+  cd /path/to/rplidar_ros2_v37
+  docker buildx inspect --bootstrap
+  docker buildx imagetools inspect ros:jazzy-ros-base-noble
+记录输出中的真实digest；不要编造digest。首轮可用已确认官方tag：
+  sh deploy/build-image.sh
+正式锁版时设置刚检查到的真实digest，例如仅以格式表示：
+  ROS_BASE='ros@sha256:<实际digest>' sh deploy/build-image.sh
+构建脚本记录最终image identity及容器内所有deb版本，reports/image/。
+apt仓库会更新，单独tag加dpkg清单不能保证未来重建字节一致；正式交付应归档
+这次成功的镜像/导出rootfs和SHA256，或保存对应deb缓存和仓库快照。更新依赖
+应重新跑测试，不能默默漂移版本。全部ROS包尚未在本机完整构建，需此步骤。
+
+选择A：chroot（现有精简Buildroot的优先路径，不要求Docker daemon在板上）
+开发机：
+  sh deploy/export-userspace.sh acg138-jazzy-v37-rootfs.tar.gz
+将rootfs.tar.gz、.sha256及整个本源码目录复制到RK持久化ext4文件系统。
+板子先有至少4GiB空闲（最终以构建出来的rootfs实测展开大小为准）：
+  sh deploy/install-userspace.sh /root/acg138-jazzy-v37-rootfs.tar.gz
+它只解压到 /userdata/acg138-ros2/rootfs，不修改Buildroot系统库。
+  SERIAL_DEVICE=/dev/ttyUSB0 sh deploy/run-chroot.sh
+默认运行 acg138_bringup mapping.launch.py，先发布/scan和真实SNS1+IMU里程计，
+再建立TF和SLAM。串口唯一别名建立后改/dev/rplidar_c1。安装路径含空格不支持。
+chroot启动需要root执行mount，随包的mountns-exec.aarch64先建立私有挂载命名
+空间（不依赖BusyBox的unshare/setsid applet）；进程启动后setpriv仅保留NET_RAW能力，运行的
+只是可信ROS程序。chroot是文件系统隔离，不是安全沙箱；不启动systemd。
+结束用Ctrl+C或下面服务stop。私有命名空间退出后挂载自动释放；若被SIGKILL
+留下lock，先确认没有本服务/ROS进程，也没有存活的私有命名空间会话，再删除
+/run/acg138-ros2-chroot.lock。不要与另一个运行中会话并行挂载同一rootfs。
+不要直接删除正在挂载的rootfs目录。服务不会发送使能、目标或/cmd_vel。
+
+可另开终端执行CLI，但run-chroot.sh为独占会话，不能再次挂载同一rootfs。
+使用已运行rootfs的命令只需（脚本加入该会话私有挂载命名空间）：
+  sh deploy/exec-chroot.sh ros2 topic hz /scan
+  sh deploy/exec-chroot.sh ros2 topic echo /map --once
+保存地图的CLI见主README；文件写/data/maps即板上/userdata/acg138-ros2/maps。
+只有雷达、车完全静止时可单独启动驱动验证；不要用静态odom->base伪造移动建图。
+
+选择B：Docker（仅板上docker info及最小容器已通过时）
+开发机：
+  docker save acg138-ros2:jazzy-v37 | gzip > acg138-ros2-image.tar.gz
+板子：
+  gzip -dc /root/acg138-ros2-image.tar.gz | docker load
+  SERIAL_DEVICE=/dev/ttyUSB0 sh deploy/run-container.sh
+host网络避开veth/bridge依赖；默认cap-drop ALL只加NET_RAW，仅挂雷达串口、
+maps/logs/bags、共享/run/lock以及只读/proc到/host_proc。后两者是地图写入的
+跨进程互斥所需，防止容器看不见host旧robot-navigation而双写FPGA，不加
+--pid host。不要用--privileged、/dev全挂载、docker.sock或/dev/mem。
+本内核缺少pids/memory controller，新版Docker默认限制可能启动失败；不能用
+忽略报错冒充成功。若要正式容器化需按运行时要求补齐内核配置或改用chroot，
+此次方案不要求更换内核。ROS子线程数、DDS资源应先限制；不硬绑YOLO使用的大核。
+
+四、设备权限只匹配这一台C1
+先确保dialout组存在：
+  grep '^dialout:' /etc/group || addgroup -S dialout
+生成真实VID/PID+唯一序列号规则（不假定所有CP2102N的PID都相同）：
+  sh deploy/generate-udev-rule.sh /dev/ttyUSB0 > /tmp/99-rplidar-c1.rules
+  cat /tmp/99-rplidar-c1.rules
+核对序列号对应当前雷达后：
+  cp /tmp/99-rplidar-c1.rules /etc/udev/rules.d/99-rplidar-c1.rules
+  udevadm control --reload-rules
+  udevadm trigger --subsystem-match=tty
+  ls -l /dev/rplidar_c1
+若没有唯一ID_SERIAL_SHORT，生成器会拒绝而不会匹配所有CP210x。此时用udevadm
+info确定实际ID_PATH，仅为此USB端口写ENV{ID_PATH}精确匹配；或继续使用ttyUSB0。
+默认0660/dialout；临时测试若root运行不必chmod666，不能让全部ttyUSB设备放权。
+
+五、SysV/BusyBox开机服务（手动联调通过后再安装）
+复制源码目录到 /opt/acg138-ros2，保持deploy相对路径：
+  cp deploy/acg138-ros2.conf.example /etc/acg138-ros2.conf
+  cp deploy/S80acg138-ros2 /etc/init.d/S80acg138-ros2
+  chmod +x /etc/init.d/S80acg138-ros2
+  /etc/init.d/S80acg138-ros2 start
+  /etc/init.d/S80acg138-ros2 status
+  tail -n 30 /userdata/acg138-ros2/logs/service.log
+  /etc/init.d/S80acg138-ros2 stop
+失败后2/4/8/16/30秒退避重启，日志5MiB轮转一份；仅重启传感器/建图，不自动
+使能电机，不恢复旧导航，不向FPGA发PLAN。停止按本服务进程组，不杀YOLO。
+地图上传程序需遵守主README互斥：同一时刻只能一个RK导航规划器写FPGA地图。
+
+六、原生Buildroot package交叉编译（长期产品化路径，非最短MVP）
+本交付不声称已移植完整ROS2。先锁定ROS core源码commit及各依赖源码SHA，
+同一BSP sysroot构建target libc/C++、Python、DDS；host侧单独构建ament/
+rosidl和Python生成器。目标Python C扩展不能从Ubuntu或PC复制。主要依赖：
+CMake、host/target Python与empy/lark/setuptools、rcutils、rcl、rclcpp、
+rosidl、rmw_cyclonedds或FastDDS、TinyXML2、yaml-cpp、Eigen、Boost、Ceres、
+SuiteSparse、slam_toolbox及其完整依赖；只用一个DDS实现减体积。RViz留PC。
+slam_toolbox/Ceres的依赖闭包须真实编译，不能用一个CMake参数跳过。
+  export ACG138_TOOLCHAIN_BIN=/实际BSP交叉工具链/bin
+  export ACG138_SYSROOT=/实际BSP/sysroot
+  export ACG138_ROS_UNDERLAY=/同ABI构建的ARM64ROS安装前缀
+  sh deploy/native/cross-build-overlay.sh
+脚本在underlay不存在时直接拒绝，不把Ubuntu ROS当成Buildroot库。
+native/br2-external示例只展示C1 overlay的cmake-package接入，需先有上述ROS
+underlay及host生成器；不是可一键构建ROS全栈的虚假recipe：
+  make -C /BSP/yy3588_buildroot O=/独立输出目录 \
+    BR2_EXTERNAL=/源码/deploy/native/br2-external menuconfig
+在ACG138菜单填本包源码、target underlay、host ament Python路径，再构建
+acg138-rplidar。保持原有BSP .config和output不变，独立输出；不能把新glibc覆盖
+已运行系统。Buildroot输出的依赖库/可执行ELF必须检查aarch64解释器和所需
+GLIBC/GLIBCXX符号版本，再在板子运行扫描测试。
+
+七、并行YOLO的资源边界
+板子RAM约2GiB。先扫描+里程计+slam_toolbox，不开RViz/Cartographer/Nav2全栈。
+默认OMP_NUM_THREADS=2、OPENBLAS_NUM_THREADS=1；slam线程数配置为2以内。
+地图先小范围0.05m栅格、约1Hz发布，避免无限增长和长期rosbag写满eMMC。
+对比同时运行前后MemAvailable、/scan频率、SLAM地图年龄、YOLO原有PERF。
+若内存不足优先降低地图范围/扫描保留数；不能自动抢占YOLO已有NPU/大核绑定。
+ROS默认只在localhost发现，减少热点DDS流量；要远程RViz需显式改发现范围并
+设置DDS接口，避免广播走FPGA内部RGMII口。

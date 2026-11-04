@@ -1,0 +1,16 @@
+acg138_rplidar:
+  ros__parameters:
+    use_sim_time: false
+    serial_port: /dev/ttyUSB0
+    baudrate: 460800
+    frame_id: laser
+    # C1 datasheet: 8-12 Hz, typical 10 Hz / 5000 samples/s.
+    # RPM requested only when the SDK reports RPM control. Actual rate is logged.
+    scan_frequency: 10.0
+    request_motor_rpm: true
+    scan_bins: 500
+    # 0.05-12 m for white targets; black/low-reflectance targets may reach only 6 m.
+    range_min: 0.05
+    range_max: 12.0
+    grab_timeout_ms: 500
+    max_consecutive_timeouts: 5

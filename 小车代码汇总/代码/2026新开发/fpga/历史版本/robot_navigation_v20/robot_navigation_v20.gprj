@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Project><Template>FPGA</Template><Version>5</Version><Device name="GW5AT-60B" pn="GW5AT-LV60PG484AC1/I0">gw5at60b-002</Device><FileList>
+<File path="camera/Camera_ETH_Formator.v" type="file.verilog" enable="1" />
+<File path="camera/cache.v" type="file.verilog" enable="1" />
+<File path="camera/camera_init.v" type="file.verilog" enable="1" />
+<File path="camera/i2c_bit_shift.v" type="file.verilog" enable="1" />
+<File path="camera/i2c_control.v" type="file.verilog" enable="1" />
+<File path="camera/ov5640_init_table_jpeg.v" type="file.verilog" enable="1" />
+<File path="camera/ov5640_init_table_raw.v" type="file.verilog" enable="1" />
+<File path="camera/ov7725_init_table_rgb.v" type="file.verilog" enable="1" />
+<File path="camera/controller.v" type="file.verilog" enable="1" />
+<File path="camera/controller_top.v" type="file.verilog" enable="1" />
+<File path="camera/camera_async_fifo.v" type="file.verilog" enable="1" />
+<File path="camera/CRC32_D8.v" type="file.verilog" enable="1" />
+<File path="camera/UDP_Send.v" type="file.verilog" enable="1" />
+<File path="camera/eth_fifo_timing.v" type="file.verilog" enable="1" />
+<File path="camera/gmii_to_rgmii.v" type="file.verilog" enable="1" />
+<File path="camera/gowin_pll.v" type="file.verilog" enable="1" />
+<File path="camera/gowin_pll_mod.v" type="file.verilog" enable="1" />
+<File path="camera/mdio_bit_shift.v" type="file.verilog" enable="1" />
+<File path="camera/phy_reg_config.v" type="file.verilog" enable="1" />
+<File path="camera/ov5640x2_udp_rgmii.v" type="file.verilog" enable="1" />
+<File path="camera/pll_init.v" type="file.verilog" enable="1" />
+<File path="camera/camera_diag.v" type="file.verilog" enable="1" />
+<File path="camera/ov5640_af_loader.v" type="file.verilog" enable="1" />
+<File path="imu/i2c_reg_master.v" type="file.verilog" enable="1" />
+<File path="imu/mpu9250_reader.v" type="file.verilog" enable="1" />
+<File path="imu/imu_ethernet_tx.v" type="file.verilog" enable="1" />
+<File path="imu/imu_sample_filter.v" type="file.verilog" enable="1" /><File path="imu/imu_gmii_source.v" type="file.verilog" enable="1" />
+<File path="rtl/motor_packet_rx.v" type="file.verilog" enable="1" /><File path="rtl/motor_remote_control.v" type="file.verilog" enable="1" /><File path="rtl/motor_status_tx.v" type="file.verilog" enable="1" /><File path="rtl/robot_fmc_remote_top.v" type="file.verilog" enable="1" /><File path="robot_fmc_remote.cst" type="file.cst" enable="1" /><File path="robot_fmc_remote.sdc" type="file.sdc" enable="1" /><File path="softcore/vendor/picorv32.v" type="file.verilog" enable="1" /><File path="softcore/robot_nav_soc.v" type="file.verilog" enable="1" /><File path="sensors/encoder_4ch.v" type="file.verilog" enable="1" /><File path="sensors/robot_sensor_capture.v" type="file.verilog" enable="1" /><File path="sensors/sensor_status_tx.v" type="file.verilog" enable="1" /><File path="sensors/a02_uart_rx.v" type="file.verilog" enable="1" /><File path="sensors/ultrasonic_sensor.v" type="file.verilog" enable="1" /><File path="sensors/ultrasonic_driver.v" type="file.verilog" enable="1" /><File path="sensors/ultrasonic_3ch.v" type="file.verilog" enable="1" /><File path="rtl/motor_encoder_sync.v" type="file.verilog" enable="1" /><File path="rtl/nav_packet_rx.v" type="file.verilog" enable="1"/>
+<File path="rtl/robot_rgmii_rx.v" type="file.verilog" enable="1"/>
+<File path="rtl/nav_message_tx.v" type="file.verilog" enable="1"/>
+</FileList></Project>

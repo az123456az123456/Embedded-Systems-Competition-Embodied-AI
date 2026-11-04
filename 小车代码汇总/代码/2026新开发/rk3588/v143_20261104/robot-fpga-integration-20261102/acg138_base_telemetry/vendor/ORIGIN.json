@@ -1,0 +1,31 @@
+{
+  "imu_data.c": {
+    "source": "rk3588/robot_control_v36/dashboard/src/imu_data.c",
+    "original_sha256": "59cdafbbf10e14bd6a9f9a69dd95c8c4ee61cb79cd4681e59a63e61b0548c908",
+    "delivered_sha256": "59cdafbbf10e14bd6a9f9a69dd95c8c4ee61cb79cd4681e59a63e61b0548c908",
+    "modification": "none"
+  },
+  "imu_data.h": {
+    "source": "rk3588/robot_control_v36/dashboard/src/imu_data.h",
+    "original_sha256": "e4cb8c5ed43c84f55779f53a349023805963a87d97beab55d31dc5010564b42f",
+    "delivered_sha256": "e4cb8c5ed43c84f55779f53a349023805963a87d97beab55d31dc5010564b42f",
+    "modification": "none"
+  },
+  "sensor_data.c": {
+    "source": "rk3588/robot_control_v36/dashboard/src/sensor_data.c",
+    "original_sha256": "45bfb02815a1af8cfec0d89144b873243138f116c23c3a18bd9ee3e6db1f7ec3",
+    "delivered_sha256": "07de25f551757d6cf196288908c17763474c9fcfdb7954990de3b71e3c772477",
+    "modification": "include path only"
+  },
+  "sensor_data.h": {
+    "source": "rk3588/robot_control_v36/dashboard/src/sensor_data.h",
+    "original_sha256": "ba92aeaedae077567318613ebb89062c75131adc834d3915add087281aad1075",
+    "delivered_sha256": "ba92aeaedae077567318613ebb89062c75131adc834d3915add087281aad1075",
+    "modification": "none"
+  },
+  "sonar_range.h": {
+    "source": "rk3588/robot_control_v36/common/sonar_range.h",
+    "original_sha256": "8df28a0c9c4872d2608541ab680a204052c046970473bf78b7c4cbab71e9e97a",
+    "modification": "none"
+  }
+}

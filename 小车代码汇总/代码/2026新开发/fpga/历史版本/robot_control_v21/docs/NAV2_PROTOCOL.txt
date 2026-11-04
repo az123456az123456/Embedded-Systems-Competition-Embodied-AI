@@ -1,0 +1,34 @@
+NAV2 v1 / EtherType 0x88b9. FPGA destination MAC 02:ac:13:80:00:01.
+64-byte payload followed by big-endian CRC16 CCITT-FALSE (init FFFF,poly1021,no reflection,xor0).
+Ethernet frame then hardware-generated standard FCS. Linux raw sockets include neither preamble nor FCS.
+FPGA replies broadcast from 02:ac:13:80:00:01. RK validates source, EtherType, CRC, op, request_id and generation.
+Only one RK navigation process at a time; no network authentication is supplied. Intended for private board internal GMAC.
+All multi-byte integers BIG ENDIAN. Frame payload:
+0..3 NAV2;4 version1;5 opcode(reply bit7);6 status;7 count;
+8..11 request_id;12..15 generation;16..19 arg0;20..23 arg1;24..27 arg2;
+28..31 reserved zero;32..63 data32. Requests require status0 and arg2=0.
+Map64x64 occupied bits: cell=y*64+x; byte=cell>>3, bit=cell&7 LSBfirst.1occupied,0traversable.
+RK must classify unknown cells and inflate obstacles BEFORE upload. FPGA does4connected Manhattan A*.
+BEGIN1: arg0=CRC32(512-byte bitmap), count0,arg1=0,datazero. generationnonzero anddifferentfromactive.
+CHUNK2: arg0=offset0..480 aligned32,count32,data32,arg1=0. ACKarg0=offset.
+COMMIT3: count0,argszero. Requiresall16chunks and wholemapCRC. Successatomicallyreplacesactive map,invalidatespath.
+PLAN4: count0,arg0=startcell,arg1=goalcell,datazero. Onlycommittedmapgen, no activeupload.
+ Replyarg0=pathlength0..4096,arg1=expanded,arg2=50MHzelapsedcycles. Pathincludesstartandgoal.
+PAGE5: arg0=offsetcells,arg1=PLANrequest_id,count1..16,datazero. Replycountactual,
+ arg0=offset,arg1=totalpathlength,arg2=PLANrequest_id,dataBEu16cells,paddingzero.
+INFO6: count0,argszero,datazero, request_idcan0. Readonly,notcached,doesnotadvancesequence.
+ Replyarg0=activegeneration(0none),arg1=lastacceptedrequestid(0none),arg2=validPLANrequestid(0none).
+ Replycountflags bit0mapvalid,bit1uploadactive,bit2pathvalid. datafirstword00010000,restzero.
+Status0OK,1badrequest,2nomap,3generation/pathid,4incomplete,5mapCRC,6noroute,7blocked,8stale/conflict,9busy,10internal.
+Stop-and-wait. Every nonINFOtransaction uses newrequestid. Exactduplicate oflatestrequestreplayscachedreply.
+Sameidchangedbytesoroldrequestid rejected8. Newid requires signed32bit(id-last)>0,0reserved.
+All errorresponses exceptstale/conflictadvancecache. Retryexactbytesonloss. AfterINFO useid=last+1,skip0.
+Generationisnonzerohostchosen; afterINFO useactive+1,skip0. NewBEGINabandonspartialstaging;
+oldcommittedmapstaysintactonloss/badCRC. PLANwhileuploadactive returnsbusy. NewCOMMITinvalidatesoldpath.
+FPGAresetclearsmaps/cache/path; hostmustINFO, upload,commit,replan. No old route may be resumedblindly.
+Hostreplytimeout建议2seconds,maptransaction3retries;PLAN30seconds,3retries;entirejobbounded120seconds.
+CRC32 standard zlib/Ethernet reflected init/xorFFFFFFFF;123456789=>CBF43926.
+No motor command interface exists in softcore. Navigation motion/avoidance/controller remain RK responsibility.
+BEGIN golden payload (request1,generation1,zeromapCRC):
+4e415632010100000000000100000001b2aa75780000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+CRC16=2877

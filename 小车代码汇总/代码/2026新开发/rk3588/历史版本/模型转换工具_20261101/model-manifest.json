@@ -1,0 +1,68 @@
+{
+  "checkpoint": {
+    "source": "/home/tan/Downloads/last.pt",
+    "sha256": "e0e545604c4da0b8c776f5500023f23d11168754ebc614c88571172494cc9ccb"
+  },
+  "model_family": "YOLOv8s",
+  "input_shape": [
+    1,
+    640,
+    640,
+    3
+  ],
+  "input_format": "RGB888 NHWC UINT8; model contains /255 normalization",
+  "outputs": "9 RKNN DFL/classes/score_sum heads, 80/40/20 strides",
+  "classes": [
+    "Hardhat",
+    "Mask",
+    "NO-Hardhat",
+    "NO-Mask",
+    "NO-Safety Vest",
+    "Person",
+    "Safety Vest",
+    "machinery",
+    "vehicle"
+  ],
+  "class_count": 9,
+  "npu_workers": 3,
+  "control_requires_complete_same_frame_stereo": true,
+  "violation_aliases": {
+    "no_vest": "NO-Safety Vest",
+    "no_mask": "NO-Mask",
+    "no_helmet": "NO-Hardhat",
+    "no_halmet": "NO-Hardhat"
+  },
+  "capture_rule": "each violation category continuously observed strictly >500ms; once per appearance",
+  "calibration": {
+    "source": "/home/tan/Downloads/valid",
+    "count": 91,
+    "heldout_count": 23,
+    "all_classes_present": true,
+    "class_names_yaml_missing": true
+  },
+  "variants": {
+    "fp16": {
+      "model": "/home/tan/qiansai/rk3588/model_last_e0e54560_20261101/acg138-last-e0e54560-fp16-rk3588.rknn",
+      "bytes": 23949978,
+      "sha256": "97e69729a2b8cf6efe605aadff73e4007f6f0e9d4d89789f4e414fea614320d5",
+      "int8": false,
+      "target": "rk3588",
+      "toolkit": "2.0.0b0+9bab5682",
+      "input": "RGB888 640x640; normalization in model",
+      "hardware_tested": false
+    },
+    "int8": {
+      "model": "/home/tan/qiansai/rk3588/model_last_e0e54560_20261101/acg138-last-e0e54560-int8-rk3588.rknn",
+      "bytes": 12418268,
+      "sha256": "ae4598bc0065d8f411c7307e76d80d1bc6394d83cc4ab0221777fbb68ee158e3",
+      "int8": true,
+      "target": "rk3588",
+      "toolkit": "2.0.0b0+9bab5682",
+      "input": "RGB888 640x640; normalization in model",
+      "hardware_tested": true
+    }
+  },
+  "deployment_status": "normal INT8 applied to RK default launcher; original launcher and model retained",
+  "selected_variant": "int8",
+  "hardware_evidence": "reports/quality-int8.json; reports/applied.console"
+}

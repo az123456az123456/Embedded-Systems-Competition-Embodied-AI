@@ -1,0 +1,66 @@
+{
+  "trials": [
+    {
+      "case": "nav3_phase0",
+      "expect": "off",
+      "options": {
+        "MODE": 0,
+        "PHASE": 0
+      },
+      "returncode": 0,
+      "wall_s": 1.4460718909977004,
+      "failures": [],
+      "waveform_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/compile-smoke/nav3_phase0/trace.vcd",
+      "boundary_checks": [
+        {
+          "check": "no_direction_overlap_observed",
+          "pass": true,
+          "time_ps": 190200000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "000",
+          "owner_reason": 2,
+          "owner_event_id": 1,
+          "nav_epoch": 3,
+          "nav_live": 0,
+          "drive_live": 0
+        },
+        {
+          "check": "real_motor_status_and_NAV1_consumer_exercised",
+          "pass": true,
+          "time_ps": 194240000,
+          "frame_id": 1,
+          "cdc_generation": 1,
+          "outputs": "000",
+          "owner_reason": 1,
+          "owner_event_id": 2,
+          "nav_epoch": 4,
+          "nav_live": 0,
+          "drive_live": 0
+        }
+      ],
+      "records": 1,
+      "hard_event_count": 1,
+      "qualified": 1,
+      "latencies_ns": [
+        110.0
+      ],
+      "telemetry": {
+        "status": "PASS",
+        "packets": 2,
+        "same_valid_bundle_and_crc_ok": true,
+        "NAV1_source": "explicit synthetic changing marker; not RV32",
+        "real_motor_ACK_source": true
+      },
+      "status": "PASS"
+    }
+  ],
+  "scope": "targeted functional simulation only; no SDF/PVT/physical latency guarantee",
+  "temporary_limit_ns": 1000,
+  "source_manifest": {
+    "baseline_manifest": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/design-manifest.json",
+    "baseline_manifest_sha256": "6edfbc82316867bacfc8af4b6e887e707dfd2329e9e095e5116f461c35daacc3",
+    "testbench_sha256": "89dfe70f9395af79f8cc1046c73f412bf15dccadd68a09caba627a7e5f3f71f7",
+    "setup_tasks_sha256": "b7576a0d3bd4166f9d637d5acc18e8466c72c23cf05294720f11ebe035db5d39"
+  }
+}

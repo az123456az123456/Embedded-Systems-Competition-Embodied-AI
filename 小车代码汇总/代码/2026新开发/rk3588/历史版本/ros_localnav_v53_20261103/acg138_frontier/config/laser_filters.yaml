@@ -1,0 +1,35 @@
+scan_to_scan_filter_chain:
+  ros__parameters:
+    # Mapping only. /scan remains the unchanged emergency/collision input.
+    filter1:
+      name: valid_c1_range
+      type: laser_filters/LaserScanRangeFilter
+      params:
+        lower_threshold: 0.05
+        # RangeFilter rejects >= threshold; allow exactly 3.0m Float32,
+        # while the next representable Float32 above 3m is rejected.
+        upper_threshold: 3.0000001
+        # Set explicitly: filters 2.2.2 getParam's default is 0.0; relying on
+        # RangeFilter's temporary NaN initializer would publish false zeroes.
+        lower_replacement_value: .nan
+        upper_replacement_value: .nan
+    filter2:
+      name: inner_body_only
+      type: laser_filters/LaserScanBoxFilter
+      params:
+        box_frame: base_link
+        min_x: -0.18
+        max_x: 0.14
+        min_y: -0.10
+        max_y: 0.10
+        min_z: -0.30
+        max_z: 0.30
+        invert: false
+    filter3:
+      name: isolated_returns
+      type: laser_filters/LaserScanSpeckleFilter
+      params:
+        filter_type: 0
+        max_range: 3.01
+        max_range_difference: 0.2
+        filter_window: 3

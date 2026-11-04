@@ -1,0 +1,68 @@
+package cn.acg138.robotphone;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+/** Validated immutable schema-1 map. Server and Android monotonic clocks are never compared. */
+public final class NavigationMap {
+    public static final long MAX_AGE_MS = 2000;
+    public final boolean available, poseValid;
+    public final int width, height;
+    public final double resolution, originX, originY;
+    public final String cells, navigable, state, reason, sessionId;
+    public final double[] pose, goal;
+    public final double[][] path, trajectory;
+    public final long revision, receivedAt, snapshotAgeMs, sensorAgeMs;
+    private NavigationMap(boolean available, boolean poseValid, int width, int height,
+            double resolution, double[] origin, String cells, String navigable, String state, String reason,
+            String session, long revision, long receivedAt, long snapshotAge, long sensorAge,
+            double[] pose, double[] goal, double[][] path, double[][] trajectory) {
+        this.available=available;this.poseValid=poseValid;this.width=width;this.height=height;
+        this.resolution=resolution;this.originX=origin[0];this.originY=origin[1];this.cells=cells;this.navigable=navigable;
+        this.state=state;this.reason=reason;this.sessionId=session;this.revision=revision;
+        this.receivedAt=receivedAt;this.snapshotAgeMs=snapshotAge;this.sensorAgeMs=sensorAge;
+        this.pose=pose;this.goal=goal;this.path=path;this.trajectory=trajectory;
+    }
+    public long ageMs(long now) {
+        long elapsed=now-receivedAt;
+        return elapsed<0 || elapsed>Long.MAX_VALUE-snapshotAgeMs ? Long.MAX_VALUE : snapshotAgeMs+elapsed;
+    }
+    public boolean fresh(long now) { return available && ageMs(now)<=MAX_AGE_MS; }
+    public boolean poseFresh(long now) { long elapsed=now-receivedAt; return poseValid && sensorAgeMs<=MAX_AGE_MS && elapsed>=0 && elapsed<=MAX_AGE_MS-sensorAgeMs; }
+    private static double finite(double x) {
+        if(Double.isNaN(x)||Double.isInfinite(x)||Math.abs(x)>1000000)throw new IllegalArgumentException("地图坐标无效");
+        return x;
+    }
+    private static double[] point(JSONArray a,int count) {
+        if(a==null||a.length()!=count)throw new IllegalArgumentException("地图坐标格式错误");
+        double[] p=new double[count];for(int i=0;i<count;i++)p[i]=finite(a.optDouble(i,Double.NaN));return p;
+    }
+    private static double[][] points(JSONArray a,int limit) {
+        if(a==null||a.length()>limit)throw new IllegalArgumentException("地图路径格式错误");
+        double[][] p=new double[a.length()][];for(int i=0;i<p.length;i++)p[i]=point(a.optJSONArray(i),2);return p;
+    }
+    public static NavigationMap parse(JSONObject o,long requestedAt) {
+        if(o.optInt("schema",-1)!=1)throw new IllegalArgumentException("导航地图版本不兼容");
+        boolean available=o.optBoolean("available",false);
+        String state=o.optString("state","waiting"),reason=o.optString("reason",""),session=o.optString("session_id","");
+        long age=o.optLong("snapshot_age_ms",-1),sensorAge=o.optLong("sensor_age_ms",-1),revision=o.optLong("map_revision",-1);
+        if(!available)return new NavigationMap(false,false,0,0,0,new double[]{0,0},"","",state,reason,session,revision,requestedAt,
+                MAX_AGE_MS+1,MAX_AGE_MS+1,new double[]{0,0,0},null,new double[0][],new double[0][]);
+        if(age<0||sensorAge<0||revision<0||session.isEmpty()||session.length()>128)
+            throw new IllegalArgumentException("地图状态字段缺失");
+        int w=o.optInt("width",-1),h=o.optInt("height",-1);
+        double resolution=finite(o.optDouble("resolution_m",Double.NaN));
+        if(w!=64||h!=64||resolution<.01||resolution>1000)throw new IllegalArgumentException("地图尺寸无效");
+        String cells=o.optString("cells","");if(cells.length()!=w*h)throw new IllegalArgumentException("地图栅格长度错误");
+        for(int i=0;i<cells.length();i++)if("?.#".indexOf(cells.charAt(i))<0)throw new IllegalArgumentException("地图栅格内容错误");
+        String navigable=o.optString("navigable", "");
+        if(!navigable.isEmpty()) {
+            if(navigable.length()!=w*h)throw new IllegalArgumentException("可通行栅格长度错误");
+            for(int i=0;i<navigable.length();i++)if(".#".indexOf(navigable.charAt(i))<0)throw new IllegalArgumentException("可通行栅格内容错误");
+        }
+        double[] origin=point(o.optJSONArray("origin"),2),pose=point(o.optJSONArray("pose"),3);
+        JSONArray goalJson=o.optJSONArray("goal");double[] goal=goalJson==null?null:point(goalJson,2);
+        return new NavigationMap(true,o.optBoolean("pose_valid",false),w,h,resolution,origin,cells,navigable,state,reason,session,revision,
+                requestedAt,age,sensorAge,pose,goal,points(o.optJSONArray("path"),4096),points(o.optJSONArray("trajectory"),4096));
+    }
+}

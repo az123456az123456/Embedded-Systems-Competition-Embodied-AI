@@ -1,0 +1,48 @@
+Read/checked 2026-10-29; primary sources only.
+
+1. ROS 2 target platforms, language/library baselines and LTS dates:
+   https://github.com/ros-infrastructure/rep/blob/master/rep-2000.rst
+   https://raw.githubusercontent.com/ros-infrastructure/rep/master/rep-2000.rst
+   Humble May2022-May2027 / Ubuntu22.04 ARM64; Jazzy May2024-May2029 /
+   Ubuntu24.04 ARM64. Buildroot is not a supported binary-package target.
+   Jazzy Ubuntu Python3.12, Humble Ubuntu Python3.10; native port must build
+   all Python C extensions for its own chosen target Python.
+
+2. ROS Jazzy official release announcement (LTS 2029, Noble arm64 Tier1):
+   https://www.openrobotics.org/blog/2024/5/ros-jazzy-jalisco-released
+
+3. ROS official image tags/architecture and OSRF Dockerfile:
+   https://hub.docker.com/_/ros/
+   https://github.com/osrf/docker_images/blob/master/ros/jazzy/ubuntu/noble/ros-base/Dockerfile
+   Valid tag ros:jazzy-ros-base-noble; amd64 and arm64v8. Tags move; exact
+   digest must be inspected on build PC and recorded, never invented.
+
+4. Official ROS cross compilation documentation:
+   https://github.com/ros2/ros2_documentation/blob/jazzy/source/How-To-Guides/Cross-compilation.rst
+   https://raw.githubusercontent.com/ros2/ros2_documentation/jazzy/source/How-To-Guides/Cross-compilation.rst
+   ros-tooling/cross_compile is no longer supported; buildx multi-platform
+   images is documented as an alternative.
+
+5. Docker device/capability/run restrictions:
+   https://docs.docker.com/engine/containers/run/
+
+6. Buildroot package integration/reference (package recipe is not ROS support):
+   https://buildroot.org/downloads/manual/manual.html#_infrastructure_for_cmake_based_packages
+   Native ROS underlay needs host ament/rosidl generators + target rcl/rclcpp,
+   rmw/DDS, Python/dependency packages and ABI validation. No all-in-one
+   native cross-compiled ROS image has been produced by this delivery.
+
+Local evidence:
+  BSP configs/kernel.config SHA256:
+  7114825305fb4b5f032a523d009ae4eaa321f1c816ff60f44eeaca3b9a0ec20f
+  (Matches the user's previously provided live config hash; still run preflight.)
+  Kernel namespaces/cgroups/device-cgroup/seccomp/overlay/cp210x: enabled.
+  MEMCG, CGROUP_PIDS, VETH, BRIDGE: disabled. Host-network/chroot avoids veth;
+  Docker Engine defaults may still fail on its missing controllers. Do not
+  claim stock Docker works until `docker info`/minimal run pass.
+  Buildroot 2024.02; local rootfs config BR2_INIT_BUSYBOX and dynamic EUDEV;
+  Docker Engine/CLI/containerd disabled; Python3 disabled in saved config,
+  although user reports a board Python exists. Current runtime needs inspection.
+  BSP external GCC10.3.1/aarch64-none-linux-gnu sysroot libc-2.33.so exists.
+  Saved Buildroot config GCC12.3 concerns Buildroot rebuild, not proof that
+  board's current gcc/runtime is 12.3. Do not conflate the two toolchains.

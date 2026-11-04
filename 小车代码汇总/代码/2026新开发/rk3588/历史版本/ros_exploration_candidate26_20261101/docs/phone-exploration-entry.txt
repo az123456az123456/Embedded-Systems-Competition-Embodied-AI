@@ -1,0 +1,26 @@
+手机探索入口扩展 — v1.2.24
+
+本文件供 RK 适配器实现者使用。当前只完成手机请求与 Gateway 能力门，不代表 ROS 探索执行、保存器已接线。
+
+入口：POST /api/navigation，保留已有 Authorization Bearer、session。
+开始：op=mapping-start，nav_seq 单调递增；intent_seq 为已确认控制序号（仅兼容附带，不能当运动授权）。
+结束：op=mapping-stop，nav_seq 单调递增；手机立即通过原紧急通道发送 STOP/disarm，并在导航工作线程上排在旧 start 请求之后发送结束操作。RK 必须等待真实停止再保存/下发，任何新执行仍须明确使能和新开始。
+返回沿用 ok/accepted/executed；accepted=true 只表示已接收。
+
+GET /api/state.navigation 扩展：
+ supports_exploration_mapping: bool
+ exploration_protocol_version: 1
+ mapping: {
+   state: IDLE/STARTING/SELECTING/NAVIGATING/ARRIVED/NO_FRONTIER/ERROR/STOPPING/SAVING/LOADING/LOADED,
+   active: bool,
+   reason: string,
+   map_commit_confirmed: bool,
+   loaded_map_session: string,
+   loaded_map_revision: integer
+ }
+
+GatewayCallbacks.exploration_mapping_ready 必须仅检查缓存，不阻塞、不续权。只有探索控制、停止、保存固定地图、FPGA ACK 核对均已连接时返回 true。缺少回调默认 false。navigation_state 提供真实状态；尚无这个运行适配器，禁止假报成功。
+
+手机判断最终载入：LOADED && !active && map_commit_confirmed && 已显示地图 session/revision 完全匹配，且状态接收时间未过 1 秒。只收到地图图像、只收到 HTTP 200、探索中间地图已提交，均不能表示最终地图已载入。
+
+ROS 的 /fpga/* 和 NAV3/NVA1 字段未修改。candidate26 位流未修改。RK 仍不写路径跟踪或避障；原硬件安全门保留。

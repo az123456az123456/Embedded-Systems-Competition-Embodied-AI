@@ -1,8 +1,0 @@
-{
-  "rtl/four_motor_ramp_test.v": "c46a7fa457e7c58c59ffc55fac3d51c38b147de9b50b2eedfe99d0e666a94c9b",
-  "rtl/fmc_four_motor_top.v": "97c85dd9eb0c7de080f03295e155494b5dc9d0bca69a9f10ef8d5b2b9f85ec75",
-  "fmc_four_motor.cst": "a1328b2cbaaf2c7ca9440fd22fdff777fa505b27c36a9687797cc04b43b5bb4d",
-  "fmc_four_motor.sdc": "bf2fff93c12f0a8aef35b373d212a7cf5f086ea7ec6d4d777afb396bd2359ef6",
-  "build.tcl": "80be414b5677978e0232687a5d30359eb9f6cc1ab97819f41046b1a8619598b3",
-  "impl/pnr/fmc_four_motor.fs": "d12e7108ce4b81276ac6a14a0c5690f8bd3f9ce5e46fd1b96a46626fe58f5cb3"
-}

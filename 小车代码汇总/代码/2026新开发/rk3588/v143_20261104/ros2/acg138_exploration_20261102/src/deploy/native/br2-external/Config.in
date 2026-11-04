@@ -1,0 +1,3 @@
+menu "ACG138 ROS 2 overlay (advanced native port)"
+source "$BR2_EXTERNAL_ACG138_ROS2_PATH/package/acg138-rplidar/Config.in"
+endmenu

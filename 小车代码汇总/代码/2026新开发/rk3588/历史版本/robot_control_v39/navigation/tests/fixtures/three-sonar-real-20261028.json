@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "source": "wrong-diagnostics-20261028-094902-23107",
+  "scope": "recorded ranges and provenance only; tests use synthetic healthy stationary odometry, not reconstructed raw input replay",
+  "samples": [
+    {
+      "mono_ms": 3279036,
+      "run_id": "19843-3196616-1793180206287284692",
+      "sample_seq": 1496,
+      "range_m": [
+        1.648,
+        4.5,
+        0.047
+      ],
+      "source_reference": {
+        "file": "wrong.log.2",
+        "line": 33,
+        "seq": 2238
+      }
+    },
+    {
+      "mono_ms": 3279160,
+      "run_id": "19843-3196616-1793180206287284692",
+      "sample_seq": 1498,
+      "range_m": [
+        1.595,
+        4.5,
+        0.047
+      ],
+      "source_reference": {
+        "file": "wrong.log.2",
+        "line": 35,
+        "seq": 2240
+      }
+    },
+    {
+      "mono_ms": 3279281,
+      "run_id": "19843-3196616-1793180206287284692",
+      "sample_seq": 1500,
+      "range_m": [
+        1.579,
+        4.5,
+        0.047
+      ],
+      "source_reference": {
+        "file": "wrong.log.2",
+        "line": 37,
+        "seq": 2242
+      }
+    },
+    {
+      "mono_ms": 3279382,
+      "run_id": "19843-3196616-1793180206287284692",
+      "sample_seq": 1502,
+      "range_m": [
+        1.552,
+        4.5,
+        0.047
+      ],
+      "source_reference": {
+        "file": "wrong.log.2",
+        "line": 39,
+        "seq": 2244
+      }
+    },
+    {
+      "mono_ms": 3279484,
+      "run_id": "19843-3196616-1793180206287284692",
+      "sample_seq": 1504,
+      "range_m": [
+        1.555,
+        4.5,
+        0.046
+      ],
+      "source_reference": {
+        "file": "wrong.log.2",
+        "line": 41,
+        "seq": 2246
+      }
+    },
+    {
+      "mono_ms": 3279591,
+      "run_id": "19843-3196616-1793180206287284692",
+      "sample_seq": 1506,
+      "range_m": [
+        1.54,
+        4.5,
+        0.046
+      ],
+      "source_reference": {
+        "file": "wrong.log.2",
+        "line": 43,
+        "seq": 2248
+      }
+    },
+    {
+      "mono_ms": 3279698,
+      "run_id": "19843-3196616-1793180206287284692",
+      "sample_seq": 1508,
+      "range_m": [
+        1.485,
+        4.5,
+        0.046
+      ],
+      "source_reference": {
+        "file": "wrong.log.2",
+        "line": 45,
+        "seq": 2250
+      }
+    },
+    {
+      "mono_ms": 3279821,
+      "run_id": "19843-3196616-1793180206287284692",
+      "sample_seq": 1510,
+      "range_m": [
+        1.476,
+        4.5,
+        0.047
+      ],
+      "source_reference": {
+        "file": "wrong.log.2",
+        "line": 47,
+        "seq": 2252
+      }
+    },
+    {
+      "mono_ms": 3279916,
+      "run_id": "19843-3196616-1793180206287284692",
+      "sample_seq": 1512,
+      "range_m": [
+        1.456,
+        4.5,
+        0.047
+      ],
+      "source_reference": {
+        "file": "wrong.log.2",
+        "line": 84,
+        "seq": 2276
+      }
+    },
+    {
+      "mono_ms": 3280094,
+      "run_id": "19843-3196616-1793180206287284692",
+      "sample_seq": 1514,
+      "range_m": [
+        1.408,
+        4.5,
+        0.047
+      ],
+      "source_reference": {
+        "file": "wrong.log.2",
+        "line": 50,
+        "seq": 2255
+      }
+    },
+    {
+      "mono_ms": 3622704,
+      "run_id": "21320-3589487-1793180599158151842",
+      "sample_seq": 613,
+      "range_m": [
+        0.87,
+        0.944,
+        0.261
+      ],
+      "source_reference": {
+        "file": "wrong.log.1",
+        "line": 771,
+        "seq": 424
+      }
+    }
+  ]
+}

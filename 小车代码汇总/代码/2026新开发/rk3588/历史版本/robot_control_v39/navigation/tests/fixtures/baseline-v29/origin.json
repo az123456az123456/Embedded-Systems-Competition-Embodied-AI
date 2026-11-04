@@ -1,0 +1,11 @@
+{
+  "purpose": "Frozen original v29 source counterexample; used only by native tests, never linked into release ARM64 executables",
+  "original_root": "rk3588/robot_reactive_v29/navigation",
+  "production_baseline_version": "v29",
+  "files_sha256": {
+    "navcore.cc": "c62ff5a5a5620bfe9d5b7d6e3453ff963145779903fb183b8a8f20cbe3a76bf3",
+    "navcore.h": "4b44460d214833af4243619237bd0469cabe90dd4b874e4ed77698537d629227",
+    "navcore_reactive.inc": "ffb0349d790ef665f585130c3e37fe1d86ea650438c2a7b5b0c8aac065e62be2",
+    "vehicle_geometry.h": "d397b135c9993d589e4f1ffd8cbb9f95be252337a2144569641f55c38b25d558"
+  }
+}

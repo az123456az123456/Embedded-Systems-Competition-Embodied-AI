@@ -1,0 +1,29 @@
+lidar-scan-probe.aarch64：Buildroot原生雷达诊断
+
+不依赖ROS2。仅访问指定串口；不访问RGMII/FPGA，不发送车辆电机命令。
+它会通过SDK启动和停止雷达本体扫描电机，不能与ultra_simple或ROS雷达节点同时占用串口。
+默认串口/dev/ttyUSB0，波特率固定460800，没有115200/256000回退。
+
+将deploy/bin/lidar-scan-probe.aarch64拷到RK3588的/root后：
+chmod +x /root/lidar-scan-probe.aarch64
+/root/lidar-scan-probe.aarch64 --version
+/root/lidar-scan-probe.aarch64 --port /dev/ttyUSB0 --seconds 10
+
+每圈输出原始点数、有效回波点数、实际接收Hz及首个有效点的SDK/ROS角度示例。
+SDK顺时针角：angle_z_q14*90/16384度；ROS逆时针角：取负并归一化到[-180,180)度。
+有效回波要求quality>>2非零、距离0.05–12m；距离dist_mm_q2/4000换成米。
+SUMMARY中的actual_receipt_hz来自真实成功读取圈数/单调时钟耗时，不是请求的10Hz。
+未读到完整扫描时非零退出；不会输出伪造LaserScan或旧帧。
+Ctrl+C或SIGTERM会退出循环，停止雷达扫描并关闭SDK串口。
+
+若提示Permission denied，使用随包udev规则或临时用root运行；不要运行另一个占用串口的雷达程序。
+若提示无法连接，先确认/dev/ttyUSB0存在、CP2102N驱动和USB供电正常；此工具不修改内核或波特率配置。
+
+在开发电脑复现交叉编译：
+python3 tools/sdk-probe/build.py
+工具会寻找当前BSP的aarch64-none-linux-gnu GCC10.3，或显式指定：
+python3 tools/sdk-probe/build.py --cross-prefix /绝对路径/aarch64-none-linux-gnu-
+
+输出deploy/bin/lidar-scan-probe.aarch64；报告build/sdk-probe-arm64/verification.json。
+libstdc++和libgcc静态链接；libc/libm/libpthread仍使用板端glibc，readelf报告记录实际ABI依赖。
+该包完成了交叉编译与ELF核验，未连接物理雷达，不声称已经在板上读取成功。

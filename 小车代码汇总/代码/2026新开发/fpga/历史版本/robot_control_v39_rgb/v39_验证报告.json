@@ -1,0 +1,190 @@
+{
+  "version": "v39-rgb-dsp-correct-latest-video-sonar1s",
+  "date": "2026-10-29",
+  "result": "PASS",
+  "hardware_tested": false,
+  "real_user_capture_sha256": "0a6b303420a33dff7ee311fc1b9bc6f9ff383ed31912b128c9af6c40027d0e88",
+  "fault": "v35 final synthesized MULTALU27X18 signed preadder adds wy/8 modulo256; reproduced against actual production netlist and matches captured stripes",
+  "fix": "unsigned nonnegative vertical products, separately registered then summed; +1 PCLK latency, no RK de-striping",
+  "camera": "FPGA RGB888 640x640 per eye, dual40fps RGP1; RAW ISP retained as RK compatibility only",
+  "model": "Original v35 trained best e7f26253 INT8 and labels unchanged",
+  "phone": "v38 APK unchanged; same controls/protocol, latest-only video at three stages",
+  "sonar_source_timeout_ms": 1000,
+  "valid_near_obstacle_and_real_fault_guards_preserved": true,
+  "v37_ROS": "Original source/helper addon included; full ROS rootfs not included",
+  "source_hash_entries_verified": 193,
+  "fpga_timing": {
+    "setup_violations": 0,
+    "hold_violations": 0,
+    "setup_slack_ns": 0.011,
+    "hold_slack_ns": 0.082,
+    "recovery_slack_ns": 4.375,
+    "removal_slack_ns": 0.356,
+    "clocks": [
+      {
+        "name": "clk50m",
+        "constraint_mhz": 50.0,
+        "fmax_mhz": 52.307
+      },
+      {
+        "name": "cam1_pclk",
+        "constraint_mhz": 100.0,
+        "fmax_mhz": 101.079
+      },
+      {
+        "name": "cam2_pclk",
+        "constraint_mhz": 100.0,
+        "fmax_mhz": 101.194
+      },
+      {
+        "name": "rgmii_rx_clk",
+        "constraint_mhz": 125.0,
+        "fmax_mhz": 140.48
+      },
+      {
+        "name": "core/your_instance_name/u_pll/PLLA_inst/CLKOUT0.default_gen_clk",
+        "constraint_mhz": 125.0,
+        "fmax_mhz": 125.169
+      },
+      {
+        "name": "core/your_instance_name/u_pll/PLLA_inst/CLKOUT1.default_gen_clk",
+        "constraint_mhz": 50.0,
+        "fmax_mhz": 115.59
+      }
+    ],
+    "scope": "Declared internal clocks only; camera/RGMII external I/O not board physically signed off"
+  },
+  "fpga_resources": {
+    "Logic": {
+      "used": 26423.0,
+      "total": 59904.0,
+      "free": 33481.0
+    },
+    "Register": {
+      "used": 22880.0,
+      "total": 60780.0,
+      "free": 37900.0
+    },
+    "CLS": {
+      "used": 21180.0,
+      "total": 29952.0,
+      "free": 8772.0
+    },
+    "BSRAM": {
+      "used": 72.0,
+      "total": 118.0,
+      "free": 46.0
+    },
+    "DSP": {
+      "used": 18.5,
+      "total": 118.0,
+      "free": 99.5
+    }
+  },
+  "gate_tests": [
+    {
+      "eye": 0,
+      "original_module": "rgb_bilinear_resize",
+      "pixels_checked": 91040,
+      "report_sha256": "0ccadf3f4d28a5f62b408ee4518624d5bd16a80cddfa1eaa298f298d2b04ae6c",
+      "adapter_sha256": "a09ed0a2b4a6a705809839ff112180b360390e063076f5aa207f533cdfb2273a"
+    },
+    {
+      "eye": 1,
+      "original_module": "rgb_bilinear_resize_0",
+      "pixels_checked": 91040,
+      "report_sha256": "4686290306783ca5f137eb27fdb754d65519d234fa0d31ddd5922791dd71ac67",
+      "adapter_sha256": "c87a1cd5dc14e092563ce37dfa0391a26823ef561dc585f3a58ce88a1a1d2e58"
+    }
+  ],
+  "fpga_functional": [
+    {
+      "path": "fpga-functional/verification.json",
+      "sha256": "494b335de1b2646383ad743c5e966c1b7c5be3f4d351937beea1624302693124"
+    },
+    {
+      "path": "fpga-control/verification.json",
+      "sha256": "87e5265923db72d39a3af5a70a0c7600ff3256b05a1af513de0ad5dbc5cad4b9"
+    },
+    {
+      "path": "dual-capture-packet-40fps.json",
+      "sha256": "8a7e083907a24bc50082fd4ab6ed6b7f6768b252b4ccd876e060f3eb7cdcc77e"
+    },
+    {
+      "path": "rgb-packet-40fps/verification.json",
+      "sha256": "4cb5349dad58aa912c64191ffc3b9c4caf4bdf9f47cb180ee4de2e4dc96286b1"
+    },
+    {
+      "path": "rtl-resize-verification.json",
+      "sha256": "fe08b3f76b3be489551b89afd80d7756a4804d5b7f8d06674652ace320a9eac5"
+    },
+    {
+      "path": "rtl-resize-reference.json",
+      "sha256": "aa5539c547049657965816869366141197316b0452d74843e7afe4b01371c316"
+    },
+    {
+      "path": "rtl-rgb-fifo-tests-verification.json",
+      "sha256": "ee02d2ff6b209c933bd2fdbd50c7b360ee7a3a830a2d38b8c7f8bc049c726477"
+    },
+    {
+      "path": "rtl-session-pipeline-verification.json",
+      "sha256": "2327903f18d2ea465351845b7000a3b4a227f6b2c592efb6f53f315a653232b5"
+    },
+    {
+      "path": "rtl-letterbox-bram-safety-verification.json",
+      "sha256": "87619ede30b82d00be5ed89b1e688acefd877ac51672306355379cc302c3bfeb"
+    }
+  ],
+  "verification": {
+    "fpga": {
+      "path": "integration/robot_rgb_v39/integration/reports/fpga-v39-release.json",
+      "sha256": "491a792b6473a5d539c5fe9ada24af18686a9ac02dcdc682d8d5f56952226393"
+    },
+    "ARM": {
+      "path": "rk3588/robot_control_v39/reports/arm64-build-v39.json",
+      "sha256": "9558ccdaa4fd8445635a8c5c156a9b65676b9f7bc25554a1a78e87ed05766b83"
+    },
+    "ABI": {
+      "path": "rk3588/robot_control_v39/reports/arm64-abi-v39.json",
+      "sha256": "d5565eb5a10793bd058b5ab2ea330d97f9b06ed0da356bd8486ed82ba3520867"
+    },
+    "identity_and_inherited_evidence": {
+      "path": "integration/robot_rgb_v39/rx_audit/rk-v38-identity-reuse.json",
+      "sha256": "b4f566248466c7a676a1ca6289c33795c85767f415ec1a3bbae9e2d391641351"
+    },
+    "capture": {
+      "path": "integration/robot_rgb_v39/rx_audit/real-capture-verification.json",
+      "sha256": "2610c077c7026c3d60ad1d3213e81efae7cef7c0d4fb6253f7a74b465e950957"
+    },
+    "old_failure": {
+      "path": "integration/robot_rgb_v39/fpga-audit/v35-gray100-failure-summary.json",
+      "sha256": "7f16fa1595f14ca754eca0cccdb053e4efc2e6da21f6fa9a7377023acf4975c3"
+    },
+    "additional_full1080_gate": {
+      "path": "integration/robot_rgb_v39/fpga-audit/registered-gate-full-boundary.json",
+      "sha256": "648708e5e7c7474c00e79c8977ab57242430d4714cc7a02cad5d20533acfc938"
+    },
+    "independent_whole_project_review": {
+      "path": "integration/robot_rgb_v39/fpga-audit/final-whole-project-readonly-review.json",
+      "sha256": "b9e761ba8c410953c38df5354c53afdd026b6d5e07210dc1b5fac0c3c9e5f7a8"
+    },
+    "launcher": {
+      "path": "integration/robot_rgb_v39/rk/reports/launcher-v39.json",
+      "sha256": "b51bc8322825216ceb5361f5a5e422de8d1c0ca928369776194f3cd27ce60cd5"
+    },
+    "installer_posix": {
+      "path": "integration/robot_rgb_v39/rk/reports/installer-posix.json",
+      "sha256": "8b3a52fd7b2c178ddc6d5c0353cb1a15b353b3641ee9a4de3ad25ed765a302b4"
+    },
+    "installer_busybox": {
+      "path": "integration/robot_rgb_v39/rk/reports/installer-busybox.json",
+      "sha256": "f085c9d8dace2ca2a9a24af164c96cb64983d3b49e7649c7a6846550ea309972"
+    }
+  },
+  "limits": [
+    "No new bitstream test on physical camera/board",
+    "No actual hotspot/phone latency measurement",
+    "Physical DVP/RGMII external timing and vehicle behavior still require board validation",
+    "Final gate tests cover actual extracted resize blocks; whole DVP-to-RGP simulation is RTL, not whole-chip gate simulation"
+  ]
+}

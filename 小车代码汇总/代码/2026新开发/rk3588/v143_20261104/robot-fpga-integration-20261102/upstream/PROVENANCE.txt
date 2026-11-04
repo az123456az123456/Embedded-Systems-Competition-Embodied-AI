@@ -1,0 +1,5 @@
+Source https://github.com/robo-friends/m-explore-ros2
+Commit 326cf8a0b487c34246bb8f3326afbcd69576dc60
+BSD license; only explore and explore_lite_msgs built. No map_merge.
+Local build adaptation: costmap_client.h, costmap_tools.h and frontier_search.h include costmap_2d.hpp instead of unused costmap_2d_ros.hpp; costmap_client.h explicitly includes tf2_geometry_msgs.hpp; single-job native compile on 2GB RK. Frontier discovery and cost sorting unchanged. Explicit TF geometry include retained.
+Local goal-point option: default centroid preserved; semantic mode sets goal_point=closest to select a real frontier member rather than a ring centroid at the robot. Blacklist uses the same selected point.

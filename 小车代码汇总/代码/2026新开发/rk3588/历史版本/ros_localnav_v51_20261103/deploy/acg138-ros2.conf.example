@@ -1,0 +1,10 @@
+# Install as /etc/acg138-ros2.conf after the manual end-to-end scan/map test.
+# Services collect scans, odometry and maps only; they never enable motors.
+ROS_RUNTIME=chroot
+ROS_IMAGE=acg138-ros2:jazzy-v37
+ROOTFS_DIR=/userdata/acg138-ros2/rootfs
+DATA_DIR=/userdata/acg138-ros2
+SERIAL_DEVICE=/dev/rplidar_c1
+ROS_DOMAIN_ID=37
+ROS_AUTOMATIC_DISCOVERY_RANGE=LOCALHOST
+# Launch arguments must be supplied in the launch config; no shell command strings.

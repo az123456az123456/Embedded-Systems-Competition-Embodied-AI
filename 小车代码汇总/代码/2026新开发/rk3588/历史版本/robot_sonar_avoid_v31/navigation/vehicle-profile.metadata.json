@@ -1,0 +1,89 @@
+{
+  "wheel_circumference_m": 0.20507,
+  "encoder_ticks_per_turn": 60527.7,
+  "track_m": 0.180635,
+  "robot_radius_m": 0.2161979706195227,
+  "encoder_signs": [
+    -1,
+    1,
+    -1,
+    1
+  ],
+  "sonar_mounts": [
+    [
+      0.145417,
+      0.0,
+      0.0
+    ],
+    [
+      0.097417,
+      0.057,
+      30.0
+    ],
+    [
+      0.097417,
+      -0.057,
+      -30.0
+    ]
+  ],
+  "fixed_profile": "acg138-v22-user-fixed-20261025",
+  "geometry_source": "user_CAD_nominal_plus_22mm_left_extension",
+  "geometry_reference": "wheel_rectangle_center_x_forward_y_left_yaw_CCW",
+  "encoder_source": "user_fixed_60527.7_x4_counts_per_revolution",
+  "encoder_signal_order": "M1,M2,M3,M4",
+  "sonar_origins_measured": false,
+  "effective_turn_track_measured": false,
+  "wheel_diameter_m": 0.065276,
+  "wheelbase_m": 0.1719,
+  "body_front_m": 0.145417,
+  "body_rear_m": 0.16725,
+  "body_left_m": 0.137,
+  "body_right_m": 0.115,
+  "body_width_m": 0.252,
+  "body_length_m": 0.312667,
+  "body_height_m": 0.27265,
+  "imu_mount_x_m": 0.081417,
+  "imu_mount_y_m": 0.0,
+  "sonar_half_angle_deg": 30.0,
+  "units": "metres,radians (sonar_mounts angles degrees)",
+  "body_left_extension_m": 0.022,
+  "body_extension_assumed_full_length": true,
+  "coordinate_origin": "projection of the wheel-center rectangle center onto ground",
+  "model_only": true,
+  "front_sensor_reference": "CAD mount reference, acoustic face not measured",
+  "rear_sensor_coverage": false,
+  "side_sensor_coverage": "forward diagonal only; not reliable perpendicular side coverage",
+  "imu_axis_alignment_measured": false,
+  "encoder_resolution_is_user_fixed": true,
+  "wheel_radius_m": 0.032638,
+  "wheel_axial_thickness_m": 0.0262,
+  "front_axle_to_front_m": 0.059467,
+  "rear_axle_to_rear_m": 0.0813,
+  "nominal_tire_outer_total_width_m": 0.206974,
+  "nominal_diagonal_wheel_centers_m": 0.249356,
+  "sonar_mount_height_m": 0.10394,
+  "sonar_mount_height_measured": false,
+  "sonar_nominal_update_period_s": 0.1,
+  "sonar_min_range_m": 0.03,
+  "sonar_planar_reference_max_range_m": 4.5,
+  "sonar_reference_full_angle_deg": 60.0,
+  "sonar_angle_is_uniform_detection_cone": false,
+  "wheel_center_positions_m": {
+    "left_front": [
+      0.08595,
+      0.0903175
+    ],
+    "right_front": [
+      0.08595,
+      -0.0903175
+    ],
+    "left_rear": [
+      -0.08595,
+      0.0903175
+    ],
+    "right_rear": [
+      -0.08595,
+      -0.0903175
+    ]
+  }
+}

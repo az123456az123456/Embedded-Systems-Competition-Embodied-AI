@@ -1,0 +1,45 @@
+{
+  "input": [
+    960,
+    1080
+  ],
+  "active_output": [
+    569,
+    640
+  ],
+  "tensor": [
+    640,
+    640
+  ],
+  "padding_lrtb": [
+    35,
+    36,
+    0,
+    0
+  ],
+  "coefficient_fractional_bits": 11,
+  "coordinate_rule": "(dst+0.5)*src/dst_size-0.5",
+  "x_rom_words": 960,
+  "x_rom_bits": 12,
+  "y_phase_period": 27,
+  "y_phase_weights": {
+    "1": 704,
+    "3": 64,
+    "4": 1472,
+    "6": 832,
+    "8": 192,
+    "9": 1600,
+    "11": 960,
+    "13": 320,
+    "14": 1728,
+    "16": 1088,
+    "18": 448,
+    "19": 1856,
+    "21": 1216,
+    "23": 576,
+    "24": 1984,
+    "26": 1344
+  },
+  "raw_plus_tensor_payload_bps": 1087488000,
+  "tensor_payload_bps": 589824000
+}

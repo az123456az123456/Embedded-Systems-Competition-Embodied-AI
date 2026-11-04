@@ -1,0 +1,21 @@
+2026-11-03 一秒地图确认与结束建图修复
+
+RK 已直接安装，原启动命令不变。没有启动探索、电机或功能测试。
+1. 连续新雷达观测确认阈值由2秒改为1秒；已确认区域保留，未满1秒临时区域在原定位修正分支仍可清理。不是把所有未知区域强制变空闲。
+2. 新障碍仍立即阻挡，真实新回波仍可更新旧障碍；250ms源年龄、3米建图范围、0.15m膨胀和FPGA安全门不变。
+3. 载图失败即时透出对应本次地图/会话的真实错误，不再仅等到阶段超时。已保存的固定地图保留，点击重试只重新绑定并载图，不自动行驶。
+4. 手机v1.2.33需覆盖安装。本次原签名不变；结束建图等待STOP和DISARM完成，再发送mapping-stop，防止后到的DISARM重新启动MOT停车探测。载入失败显示“重试载图”，只有COMMIT/CRC/版本核对成功才显示已载入FPGA。
+
+证据与限制：
+原运行日志显示MAP_BEGIN_STOP_NOT_CONFIRMED（BUSY），不是已成功载图。
+静态只读传感器采集149条SNS1和585条IMU9，所保存样本encoder illegal=0，轮计数无变化。该采集不是试车或载图验收。
+源码确认odom→base_link由动态TF发布。运行时完整TF链延迟尚无tf2_monitor数据，不能认定TF延迟是根因。
+未修改free_thresh、slam_toolbox容忍度和滤波门限。free_thresh用于保存/加载文件分类，不负责实时OccupancyGrid历史保留。
+手机操作竞态通过源码定位并修复，未进行手机实机或运动复验。
+按用户要求，本轮仅构建/安装和文件身份校验；功能测试、实际载图及移动后地图效果均未运行，不能宣称实机问题全部验收通过。
+
+RK备份：/root/robot-fpga-integration-20261102/backups/map-finalize-1s-fix-20261103/frontier-before.tar.gz
+RK安装：/acg138-ros2/rootfs/opt/acg138_exploration_20261102/install/lib/python3.12/site-packages/acg138_frontier/
+源码：/home/tan/qiansai/rk3588/ros_exploration_candidate26_20261101/
+手机源码：/home/tan/qiansai/rk3588/robot_phone_mapfinalize_v133_20261103/
+记录：/home/tan/qiansai/rk3588/ros_exploration_candidate26_20261101/reports/map-finalize-tf-20261103/

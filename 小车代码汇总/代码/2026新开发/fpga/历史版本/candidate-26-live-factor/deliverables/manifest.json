@@ -1,0 +1,51 @@
+{
+  "status": "OFFLINE_TIMING_PASS_FUNCTIONAL_RELATED_PASS_HARDWARE_PENDING",
+  "candidate": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor",
+  "source_files": 158,
+  "source_archive_verified": true,
+  "timing": {
+    "rx_fmax_mhz": 129.926,
+    "clk50m_fmax_mhz": 50.773,
+    "tx125_fmax_mhz": 130.392,
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "clk50m_violated_endpoints": 0,
+    "rx_violated_endpoints": 0,
+    "tx125_violated_endpoints": 0,
+    "CLS": 24003.0,
+    "registers": 22761.0
+  },
+  "minimum_setup_slack_ns": 0.303,
+  "temporary_cancel_parser_idle_max_ns": 111,
+  "files": {
+    "robot_navigation_v42_candidate26_timing.fs": {
+      "sha256": "88ac75dd3a9055d32f9812b9a61391da2bc35596fb02619e07a684e518edbb3d",
+      "bytes": 19741537
+    },
+    "robot_navigation_v42_candidate26_source.tar.gz": {
+      "sha256": "02f3fb450ff080a17d46fa72af35e9bead9bed6d271604e5b97fe322a5d498d9",
+      "bytes": 522972
+    }
+  },
+  "original_generated_bitstream": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/impl/pnr/robot_navigation_v42_singlemap.fs",
+  "tool_sha256": "a387ae6cdf022748a243757b4aedd98c39d12e26e224d70620bb4d7896b49522",
+  "tool_options": [
+    "set_device GW5AT-LV60PG484AC1/I0",
+    "set_option -enable_dsrm 1",
+    "set_option -use_cpu_as_gpio 1",
+    "set_option -use_sspi_as_gpio 1",
+    "set_option -place_option 2",
+    "set_option -route_option 2",
+    "set_option -clock_route_order 1",
+    "set_option -timing_driven 1",
+    "set_option -synthesis_tool gowinsynthesis",
+    "set_option -top_module robot_fmc_remote_top",
+    "set_option -output_base_name robot_navigation_v42_singlemap",
+    "run all"
+  ],
+  "formal_P0_signed": false,
+  "formal_K_decided": false,
+  "board_programmed": false,
+  "production_release_allowed": false,
+  "note": "No automatic installation/arming. Existing Line A/live integration gates remain. STA is library-model evidence, not a board test."
+}

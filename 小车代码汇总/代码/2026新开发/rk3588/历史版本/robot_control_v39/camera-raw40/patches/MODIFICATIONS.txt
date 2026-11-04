@@ -1,0 +1,4 @@
+2026-10-16 ACG138 FPS v4
+Rockchip/Intel/Android copyright notices are retained in the SDK sources.
+Isolated RKAIQ changes: enable FakeCam; poll pending RAW buffers every 5ms instead of 100ms; retain the previously supplied RAW_DATA MMAP copy and callback iterator-lifetime fixes.
+Reproduce with scripts/build-fakecam.sh against the supplied SDK; patches/rkaiq-fakecam-fps-v4.patch records all three modified SDK files. No system RKAIQ library is overwritten.

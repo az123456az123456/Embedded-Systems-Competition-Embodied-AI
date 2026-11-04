@@ -1,0 +1,62 @@
+{
+  "version": "v14.1",
+  "date": "2026-10-21",
+  "sources": [
+    {
+      "file": "RK3588+GW5AT-60K--260828.pdf",
+      "sha256": "7c01ae5ad3932596e06c404f6504c4a7397911b07dba5e224680b0ed66d4e38e"
+    },
+    {
+      "file": "ACG138-RK3588-CB-260908.pdf",
+      "sha256": "328088cc327792613544366182a976e36cb18d250dd044353373aae8f394a79c"
+    },
+    {
+      "file": "3692004792ACG138_硬件手册_图文版_V0.9.1.pdf",
+      "sha256": "3256b681ed1733c7e9e3aefab4ffa2fa07a5da6a8c75ccbf6dba1d4cda6396e2"
+    },
+    {
+      "file": "UG718-1.0.4E_Arora Ⅴ 60K FPGA Products Programming and Configuration Guide.pdf",
+      "sha256": "17729cd0ca7bbcfbf63c758c78665ab6e79fe73fc8a5407f0c8547de88165b65"
+    }
+  ],
+  "core_schematic_flash": {
+    "pdf_page": 25,
+    "printed_sheet_number": 16,
+    "chip": "U13 W25Q128JVSIQ",
+    "nets_to_fpga_balls": {
+      "MSPI_CLK": "L12",
+      "MSPI_CS_N": "T19",
+      "MSPI_MOSI": "P22",
+      "MSPI_MISO": "R22",
+      "MSPI_WP": "P21",
+      "MSPI_HOLD": "R21"
+    },
+    "N20": "B5_B70_P/IOR70A/SSPI_WPN/SSI2; separate from U13 MSPI_WP; leads to core P1-69 on PDF page30"
+  },
+  "base_schematic": {
+    "pdf_page": 6,
+    "N20_route": "B5_B70_P to P16 FMC C26; adapter converts to P2-3"
+  },
+  "hardware_manual": {
+    "printed_page16": "MODE001 MasterSPI and6 MSPI configuration balls",
+    "printed_page30": "P10-23 GND/P10-24 VCC3P3"
+  },
+  "vendor_guide": {
+    "sections": "UG718 section3.2; printed p14-15/Table3-7",
+    "configuration_phase": "Configuration function is default until configuration succeeds",
+    "user_phase": "SSPI_CS_N, SSPI_CLK, SI, SO, CLKHOLD_N, SSPI_WPN can become GPIO by SSPI-port reuse option",
+    "ms_pi_and_jtag": "Independent reuse options; do not enable MSPI-asGPIO or JTAG-asGPIO",
+    "N20_uses": "SSPI_WPN/SSI2 is in the whole SSPI reuse group, not an independently selectable single-WPN setting"
+  },
+  "v141_build_requirement": {
+    "set_option_use_sspi_as_gpio": 1,
+    "use_mspi_as_gpio": false,
+    "use_jtag_as_gpio": false,
+    "P3_N22_M22": "intentionally unassigned by this design even though SSPI group is reused",
+    "scope": "Preserve MSPI Flash wiring/options. User-mode SSPI interface is repurposed to GPIO, so do not claim user-mode SSPI background access is preserved."
+  },
+  "physical_verification": {
+    "real_board_tested": false,
+    "cold_boot_and_signal_voltage": "requires actual board validation"
+  }
+}

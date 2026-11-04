@@ -1,0 +1,11 @@
+{
+  "purpose": "exact frozen v29.2 source, compiled only to reproduce logged occupied-cell local avoidance veto",
+  "production_code": false,
+  "source_tree": "rk3588/robot_local_avoid_v29_2/navigation",
+  "files_sha256": {
+    "navcore.cc": "933f1a07ed1cf16e738dfe05da3a6d32d3d6b719ae2003a85cfc30e727013355",
+    "navcore.h": "59163f190184bd7f47f9a3ee304c65ea0db7ce1471d6eb872f326173c246f251",
+    "navcore_reactive.inc": "878d1cfe7464e222a8f96cf54b573f911958a612abfc782bae26206b457218a1",
+    "vehicle_geometry.h": "d397b135c9993d589e4f1ffd8cbb9f95be252337a2144569641f55c38b25d558"
+  }
+}

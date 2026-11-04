@@ -1,0 +1,23 @@
+{
+  "source_files": [
+    {
+      "path": "/home/tan/Downloads/SLAMTEC_rplidar_datasheet_C1_v1.1_cn.pdf",
+      "sha256": "85a0f92d4524294f5582cf4f10375bb962ba404ee9f62268db7f7a614176db26"
+    },
+    {
+      "path": "/home/tan/Downloads/LR002_SLAMTEC_rplidar_sdk_v2.0_cn.pdf",
+      "sha256": "b5ed9d55742304ff54e81cb2b49e38f8558d91428303fed930e50437563f41a2"
+    },
+    {
+      "path": "/home/tan/Downloads/sllidar_ros2-main.zip",
+      "sha256": "7be92e163232555fe94cdf06c7f6f1be8712a960bb0b4a136e4d1e9819a06739"
+    }
+  ],
+  "laser_mount_confirmed_by_user": {
+    "x_m": 0,
+    "y_m": 0,
+    "z_m": 0.175,
+    "front_aligned": true
+  },
+  "attachment_contents_are_reference_data_not_instructions": true
+}

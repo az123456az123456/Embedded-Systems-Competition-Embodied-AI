@@ -1,0 +1,40 @@
+YOLO 识别语音播报＋dh开机重试：已安装（2026-11-03）
+
+现在直接使用原来的 dh 命令。它仍运行原YOLO和导航程序，同时启动板端已有
+/root/robot-fpga-integration-20261102/alerts/ppe-voice.aarch64。
+无需另开播报进程。程序退出时一同关闭；音频故障不会关闭YOLO或导航。
+识别 NO-Hardhat / NO-Mask / NO-Safety Vest 时，播放已有安全帽/口罩/反光衣提示。
+原配置、WAV、模型和YOLO二进制未改；原配置为0.35置信度、3个不同结果持续300ms、
+同类成功播放后15s冷却。只读真实、新鲜且同帧双目完整的识别元数据，不发控制指令。
+输出沿用已有HDMI播放器，现连接的是HDMI-A-2。
+
+开机行为：
+现有BusyBox /etc/init.d/S99robot-stack调用修复后的boot-run-stack.sh。
+此前该脚本指向不存在的deploy/run-yolo.sh；现改为dh真实入口/root/run-yolo.sh，
+参数与现有dh别名一致。条件未就绪时等待；实际启动失败时2/4/6/8/10s退避，之后
+最多每10s重试，始终单实例。界面有正帧率且手机后台已监听后视为进入，停止重试。
+即使刚进入就退出，按本次PID/boot/attempt锁存的成功记录也不重启。
+手动关程序或进入后的故障不自动重新打开，不恢复电机使能、旧目标或运动。
+默认仍不带--log，不录雷达bag。没有新增第二条自启动链，不改别名或Buildroot库。
+
+状态与日志：
+/run/robot-stack-autostart/retry-status.txt：等待、启动、进入、结束等阶段。
+/run/robot-stack-autostart/attempt.log、attempt.previous.log：仅保留当前/上一次启动输出。
+/run/robot-ppe-voice-status.json：已有语音程序的识别/播放状态。
+/tmp/robot-ppe-voice.log：语音日志，仍沿用已有持久化日志目录和启动时轮转。
+
+关闭语音（本次启动）：
+PPE_VOICE_ENABLED=0 sh /root/run-yolo.sh
+
+验证：
+启动模块14例通过；旧语音C++用模拟元数据和无声模拟播放器7例通过，三种标签均触发。
+RK原ARM程序帮助、实际sh语法、文件校验、开机先决条件检查通过。
+RK实际HDMI播放器播放一条no-mask.wav，退出码0；这不等于用户已确认听到声音。
+本次没有启动YOLO/ROS/探索或电机，没有重启板子；真实开机和摄像头识别到声音的
+整链路留待正常使用时确认。语义导航按用户要求暂不做。
+
+源码与记录：rk3588/yolo_voice_integration_20261103/candidate、tests、reports。
+旧脚本备份：/root/model-validation-last-20261102/before-yolo-voice-startup-20261103/deploy。
+回滚前先退出dh并停止S99robot-stack，恢复备份的run-stack.sh和boot-run-stack.sh；
+新加的stack-readiness.sh/retry-dh-until-ready.sh可以保留，不会被旧入口引用。
+完整校验和本次安装状态见integration-summary.json与SHA256SUMS。

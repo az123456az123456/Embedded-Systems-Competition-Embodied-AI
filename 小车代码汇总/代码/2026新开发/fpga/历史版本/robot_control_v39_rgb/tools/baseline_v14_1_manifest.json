@@ -1,0 +1,813 @@
+{
+  "date": "2026-10-21",
+  "project": "robot_fmc_remote_sensors_v14_1_a02",
+  "top": "robot_fmc_remote_top",
+  "device": "GW5AT-LV60PG484AC1/I0",
+  "tool_version": "V1.9.12.03",
+  "bitstream": "impl/pnr/robot_fmc_remote_sensors_v14_1_a02.fs",
+  "bitstream_sha256": "e7118571fd12aa8710b847642e264925a9463707c5a8ac30711399225f33430c",
+  "bitstream_bytes": 19021821,
+  "hardware_tested": false,
+  "left_mask": 5,
+  "reset_default_left_mask": 10,
+  "invert_mask": 0,
+  "wheel_positions": {
+    "M1": "left_rear",
+    "M2": "right_rear",
+    "M3": "left_front",
+    "M4": "right_front"
+  },
+  "automatic_motor_test_sequence": false,
+  "resources": {
+    "Logic": {
+      "used": 13271,
+      "total": 59904
+    },
+    "Register": {
+      "used": 11006,
+      "total": 60780
+    },
+    "BSRAM": {
+      "used": 56,
+      "total": 118
+    }
+  },
+  "softcore": {
+    "name": "PicoRV32",
+    "isa": "RV32IM",
+    "clock_hz": 50000000,
+    "unified_ram_bytes": 65536,
+    "motor_write_access": false,
+    "nav_ethertype": "0x88b7"
+  },
+  "timing": {
+    "setup_violated_endpoints": 0,
+    "hold_violated_endpoints": 0,
+    "frequency_table": [
+      {
+        "clock": "clk50m",
+        "constraint_mhz": 50.0,
+        "actual_fmax_mhz": 76.906
+      },
+      {
+        "clock": "cam1_pclk",
+        "constraint_mhz": 100.0,
+        "actual_fmax_mhz": 206.934
+      },
+      {
+        "clock": "cam2_pclk",
+        "constraint_mhz": 100.0,
+        "actual_fmax_mhz": 197.202
+      },
+      {
+        "clock": "rgmii_rx_clk",
+        "constraint_mhz": 125.0,
+        "actual_fmax_mhz": 133.597
+      },
+      {
+        "clock": "core/your_instance_name/u_pll/PLLA_inst/CLKOUT0.default_gen_clk",
+        "constraint_mhz": 125.0,
+        "actual_fmax_mhz": 125.301
+      },
+      {
+        "clock": "core/your_instance_name/u_pll/PLLA_inst/CLKOUT1.default_gen_clk",
+        "constraint_mhz": 50.0,
+        "actual_fmax_mhz": 134.506
+      }
+    ],
+    "hardware_tested": false,
+    "scope": "Declared internal STA only; external camera and RGMII IO not signed off",
+    "setup_minimum_reported_slack_ns": 0.019,
+    "hold_minimum_reported_slack_ns": 0.168,
+    "recovery_minimum_reported_slack_ns": 1.312,
+    "removal_minimum_reported_slack_ns": 0.261
+  },
+  "synthesis_inputs": {
+    "camera/Camera_ETH_Formator.v": "76c6dab3bce60506b0c2ffd910ae6f6bd1b9543e4a8a15520b88c6587f632020",
+    "camera/cache.v": "72339fadfb6a4375f1970352740db6a80cc2c7bfee9e6136950a27d4de0972f6",
+    "camera/camera_init.v": "35d3f4d5a4755e4ecd05a4eadcd5ee5aebe65fbd8904d67eec6961d63e22ebab",
+    "camera/i2c_bit_shift.v": "1b57b36f00c5d5ee3748640217becf9dd44ec9a126f048b55a18fbc41943e234",
+    "camera/i2c_control.v": "33ff146d3517983111059211609e20ef38199706efe958f187f45809c43596c2",
+    "camera/ov5640_init_table_jpeg.v": "2a547f2352c169c6f726ae5e952b8301f5378ec71cf44a01fbbed8e3bbc1eed8",
+    "camera/ov5640_init_table_raw.v": "5f5d90d058cd752479dff60e7ae3cdc45969cd87a81074cfcae3fc5636d788cf",
+    "camera/ov7725_init_table_rgb.v": "0ed862c79e570b3391f5ca0822d4e649b111a3f14ed164d598516173d1f9b42f",
+    "camera/controller.v": "802848fb6372424a276d3e78514758505b19d8e9e8ec5302436fff667e3e0644",
+    "camera/controller_top.v": "88d24c6349ef2f5c3e2107b0944ca87d1e689f80e175679b722045ab47bdeb6a",
+    "camera/dc_fifo.v": "e734141b17c73969872529c59f556bc21c76677268492e6361f51b9a81bd287f",
+    "camera/CRC32_D8.v": "003fcd97bee8d308ff4dfa06e0b305a36195bb5f96e2c045b4e5ca96f02426a1",
+    "camera/UDP_Send.v": "630519c9da78080a16fc2b8bb76c542394ee506c609936d85418902617068c72",
+    "camera/eth_dcfifo.v": "f9c1aaab3444417cee68b2aac1a3c586eec45d453e93e4b8f6d21c33668c33e8",
+    "camera/gmii_to_rgmii.v": "c9f78ff19601b875489a225e03572f8b9155a7c3ba38bc6d453951e2b1ae7b38",
+    "camera/gowin_pll.v": "d384fc2a8cd3f691058a02a6b2e659c891e116d81e31e04d0aa6ff52f56d46c8",
+    "camera/gowin_pll_mod.v": "daebad7395a2177ba0ba7c913f14bd9d3042eec26163899b860f6047e68d9c98",
+    "camera/mdio_bit_shift.v": "f2ef1aa9f4f06171d5083a2e7c4d4cd0af88e4dc1aaa7068cf739141844d373c",
+    "camera/phy_reg_config.v": "86c7d6c43ebc4009253b0c5d16161028bdd16fa083cd8f249bb3368620668b0d",
+    "camera/ov5640x2_udp_rgmii.v": "61aee8076f135b10004d7ac47243ace6e3a51bad469619da1a2709e58ece0a57",
+    "camera/pll_init.v": "3fc6bef9a7086f0920bfa47265b1766854a53f6ca1c0f75084eaf6b6ef4d6258",
+    "camera/camera_diag.v": "04a6069222ff283038037ae5a1f244123e09999892abdbb1b427261f7caac7e7",
+    "camera/ov5640_af_loader.v": "13e90d72267157c5fb27101f172b43954bb34dc0c80988d8bccd2462491ddfcb",
+    "imu/i2c_reg_master.v": "66344937b84ef38eb9ee80055564b8354f860c6a6acc216a94fa0dc18b1f9c25",
+    "imu/mpu9250_reader.v": "f5a30a3f2b1db6ab37f702402f7217797f5dcd6392261bd4b981aaa7c974d160",
+    "imu/imu_ethernet_tx.v": "697d16634f012400e9c5c79267ee41b5d467638f4213c578938c1a109980a416",
+    "imu/imu_sample_filter.v": "090c34a2d37d21c35aa75ffd2c778591b57de7b8018ba750afb1776e64a18baf",
+    "imu/imu_gmii_source.v": "4c4cda543f46b3d82c4e1ad0b10d8f759308dadd42f6a7d4f02f51a03534dfd1",
+    "softcore/vendor/picorv32.v": "0836050971b3c6cdd28ac3b1e5719a67fb645161912bef1e472e63995ceb0622",
+    "softcore/robot_nav_soc.v": "c84f6b9722ef69680e86d068fb4a6e1cc49cc1ecf4ddc19deb02488c0916a3dd",
+    "rtl/robot_fmc_remote_top.v": "b0ac10582d890f2cb071fe1b2b4416a486e77a1a2f4091dfbec4deea7e79002a",
+    "rtl/motor_packet_rx.v": "eae9b8b42dc2464bac91a26bd0adb35a371f733e8483b78f2d2ce89a21855929",
+    "rtl/motor_remote_control.v": "7d2d95ce7900ab3a33b6d8bb1f701ebd0426908c57effbd96cf172f1f05c4225",
+    "rtl/motor_status_tx.v": "062324976b9fb4f912ed0a7639c09de202cd7b18529445ef00446ddcc1d97cc3",
+    "robot_fmc_remote.cst": "57cfc4d27be396ba75cb63bd9a921d5cc08b577c2250116ce78822832154712f",
+    "robot_fmc_remote.sdc": "524c9dbe1d2cdbb60bbbc4ceece658bb0db1157b196db0dc45d8ebd1163f18ca",
+    "sensors/encoder_4ch.v": "9ea62a3af76ce6ba79f35332b3b3d11cba3afed33e8a5348cb2275ba157ef3c8",
+    "sensors/robot_sensor_capture.v": "d276fa434fdd6a294e9d5f0363f5d76a180122811a81cc79283ef9f3ad5b343e",
+    "sensors/sensor_status_tx.v": "0cc091c393a66cdabaae7775e2e342ac51e1ec895ba716c3f92bcb29bb750f44",
+    "sensors/a02_uart_rx.v": "ff75346010b7096073ca1dc5350238999c633c481f2e4559c5119e1f4342a858",
+    "sensors/ultrasonic_sensor.v": "d9ceb0550d6e707539efa8399a839056865b9e8fb012847cd44afa4e91ea83b7",
+    "sensors/ultrasonic_driver.v": "c818aaa2de86475d78b60e2beef189d2b4338cdc3652308840439eda5d098129",
+    "sensors/ultrasonic_3ch.v": "85efc1d5d7e3237a5f8fe3430510dd1fb4958506a39e0cd8fa9367bec1bb63a6"
+  },
+  "auxiliary_inputs": {
+    "build.tcl": "c88fe792c12474d6f014bec8217e933a8fe72ada22034163cf1449f70e189df5",
+    "camera/ov5640_af.hex": "bb802955575dd4f1c33b1dfb384b0607b2f44368b378f5ea814a564e74c64482",
+    "softcore/firmware/firmware.hex": "96ac6083f0cb6a96c4ab05740527825aaa267d6c2245c59a6e07f5f9da313501",
+    "softcore/vendor/upstream.json": "72043445e5031929744848b5ac6f84432bcb59f708420cec12b0eb9cb01e0465"
+  },
+  "source_list_gui_matches_tcl": true,
+  "camera_and_filter_inputs_unchanged_from_v12": true,
+  "imu_gmii_readonly_tap_reviewed": true,
+  "camera_imu_inputs_verified": 27,
+  "pins_verified": 75,
+  "original_64_pins_match_v12_baseline": true,
+  "new_sensor_inputs": 11,
+  "sensor_ethertype": "0x88b8",
+  "sensor_payload_bytes": 64,
+  "unchanged_synthesis_inputs_from_v14": {
+    "camera/Camera_ETH_Formator.v": "76c6dab3bce60506b0c2ffd910ae6f6bd1b9543e4a8a15520b88c6587f632020",
+    "camera/cache.v": "72339fadfb6a4375f1970352740db6a80cc2c7bfee9e6136950a27d4de0972f6",
+    "camera/camera_init.v": "35d3f4d5a4755e4ecd05a4eadcd5ee5aebe65fbd8904d67eec6961d63e22ebab",
+    "camera/i2c_bit_shift.v": "1b57b36f00c5d5ee3748640217becf9dd44ec9a126f048b55a18fbc41943e234",
+    "camera/i2c_control.v": "33ff146d3517983111059211609e20ef38199706efe958f187f45809c43596c2",
+    "camera/ov5640_init_table_jpeg.v": "2a547f2352c169c6f726ae5e952b8301f5378ec71cf44a01fbbed8e3bbc1eed8",
+    "camera/ov5640_init_table_raw.v": "5f5d90d058cd752479dff60e7ae3cdc45969cd87a81074cfcae3fc5636d788cf",
+    "camera/ov7725_init_table_rgb.v": "0ed862c79e570b3391f5ca0822d4e649b111a3f14ed164d598516173d1f9b42f",
+    "camera/controller.v": "802848fb6372424a276d3e78514758505b19d8e9e8ec5302436fff667e3e0644",
+    "camera/controller_top.v": "88d24c6349ef2f5c3e2107b0944ca87d1e689f80e175679b722045ab47bdeb6a",
+    "camera/dc_fifo.v": "e734141b17c73969872529c59f556bc21c76677268492e6361f51b9a81bd287f",
+    "camera/CRC32_D8.v": "003fcd97bee8d308ff4dfa06e0b305a36195bb5f96e2c045b4e5ca96f02426a1",
+    "camera/UDP_Send.v": "630519c9da78080a16fc2b8bb76c542394ee506c609936d85418902617068c72",
+    "camera/eth_dcfifo.v": "f9c1aaab3444417cee68b2aac1a3c586eec45d453e93e4b8f6d21c33668c33e8",
+    "camera/gmii_to_rgmii.v": "c9f78ff19601b875489a225e03572f8b9155a7c3ba38bc6d453951e2b1ae7b38",
+    "camera/gowin_pll.v": "d384fc2a8cd3f691058a02a6b2e659c891e116d81e31e04d0aa6ff52f56d46c8",
+    "camera/gowin_pll_mod.v": "daebad7395a2177ba0ba7c913f14bd9d3042eec26163899b860f6047e68d9c98",
+    "camera/mdio_bit_shift.v": "f2ef1aa9f4f06171d5083a2e7c4d4cd0af88e4dc1aaa7068cf739141844d373c",
+    "camera/phy_reg_config.v": "86c7d6c43ebc4009253b0c5d16161028bdd16fa083cd8f249bb3368620668b0d",
+    "camera/ov5640x2_udp_rgmii.v": "61aee8076f135b10004d7ac47243ace6e3a51bad469619da1a2709e58ece0a57",
+    "camera/pll_init.v": "3fc6bef9a7086f0920bfa47265b1766854a53f6ca1c0f75084eaf6b6ef4d6258",
+    "camera/camera_diag.v": "04a6069222ff283038037ae5a1f244123e09999892abdbb1b427261f7caac7e7",
+    "camera/ov5640_af_loader.v": "13e90d72267157c5fb27101f172b43954bb34dc0c80988d8bccd2462491ddfcb",
+    "imu/i2c_reg_master.v": "66344937b84ef38eb9ee80055564b8354f860c6a6acc216a94fa0dc18b1f9c25",
+    "imu/mpu9250_reader.v": "f5a30a3f2b1db6ab37f702402f7217797f5dcd6392261bd4b981aaa7c974d160",
+    "imu/imu_ethernet_tx.v": "697d16634f012400e9c5c79267ee41b5d467638f4213c578938c1a109980a416",
+    "imu/imu_sample_filter.v": "090c34a2d37d21c35aa75ffd2c778591b57de7b8018ba750afb1776e64a18baf",
+    "imu/imu_gmii_source.v": "4c4cda543f46b3d82c4e1ad0b10d8f759308dadd42f6a7d4f02f51a03534dfd1",
+    "softcore/vendor/picorv32.v": "0836050971b3c6cdd28ac3b1e5719a67fb645161912bef1e472e63995ceb0622",
+    "softcore/robot_nav_soc.v": "c84f6b9722ef69680e86d068fb4a6e1cc49cc1ecf4ddc19deb02488c0916a3dd",
+    "rtl/robot_fmc_remote_top.v": "b0ac10582d890f2cb071fe1b2b4416a486e77a1a2f4091dfbec4deea7e79002a",
+    "rtl/motor_packet_rx.v": "eae9b8b42dc2464bac91a26bd0adb35a371f733e8483b78f2d2ce89a21855929",
+    "rtl/motor_remote_control.v": "7d2d95ce7900ab3a33b6d8bb1f701ebd0426908c57effbd96cf172f1f05c4225",
+    "rtl/motor_status_tx.v": "062324976b9fb4f912ed0a7639c09de202cd7b18529445ef00446ddcc1d97cc3",
+    "robot_fmc_remote.sdc": "524c9dbe1d2cdbb60bbbc4ceece658bb0db1157b196db0dc45d8ebd1163f18ca",
+    "sensors/encoder_4ch.v": "9ea62a3af76ce6ba79f35332b3b3d11cba3afed33e8a5348cb2275ba157ef3c8",
+    "sensors/robot_sensor_capture.v": "d276fa434fdd6a294e9d5f0363f5d76a180122811a81cc79283ef9f3ad5b343e",
+    "sensors/sensor_status_tx.v": "0cc091c393a66cdabaae7775e2e342ac51e1ec895ba716c3f92bcb29bb750f44",
+    "sensors/a02_uart_rx.v": "ff75346010b7096073ca1dc5350238999c633c481f2e4559c5119e1f4342a858",
+    "sensors/ultrasonic_sensor.v": "d9ceb0550d6e707539efa8399a839056865b9e8fb012847cd44afa4e91ea83b7",
+    "sensors/ultrasonic_driver.v": "c818aaa2de86475d78b60e2beef189d2b4338cdc3652308840439eda5d098129",
+    "sensors/ultrasonic_3ch.v": "85efc1d5d7e3237a5f8fe3430510dd1fb4958506a39e0cd8fa9367bec1bb63a6"
+  },
+  "only_three_sonar_locations_changed": true,
+  "configuration_changes_from_v14": {
+    "use_sspi_as_gpio": 1,
+    "use_mspi_as_gpio": 0,
+    "use_jtag_as_gpio": 0,
+    "other_build_options_unchanged": true
+  },
+  "configuration_manual": {
+    "guide": "UG718-1.0.4",
+    "printed_pages": [
+      13,
+      14
+    ],
+    "rule": "SSPI group GPIO only after configuration; MSPI/JTAG options independent"
+  },
+  "relocated_sonar_pins": {
+    "sonar_rx[0]": "P2-1/Y18",
+    "sonar_rx[1]": "P2-3/N20",
+    "sonar_rx[2]": "P2-5/U20"
+  },
+  "pins": {
+    "encoder_a[0]": {
+      "location": "J22/5",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "encoder_a[1]": {
+      "location": "J20/5",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "encoder_a[2]": {
+      "location": "H17/4",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "encoder_a[3]": {
+      "location": "G15/4",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "encoder_b[0]": {
+      "location": "H22/5",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "encoder_b[1]": {
+      "location": "J21/5",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "encoder_b[2]": {
+      "location": "H18/4",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "encoder_b[3]": {
+      "location": "G16/4",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "sonar_rx[0]": {
+      "location": "Y18/8",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "sonar_rx[1]": {
+      "location": "N20/5",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "sonar_rx[2]": {
+      "location": "U20/8",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "clk50m": {
+      "location": "F13/1",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "rgmii_rx_clk": {
+      "location": "E19/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "rgmii_rxd[0]": {
+      "location": "F20/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "rgmii_rxd[1]": {
+      "location": "D20/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "rgmii_rxd[2]": {
+      "location": "A18/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "rgmii_rxd[3]": {
+      "location": "A19/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "rgmii_rx_ctl": {
+      "location": "C20/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "cam1_pclk": {
+      "location": "W22/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_href": {
+      "location": "Y17/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_vsync": {
+      "location": "Y16/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_data[0]": {
+      "location": "P20/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_data[1]": {
+      "location": "V13/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_data[2]": {
+      "location": "P19/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_data[3]": {
+      "location": "R19/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_data[4]": {
+      "location": "T21/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_data[5]": {
+      "location": "U21/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_data[6]": {
+      "location": "W16/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_data[7]": {
+      "location": "W15/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_pclk": {
+      "location": "N14/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_href": {
+      "location": "P14/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_vsync": {
+      "location": "R14/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_data[0]": {
+      "location": "T15/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_data[1]": {
+      "location": "T14/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_data[2]": {
+      "location": "U16/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_data[3]": {
+      "location": "N15/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_data[4]": {
+      "location": "P16/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_data[5]": {
+      "location": "R17/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_data[6]": {
+      "location": "R18/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_data[7]": {
+      "location": "T18/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_pwm[0]": {
+      "location": "J15/4",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_pwm[1]": {
+      "location": "Y22/8",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_pwm[2]": {
+      "location": "AB20/8",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_pwm[3]": {
+      "location": "G20/5",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_in1[0]": {
+      "location": "H15/4",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_in1[1]": {
+      "location": "AB21/8",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_in1[2]": {
+      "location": "M16/5",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_in1[3]": {
+      "location": "G17/4",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_in2[0]": {
+      "location": "Y21/8",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_in2[1]": {
+      "location": "AA19/8",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_in2[2]": {
+      "location": "K21/5",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "motor_in2[3]": {
+      "location": "N18/5",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "led[0]": {
+      "location": "E13/1",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "led[1]": {
+      "location": "E14/1",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "led[2]": {
+      "location": "D14/1",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "led[3]": {
+      "location": "D15/1",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "uart_tx": {
+      "location": "C13/1",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "rgmii_tx_clk": {
+      "location": "E18/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "rgmii_txd[0]": {
+      "location": "B20/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "rgmii_txd[1]": {
+      "location": "A20/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "rgmii_txd[2]": {
+      "location": "C19/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "rgmii_txd[3]": {
+      "location": "F18/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "rgmii_tx_ctl": {
+      "location": "F19/2",
+      "io_type": "LVCMOS18",
+      "bank_vccio": "1.8"
+    },
+    "cam1_pwdn": {
+      "location": "N17/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_rst_n": {
+      "location": "P17/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_xclk": {
+      "location": "W21/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_scl": {
+      "location": "AA21/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_pwdn": {
+      "location": "V15/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_rst_n": {
+      "location": "U15/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_xclk": {
+      "location": "N13/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_scl": {
+      "location": "R16/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "imu_scl": {
+      "location": "D16/1",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "imu_sda": {
+      "location": "E16/1",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam1_sda": {
+      "location": "AA20/7",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    },
+    "cam2_sda": {
+      "location": "P15/6",
+      "io_type": "LVCMOS33",
+      "bank_vccio": "3.3"
+    }
+  },
+  "warnings": {
+    "count": 211,
+    "codes": {
+      "EX3788": 1,
+      "EX3073": 4,
+      "EX3670": 2,
+      "EX3791": 21,
+      "EX2629": 153,
+      "EX3826": 15,
+      "EX3827": 9,
+      "NL0002": 3,
+      "PR1014": 3
+    },
+    "lines": [
+      "WARN  (EX3788) : Block identifier is required on this block(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/gmii_to_rgmii.v\":56)",
+      "WARN  (EX3073) : Port 'camera_pwdn' remains unconnected for this instance(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/ov5640x2_udp_rgmii.v\":178)",
+      "WARN  (EX3670) : Actual bit length 1 differs from formal bit length 16 for port 'Rd_Data'(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/ov5640x2_udp_rgmii.v\":133)",
+      "WARN  (EX3791) : Expression size 13 truncated to fit in target size 12(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/ov5640_af_loader.v\":67)",
+      "WARN  (EX3791) : Expression size 13 truncated to fit in target size 12(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/ov5640_af_loader.v\":68)",
+      "WARN  (EX3791) : Expression size 5 truncated to fit in target size 4(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/ov5640_af_loader.v\":71)",
+      "WARN  (EX3791) : Expression size 11 truncated to fit in target size 10(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/ov5640_af_loader.v\":73)",
+      "WARN  (EX3791) : Expression size 5 truncated to fit in target size 4(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/ov5640_af_loader.v\":75)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/Camera_ETH_Formator.v\":55)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/Camera_ETH_Formator.v\":57)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/Camera_ETH_Formator.v\":59)",
+      "WARN  (EX3073) : Port 'Almost_Empty' remains unconnected for this instance(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/cache.v\":33)",
+      "WARN  (EX3073) : Port 'Almost_Empty' remains unconnected for this instance(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":168)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":97)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":98)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":99)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":100)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":101)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":102)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":103)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":109)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":110)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":178)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":179)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":180)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":186)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":187)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":191)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":196)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":198)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":200)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":205)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":206)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":209)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":210)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":213)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":219)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":220)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":221)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":222)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":223)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":224)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":225)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":226)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":227)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":233)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":234)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":235)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":236)",
+      "WARN  (EX3791) : Expression size 32 truncated to fit in target size 16(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":247)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/CRC32_D8.v\":66)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":277)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":278)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":279)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":280)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":281)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":282)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":283)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":284)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":285)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":286)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":287)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":288)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":289)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":290)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":296)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":297)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":299)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":301)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":306)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":308)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":309)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":312)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":313)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":316)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":317)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":318)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":325)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":327)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":328)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":331)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":332)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":335)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":336)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":337)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":338)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":339)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":340)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":341)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":349)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":350)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":353)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":354)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":357)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":358)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":359)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":360)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":361)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":362)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":363)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":370)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":371)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":374)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":375)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":378)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":379)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":380)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":387)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":388)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":391)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":392)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":395)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":396)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":397)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":398)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":399)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":400)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":401)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":402)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":403)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":404)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":405)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":406)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":407)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":408)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":409)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":410)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":411)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":412)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":413)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":414)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":415)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":422)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":423)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":424)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":427)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":428)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":431)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":432)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":433)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":434)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":435)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":436)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":437)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":438)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":439)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":446)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":447)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":448)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":449)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":452)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":453)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":454)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":460)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":462)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":463)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":464)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":467)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":468)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":471)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":472)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":473)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":474)",
+      "WARN  (EX2629) : Delay control is not supported for synthesis(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/UDP_Send.v\":475)",
+      "WARN  (EX3670) : Actual bit length 32 differs from formal bit length 16 for port 'data_length'(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/ov5640x2_udp_rgmii.v\":260)",
+      "WARN  (EX3791) : Expression size 25 truncated to fit in target size 16(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/imu/imu_sample_filter.v\":33)",
+      "WARN  (EX3791) : Expression size 17 truncated to fit in target size 16(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/imu/imu_sample_filter.v\":34)",
+      "WARN  (EX3073) : Port 'mem_la_read' remains unconnected for this instance(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/robot_nav_soc.v\":36)",
+      "WARN  (EX3791) : Expression size 32 truncated to fit in target size 7(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":2299)",
+      "WARN  (EX3791) : Expression size 64 truncated to fit in target size 32(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":2313)",
+      "WARN  (EX3791) : Expression size 63 truncated to fit in target size 32(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":2499)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":332)",
+      "WARN  (EX3827) : Synthesis - simulation differences may occur when using full_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":403)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1120)",
+      "WARN  (EX3791) : Expression size 33 truncated to fit in target size 32(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1236)",
+      "WARN  (EX3791) : Expression size 32 truncated to fit in target size 1(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1250)",
+      "WARN  (EX3827) : Synthesis - simulation differences may occur when using full_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1252)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1252)",
+      "WARN  (EX3827) : Synthesis - simulation differences may occur when using full_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1269)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1269)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1315)",
+      "WARN  (EX3791) : Expression size 32 truncated to fit in target size 5(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1349)",
+      "WARN  (EX3791) : Expression size 32 truncated to fit in target size 5(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1404)",
+      "WARN  (EX3791) : Expression size 32 truncated to fit in target size 4(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1426)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1498)",
+      "WARN  (EX3791) : Expression size 32 truncated to fit in target size 5(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1594)",
+      "WARN  (EX3827) : Synthesis - simulation differences may occur when using full_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1628)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1628)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1584)",
+      "WARN  (EX3791) : Expression size 32 truncated to fit in target size 5(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1731)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1736)",
+      "WARN  (EX3791) : Expression size 32 truncated to fit in target size 5(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1761)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1767)",
+      "WARN  (EX3827) : Synthesis - simulation differences may occur when using full_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1837)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1837)",
+      "WARN  (EX3791) : Expression size 32 truncated to fit in target size 5(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1842)",
+      "WARN  (EX3827) : Synthesis - simulation differences may occur when using full_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1845)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1845)",
+      "WARN  (EX3791) : Expression size 32 truncated to fit in target size 5(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1850)",
+      "WARN  (EX3827) : Synthesis - simulation differences may occur when using full_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1860)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1860)",
+      "WARN  (EX3827) : Synthesis - simulation differences may occur when using full_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1885)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1885)",
+      "WARN  (EX3827) : Synthesis - simulation differences may occur when using full_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1902)",
+      "WARN  (EX3826) : Synthesis - simulation differences may occur when using parallel_case directive(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/softcore/vendor/picorv32.v\":1902)",
+      "WARN  (NL0002) : The module \"phy_reg_config\" instantiated to \"phy_reg_config\" is swept in optimizing(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/ov5640x2_udp_rgmii.v\":135)",
+      "WARN  (NL0002) : The module \"mdio_bit_shift\" instantiated to \"mdio_bit_shift\" is swept in optimizing(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/phy_reg_config.v\":35)",
+      "WARN  (NL0002) : The module \"camera_reset_release\" instantiated to \"tx_reset\" is swept in optimizing(\"/tmp/acg138-sensors-v14-1-a02.c3JNtC/camera/ov5640x2_udp_rgmii.v\":104)",
+      "WARN  (PR1014) : Generic routing resource will be used to clock signal 'clk50m_d' by the specified constraint. And then it may lead to the excessive delay or skew",
+      "WARN  (PR1014) : Generic routing resource will be used to clock signal 'cam2_pclk_d' by the specified constraint. And then it may lead to the excessive delay or skew",
+      "WARN  (PR1014) : Generic routing resource will be used to clock signal 'cam1_pclk_d' by the specified constraint. And then it may lead to the excessive delay or skew"
+    ]
+  }
+}

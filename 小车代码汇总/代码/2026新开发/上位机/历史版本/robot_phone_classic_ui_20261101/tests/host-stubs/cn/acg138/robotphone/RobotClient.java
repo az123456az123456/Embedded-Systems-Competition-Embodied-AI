@@ -1,0 +1,1 @@
+package cn.acg138.robotphone;import android.graphics.Bitmap;import android.os.SystemClock;import org.json.JSONObject;public class RobotClient {public static class Frame {public final Bitmap image;public final JSONObject metadata;public final long id,received;public Frame(Bitmap i,JSONObject m,long id){image=i;metadata=m;this.id=id;received=SystemClock.elapsedRealtime();}}}

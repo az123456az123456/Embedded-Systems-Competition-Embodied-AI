@@ -1,0 +1,65 @@
+{
+  "purpose": "Source-only compressed genuine old AArch64 ELF fixtures, never part of runtime package and never executed by tests",
+  "deduplicated": true,
+  "compressed_bytes": 3914158,
+  "versions": [
+    {
+      "version": "v32",
+      "dashboard": "5eff3f6d60fbff92bec283fb97c6ea254bc51831f8a9ffc285653c2111095d1e",
+      "navigation": "bc5ca1b3d66b386c0ecbd4a1b99feae07215b610e326ea5b95a132457ac7c0aa"
+    },
+    {
+      "version": "v33",
+      "dashboard": "600b284658e5a74b01351f8ecc65f256a4696f013d38d19bb4f14b8403b28a07",
+      "navigation": "1837a73e383c137753bb9052165686ec60ccd840ea826fec87ee56f7345319c1"
+    },
+    {
+      "version": "v34",
+      "dashboard": "d94fa20b8eb8310c61d94391dff9dd9200a220b2e71c2bb137a03e7def1f688d",
+      "navigation": "1837a73e383c137753bb9052165686ec60ccd840ea826fec87ee56f7345319c1"
+    },
+    {
+      "version": "v35",
+      "dashboard": "13021d363d61a237d9d3b1f7842ae7e7e5b77e22932cdffca6d0620e72696e9c",
+      "navigation": "1837a73e383c137753bb9052165686ec60ccd840ea826fec87ee56f7345319c1"
+    }
+  ],
+  "blobs": {
+    "5eff3f6d60fbff92bec283fb97c6ea254bc51831f8a9ffc285653c2111095d1e": {
+      "file": "5eff3f6d60fbff92bec283fb97c6ea254bc51831f8a9ffc285653c2111095d1e.elf.gz",
+      "compressed_sha256": "080abec8fe268eea02c55f93fa6fbae758cfa489f038f2281ac1e5a242f3dcb1",
+      "bytes": 1999808,
+      "compressed_bytes": 837305
+    },
+    "bc5ca1b3d66b386c0ecbd4a1b99feae07215b610e326ea5b95a132457ac7c0aa": {
+      "file": "bc5ca1b3d66b386c0ecbd4a1b99feae07215b610e326ea5b95a132457ac7c0aa.elf.gz",
+      "compressed_sha256": "bf33f1660bf8d6dc9a888344f6941e680a47ff89f64784702647fc9432809d92",
+      "bytes": 586736,
+      "compressed_bytes": 259936
+    },
+    "600b284658e5a74b01351f8ecc65f256a4696f013d38d19bb4f14b8403b28a07": {
+      "file": "600b284658e5a74b01351f8ecc65f256a4696f013d38d19bb4f14b8403b28a07.elf.gz",
+      "compressed_sha256": "8bab54857584a04bad5af5818c923140cf2eabcdfd92bec08ace7c35f369e97a",
+      "bytes": 1999808,
+      "compressed_bytes": 837305
+    },
+    "1837a73e383c137753bb9052165686ec60ccd840ea826fec87ee56f7345319c1": {
+      "file": "1837a73e383c137753bb9052165686ec60ccd840ea826fec87ee56f7345319c1.elf.gz",
+      "compressed_sha256": "62b3bdaf08b9088f5d23ae30169228bb55255979844dbeba4fa182f53a6acd6e",
+      "bytes": 586736,
+      "compressed_bytes": 260019
+    },
+    "d94fa20b8eb8310c61d94391dff9dd9200a220b2e71c2bb137a03e7def1f688d": {
+      "file": "d94fa20b8eb8310c61d94391dff9dd9200a220b2e71c2bb137a03e7def1f688d.elf.gz",
+      "compressed_sha256": "f693980a1e4cea99297cc4301998b76b125021f8edcdcffbb2775a9e4b83a3b8",
+      "bytes": 2024400,
+      "compressed_bytes": 851084
+    },
+    "13021d363d61a237d9d3b1f7842ae7e7e5b77e22932cdffca6d0620e72696e9c": {
+      "file": "13021d363d61a237d9d3b1f7842ae7e7e5b77e22932cdffca6d0620e72696e9c.elf.gz",
+      "compressed_sha256": "fa211211b44173c5ec90b8c9a66c0b147ca1b627e8ce038269f3d97177f389ea",
+      "bytes": 2057200,
+      "compressed_bytes": 868509
+    }
+  }
+}

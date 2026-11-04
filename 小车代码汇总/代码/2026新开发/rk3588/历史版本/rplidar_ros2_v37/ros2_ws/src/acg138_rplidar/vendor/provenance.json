@@ -1,0 +1,27 @@
+{
+  "source_zip": "/home/tan/Downloads/sllidar_ros2-main.zip",
+  "zip_sha256": "7be92e163232555fe94cdf06c7f6f1be8712a960bb0b4a136e4d1e9819a06739",
+  "sdk_version_headers": "2.1.0",
+  "reference_node_sha256": "f414bd77520de7d1ba06bd21b7f4515f065d4f775ce6714bbb8bcb046c0100ad",
+  "reference_angle_expression": "node.angle_z_q14 * 90.f / 16384.f",
+  "reference_quality_expression": "nodes[i].quality >> 2",
+  "c1_launch_baudrate": 460800,
+  "upstream": "https://github.com/Slamtec/sllidar_ros2",
+  "attached_pdf_sha256": {
+    "SLAMTEC_rplidar_datasheet_C1_v1.1_cn.pdf": "85a0f92d4524294f5582cf4f10375bb962ba404ee9f62268db7f7a614176db26",
+    "LR002_SLAMTEC_rplidar_sdk_v2.0_cn.pdf": "b5ed9d55742304ff54e81cb2b49e38f8558d91428303fed930e50437563f41a2"
+  },
+  "c1_spec_pages": {
+    "8": {
+      "baud": 460800,
+      "min_range_m": 0.05,
+      "max_range_white_m": 12,
+      "max_range_black_m": 6,
+      "typical_hz": 10,
+      "min_hz": 8,
+      "max_hz": 12,
+      "sample_hz": 5000
+    },
+    "10": "raw-forward +X, clockwise angle positive"
+  }
+}

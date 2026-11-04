@@ -1,0 +1,18 @@
+ACG138 全屏修复版 v1.2.21（versionCode 34）
+
+修正新版新增的根布局留白：恢复原版直接 setContentView(dashboard)，取消整个画布父容器的系统栏/刘海 padding。此差异会改变画布可用大小和位置，是本次针对性修正点；尚未在用户手机上复现并确认全部原因。
+采用沉浸式全屏，Android 8/9/10 使用兼容系统栏标志，Android 11 及以上使用 WindowInsetsController。刘海屏允许窗口扩展到短边。创建窗口、返回应用、关闭设置/文件选择器重新获得焦点、横屏方向变化后均重新应用全屏策略。
+
+保留原主页布局、黑色水波/黑色选中态、红色停车、94% 按压和约102%回弹、常驻拉伸融合页码点。除 MainActivity 的窗口处理外，DashboardView、所有动画、触控、网络与控制源码均与 v1.2.20 完全一致。
+
+已验证：Android API35 编译、APK 签名、zipalign 通过；435 项主机界面/按键断言通过。主机测试直接绘制 View，未运行 Activity/Android WindowManager，不能证明真机全屏问题已消失。暂无真机/模拟器可用。
+安装后请确认：首次打开铺满屏幕；横屏翻转不缩到角落；打开设置返回、选存储目录返回、切后台再回来仍全屏；按钮触点与画面一致。特殊机型的刘海遮挡及系统兼容模式仍需实机确认。
+
+使用原项目签名，可直接覆盖安装以保留配对和设置，不需卸载。
+旧 v1.2.20 源码与 APK 均保留。源码包不含签名私钥。
+本包仅修复手机界面全屏处理，不含 ROS 建图集成更新。
+源码：/home/tan/qiansai/rk3588/robot_phone_fullscreen_fix_20261101
+构建：本地 Android platform35/build-tools35.0.0 + JDK17，build-apk.sh，外部提供原签名文件。
+验证记录：reports/release-verification.json、reports/build.log、reports/ui-host.log、reports/fullscreen.patch。
+官方 API 参考：https://developer.android.com/develop/ui/views/layout/immersive
+刘海屏参考：https://developer.android.com/develop/ui/views/layout/display-cutout

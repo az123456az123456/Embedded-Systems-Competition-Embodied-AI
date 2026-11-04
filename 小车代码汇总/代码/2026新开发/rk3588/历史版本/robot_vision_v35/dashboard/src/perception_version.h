@@ -1,0 +1,5 @@
+#ifndef PERCEPTION_VERSION_H
+#define PERCEPTION_VERSION_H
+#define PERCEPTION_VERSION "v35-fpga-rgb40-fair-npu"
+#define PERCEPTION_BUILD_DATE "20261028"
+#endif

@@ -1,0 +1,21 @@
+# Same candidate26 task identity. Success means queued, NOT executed.
+# Actual FPGA ACK is published on /fpga/command_result with request_id.
+uint64 request_id
+uint64 session_id
+uint64 run_generation
+uint8[16] goal_id
+uint64 map_epoch
+uint64 map_revision
+uint64 localization_epoch
+uint64 plan_id
+uint64 nav_epoch
+uint64 permit_seq
+uint64 auth_epoch
+# CLOCK_MONOTONIC from the same RK kernel, preserved across IPC/chroot.
+uint64 created_monotonic_ns
+uint32 valid_for_ms
+uint32 reason
+---
+bool success
+uint16 status
+string message

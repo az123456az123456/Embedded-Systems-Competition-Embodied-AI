@@ -1,0 +1,89 @@
+v35 双目 FPGA RGB888 40FPS 联调包
+
+用途
+本包须与 robot_vision_v35_40fps.fs 配套。每眼 RAW8 960×1080(BGGR) 经 FPGA
+3×3 双线性去马赛克、Q11 双线性缩放至569×640，再左右补35/36列114灰，
+得到640×640 RGB888。两眼通过内部千兆RGMII传给RK。传感器目标39.96FPS，
+不再回传原1920×1080 RAW视频。预览为1280×640双目tensor，分辨率有所降低。
+40FPS图像像素786.432Mbps；每行2包、2560包/双目，含前导/FCS/最小IFG的
+线路预算843.776Mbps(千兆的84.38%)，控制/传感器额外占用及实际空闲另计。
+
+先保存旧位流；退出RK窗口和导航程序，使车辆停车。安装不会使能电机。
+原始视频与新RGB协议不兼容，请同时更换FPGA和RK，不能只覆盖一个文件。
+此包是对已有统一robot-perception/robot-navigation安装的更新，不是新系统。
+手机APK、网卡驱动、配对码、导航配置、地图、编码器参数继续沿用。
+
+安装
+1. 将本目录整体拷入RK /root。先退出旧程序(Ctrl+C)，不必删除旧模型。
+2. 进入本目录，执行：
+   sh install.sh --check-only
+   sh install.sh
+   保存输出Backup路径。更新器校验已知dashboard/navigation配对、模型及SHA，
+   保留原启动器的Weston唤醒、锁、日志和参数，只改模型默认值与摄像头准备。
+   未知/混用版本会拒绝，不要强行手动覆盖配对校验。
+3. 使用Gowin Programmer按原开发板下载方法烧录同包的robot_vision_v35_40fps.fs。
+   建议先下载到SRAM联调，确认后再按已有流程写Flash。
+4. 原命令启动：
+   sh /root/perception-dashboard/run-dashboard.sh -0
+   横置用 -90。继续只用一个脚本的参数。
+   如此前启用了大核性能模式，可继续使用原命令：
+   sh /root/robot-perception/scripts/cpu-big-performance.sh enable
+
+预期日志
+v42 RAW 位流默认使用 ISP 输入：`PERCEPTION_CAMERA_SOURCE=fpga-raw`。
+旧 RGB 位流可显式使用 `PERCEPTION_CAMERA_SOURCE=fpga-rgb`，内部接口由
+`PERCEPTION_RGB_INTERFACE` 指定。
+FPGA_RGB日志包含实际rcvbuf、会话epoch、收包/校验/丢帧/内核socket丢包。
+模型为acg138-best-e7f26253-int8-rk3588.rknn，13类，no_vest索引2。
+该best.pt实际为YOLOv8n宽深度，不是s；文件名不改变网络规模。
+NPU输入640×640 RGB U8，归一化/255留在模型中，不再CPU resize/letterbox。
+仍有接收校验、组帧、复制、NPU输入转换、显示、手机JPEG开销，并非全链路零拷贝。
+PERF的capture_fps是完整双目接收帧率，result_fps是完成双目推理对数，不能与
+单眼eye_fps混用。40FPS采集和传输目标不等于已实测40FPS识别。
+
+图片/跟随/其他功能
+预览和识别框使用每眼640tensor坐标。跟随角度在RK逆映射到原960×1080
+图像：(u-35)*960/569、v*1080/640，拒绝纯灰边目标，不重复缩放框。
+手机不用更新APK，仍能选框、控制、显示导航及no_vest自动截图。
+手机推流默认自动跟随真实完整双目result_fps，自动上限60且不超过采集/预览速率；不再固定15FPS。
+关闭识别则参考preview/capture。PHONE_PERF区分target/encode/send实际速率，
+send_fps为全部客户端发送总和；Wi-Fi/手机解码慢时仍可能达不到目标。
+可显式运行 --phone-fps auto；需降档则加 --phone-fps 15。编码只保留最新帧，
+不为追求帧数积累旧画面，也不延长电机控制时限。
+电机、编码器、IMU、超声波、导航软核的核心逻辑和固件保持原基线。
+图像EtherType是0x88ba，不占NAV2的0x88b9，也不更改0x88b5..0x88b8。
+RK程序会仅检查/开启所选内部网口UP，不改WLAN/IP/默认路由。
+
+独立抓帧(先退出窗口，防止两个接收器争用epoch)
+   chmod +x tools/capture-fpga-rgb.aarch64
+   ./tools/capture-fpga-rgb.aarch64 --interface eth0 --timeout 10 --output /root/rgb-capture-001
+把生成目录完整拷回电脑：
+   python3 tools/check_fpga_rgb_capture.py /path/rgb-capture-001 --expect-letterbox
+检查left/right.ppm颜色、方向、尺寸、灰边；放彩色物体确认红蓝通道正确。
+抓帧工具不加载模型、不使能电机。输出必须是不存在的目录，父目录要已存在。
+
+板上测帧率(停车并退出原窗口)
+   sh benchmark-perception-v35.sh --headless --duration 60
+依次测试识别开/关；各预热10秒，保存完整FPGA_RGB/PERF/STAGE日志。
+比较掉片、kernel drops、实际buffer和frame_age，再评估板上效果。
+无需安装新系统、替换系统librga、重新安装Wi-Fi驱动或修改全局sysctl。
+
+回退
+先退出窗口，按安装输出给出的路径执行：
+   sh rollback.sh /root/robot-perception-v35-backup.XXXXXX
+然后恢复之前保存的v29.1 RAW位流(本次交付也附原文件及校验)。回退会恢复原
+run-perception.sh和完整dashboard/navigation配对；配置/地图/配对码保留。
+若只想在v35二进制中临时走旧摄像头路径，必须先恢复RAW位流，然后：
+   PERCEPTION_CAMERA_SOURCE=v4l2 sh /root/perception-dashboard/run-dashboard.sh -0
+
+验证界限
+提供真实Gowin综合/P&R与仿真报告，主机回归和ARM交叉编译不能代替上板验证。
+这版为独立3×3 bilinear实现，不是MHC 5×5，也没有复现原RK ISP的AWB、
+Gamma、降噪、锐化。实拍颜色与模型精度可能变化，必须先抓帧核对。
+双目没有新增硬件同步引脚；有限行FIFO不能吸收任意大的相机相位偏差。
+溢出/缺片会整帧丢弃重同步，不伪造完整图像。实际40FPS稳定性需板上验证。
+
+手机独立observer直接读取共享vision_worker代次，不依赖HDMI约33ms刷新循环。
+无视频客户端时仅复制观测；新代次且有客户端才复制图像。退出时先停止手机
+observer再销毁vision_worker。主机真实生产线程40FPS模拟源、主循环仅10Hz
+且不发布视频时，手机接收约39.51FPS；这不是RK3588和真实手机实测。

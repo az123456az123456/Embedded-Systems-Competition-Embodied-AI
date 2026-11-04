@@ -1,0 +1,28 @@
+{
+  "read_only_source_audit": true,
+  "protocol": "NAV2-v1",
+  "ethertype": "0x88b9",
+  "map_width": 64,
+  "map_height": 64,
+  "bitmap_bytes": 512,
+  "cpu_ram_bytes": 65536,
+  "elf_map_image_end_hex": "0xce90",
+  "stack_bottom_hex": "0xf000",
+  "stack_bytes": 4096,
+  "headroom_below_reserved_stack_bytes": 8560,
+  "new_fpga_resources_required": false,
+  "geometry_in_wire_protocol": false,
+  "motor_execution_in_wire_protocol": false,
+  "sources": {
+    "fpga/robot_control_v36_raw/rtl/nav_packet_rx.v": "cb5755d39b2795fa34dd31d61827f67576049c4dd3424e47f4297626777452ed",
+    "fpga/robot_control_v36_raw/rtl/robot_fmc_remote_top.v": "2b924de16657a3fd5638e8b3764ea4c4efbf74e8643e505dfdd7ba38cf1e5541",
+    "fpga/robot_control_v36_raw/softcore/robot_nav_soc.v": "a0cef2626c55250dbc0ae4c394f414ca3b1c05ac41b592a3c17949e5a98d1e57",
+    "fpga/robot_control_v36_raw/softcore/firmware/nav_protocol.c": "adebcc855b1a1cd231b84c03c316bc2e510651633cc5faaaa23e034b59aa8429",
+    "fpga/robot_control_v36_raw/softcore/firmware/nav_protocol.h": "5a8a180637a4bea0b4d7fb1e2283b05288e2bb301035baeba0e147b1c21720e0",
+    "fpga/robot_control_v36_raw/softcore/firmware/astar.c": "2717200e778b083a2f44357eee4bdeb5ea60cc2775073632f4f23ddbc5e84dce",
+    "fpga/robot_control_v36_raw/softcore/firmware/astar.h": "73444ba9e0b415c482b5137fdad14d50589e7801260379c0db7ab6cb0d5de959",
+    "fpga/robot_control_v36_raw/softcore/firmware/firmware.hex": "e68286b48123a7993eda58a9af603328b76d94f35649e44b72b9675d4b654243",
+    "fpga/robot_control_v36_raw/softcore/firmware/firmware.bin": "d3f88b1d8b2e149229027ea5b0248acc031c9adf6d90e52c980898f1701603b0",
+    "fpga/robot_control_v29_1_sonar/softcore/firmware/firmware.hex": "e68286b48123a7993eda58a9af603328b76d94f35649e44b72b9675d4b654243"
+  }
+}

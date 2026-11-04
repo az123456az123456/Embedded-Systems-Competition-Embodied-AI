@@ -1,0 +1,18 @@
+ACG138 启动修复 v1.2.22（code35）
+
+修复 v1.2.21 全屏初始化顺序错误：先 setContentView(dashboard) 创建窗口视图，再 applyFullscreen；全屏方法内也先 getDecorView，再获取 WindowInsetsController。
+原实现 Android 11+ 分支在窗口视图未初始化时直接 getInsetsController。AOSP PhoneWindow 的这个方法直接访问 mDecor，没有先安装 decor，因而存在启动空指针。此前的控制器非空判断发生在 getter 返回之后，无法避免 getter 内部的异常。
+源码依据：https://android.googlesource.com/platform/frameworks/base/+/2a9d43ccd30cf6c590f23f0c8169353cd0121d24/core/java/com/android/internal/policy/PhoneWindow.java
+用户确认闪退包为1.2.21；尚未取得用户手机logcat，因此没有把具体设备的异常栈描述为已采集。
+
+专项验证：提取真实 MainActivity 启动前缀与全屏方法，在严格模拟 AOSP 延迟创建窗口语义的主机模型中运行。旧代码 API30+ 分支复现 NullPointerException；修复后的冷启动、提前调用、重复调用、控制器暂未就绪/稍后恢复共251项断言通过。API数字模型覆盖26/28/29/30至36，但不是这些Android版本的实机或模拟器认证。
+Android API35 编译、APK签名校验、zipalign通过。尚无可用真机或模拟器，不宣称所有安卓11+机型已实测；请覆盖安装后确认打开正常、画面铺满、设置返回及切后台返回正常。
+
+保留全屏直接铺满窗口、黑色水波、黑色选中态、红色停车、增强回弹及常驻液态页码点。绘制、动画、触控和网络源码与1.2.21逐文件校验一致。
+使用原项目签名，可直接覆盖安装，不要卸载以保留配对和设置。源码包不含签名私钥。
+没有修改RK或FPGA。
+
+源码：/home/tan/qiansai/rk3588/robot_phone_startup_fix_20261101
+构建：build-apk.sh（本地Android平台35/build-tools35.0.0 + JDK17，原外部签名文件）
+专项复现：python3 tests/check_fullscreen_startup.py
+证据：reports/fullscreen-startup.json、reports/fullscreen-startup.log、reports/startup-fix.patch、reports/release-verification.json。

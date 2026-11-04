@@ -1,6 +1,0 @@
-__pycache__/
-*.log
-SHA256SUMS
-payload/*.aarch64
-payload/isp-probe
-dist/

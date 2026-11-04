@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "port": 8082,
+  "token_file": "/root/robot-perception/pair-token.txt",
+  "player": "/root/robot-fpga-integration-20261102/alerts/play-hdmi.sh",
+  "asset_directory": "/root/robot-fpga-integration-20261102/alerts/assets",
+  "status_file": "/run/robot-ppe-voice-status.json",
+  "min_confidence": 0.35,
+  "confirm_ms": 300,
+  "cooldown_ms": 15000,
+  "max_age_ms": 1000,
+  "player_timeout_ms": 10000
+}

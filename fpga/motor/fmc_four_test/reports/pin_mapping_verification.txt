@@ -1,4 +1,0 @@
-v2: All 72 PDF contacts joined one-to-one to ACG138 FMC balls.
-All 12 motor assignments match final Gowin placed-pin report.
-Final build inputs match workspace. No ball overlaps.
-VCCADJ and actual board voltage remain unmeasured.

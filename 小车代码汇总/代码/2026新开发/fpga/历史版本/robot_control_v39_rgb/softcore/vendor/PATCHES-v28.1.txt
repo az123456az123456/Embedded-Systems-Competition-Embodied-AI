@@ -1,0 +1,20 @@
+ACG138 v28.1 PicoRV32 register-file integration patch
+
+Unpatched project source SHA256: 0836050971b3c6cdd28ac3b1e5719a67fb645161912bef1e472e63995ceb0622
+Upstream ISC notice is unchanged. Only the following production edits apply:
+1. Default PICORV32_REGS macro selects upstream custom register-file hook.
+2. Appended acg138_regfile_ff contains31 independent32-bit DFF registers and
+   combinational read muxes. x0 is constantzero. No architectural IRQ/QREG
+   extension is used by the configured core.
+
+Reason: actual v28 Gowin synthesized two SDPB register-file read banks. Vendor
+primitive gate simulation of the closed SoC+motor graph showed an AUIPC→ADDI
+RAW dependency consuming old read data: expected BSS pointer0x2298 became
+0x288, and the first zeroing store addressed program memory. The32 firmware
+RAM blocks and instruction data themselves matched the RTL. This patch makes
+asynchronous read behavior structural, rather than relying on a RAMstyle hint.
+
+Build scripts/project file lists need no additions. The extra module resides
+in the alreadylisted vendor/picorv32.v, preserving existing test commands.
+This claim must be checked against new synthesis (zero cpuregs SDPB), actual
+gate-level RAW dependency traces, CPU boot/self-test, and control tests.

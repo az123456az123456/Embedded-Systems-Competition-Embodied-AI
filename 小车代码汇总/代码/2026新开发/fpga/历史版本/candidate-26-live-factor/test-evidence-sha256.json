@@ -1,0 +1,11 @@
+{
+  "tests/miter.v": "dd441edea028df73a2b01ecabf4a79f5828da04d903162a388e308f1b3911701",
+  "tests/owner_before.v": "5893a64588d15c3a40ebb5fdaf8782be5a87605f9c4270e38ccc570d08b37891",
+  "tests/nav_eq_lut4_sim.v": "eccbad3385e67e1c99cea919e22490f1983ef83e54aea3bc51b38abfb4b036cd",
+  "tests/tb_owner_equivalence.sv": "ab69352e6e31e49ad4054779f86b519771f5ed1e77e2a41b8f241b7b80f3e08f",
+  "tests/results/formal.log": "66aed63fce593c385e4762fab50ebd4aa9a8e117d62b71ad34ca2a39550f6717",
+  "tests/results/compile.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "tests/results/owner-cases.jsonl": "52ab3a3b895fb901937becf8e4de8f770bad014887a58e1c80a03237cd622da8",
+  "tests/results/owner.vvp": "2fb2ea3666e326c331696aebb873e2a0982d2d5e8aff0e2200ece743a489e11a",
+  "tests/results/owner.log": "8a2f4c49071250d588787ccae73de18276df007955224bf37e0ef6289054696f"
+}

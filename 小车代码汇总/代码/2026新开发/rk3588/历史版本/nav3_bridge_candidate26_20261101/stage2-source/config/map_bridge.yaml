@@ -1,0 +1,18 @@
+acg138_fpga_map_bridge:
+  ros__parameters:
+    use_sim_time: false
+    map_topic: /map
+    base_frame: base_link
+    interface: auto                 # Discover internal GMAC1 fe1c0000, NOT USB Wi-Fi.
+    host_proc_root: /proc           # Docker: /host_proc from read-only host /proc bind.
+    dry_run: true                   # No raw Ethernet is opened in this default mode.
+    exclusive_nav2_owner: false     # Set true only after stopping legacy robot-navigation.
+    enable_plan: false              # Optional A* request; still never commands any motor.
+    local_resolution: 0.10         # Fixed 64x64 local window covers 6.4 x 6.4 m.
+    footprint_radius: 0.2163        # Circumscribed asymmetric body radius; verify physical frame.
+    safety_margin: 0.05
+    free_threshold: 25             # -1/unknown and >25/uncertain are blocked.
+    upload_period_s: 1.0           # 1 Hz, bounded to 0.1..2 Hz; 18 map mutations + INFO.
+    map_timeout_s: 10.0            # Explicit 0 only for an immutable map_server map.
+    pose_timeout_s: 0.25
+    metadata_path: /tmp/acg138_ros2_fpga_map.json

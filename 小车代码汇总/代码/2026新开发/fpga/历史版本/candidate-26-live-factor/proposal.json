@@ -1,0 +1,11 @@
+{
+  "parent": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-22-motor-pin-register/source",
+  "kind": "live",
+  "changed_files": [
+    "rtl/nav_owner_gate.v"
+  ],
+  "same_cycle": true,
+  "constraints_identical": true,
+  "formal_scope": "all binary inputs, no reachable-state assumptions",
+  "user_authorized": "2026-11-01 additional equivalent optimization candidates; keep frozen candidate22 as rollback"
+}

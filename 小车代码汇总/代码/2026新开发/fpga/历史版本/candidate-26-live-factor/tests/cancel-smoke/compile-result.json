@@ -1,0 +1,35 @@
+{
+  "command": [
+    "iverilog",
+    "-g2012",
+    "-s",
+    "tb_pipeline_measurement",
+    "-I",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke",
+    "-o",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/test.vvp",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/tb_cancel_status.sv",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/robot_rgmii_rx.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/motor_packet_rx.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/nav_packet_rx.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/nav3_ingress.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/nav3_frame_rx.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/nav3_async_mailbox.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/nav3_packet_ram.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/nav_owner_gate.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/nav_eq_lut.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/motor_remote_control.v",
+    "/home/tan/qiansai/Gowin_V1.9.12.03/IDE/simlib/gw5a/prim_sim.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/motor_encoder_sync.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/motor_status_align.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/rtl/motor_status_tx.v",
+    "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/source/imu/imu_ethernet_tx.v"
+  ],
+  "returncode": 0,
+  "manifest": {
+    "baseline_manifest": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/design-manifest.json",
+    "baseline_manifest_sha256": "6edfbc82316867bacfc8af4b6e887e707dfd2329e9e095e5116f461c35daacc3",
+    "testbench_sha256": "89dfe70f9395af79f8cc1046c73f412bf15dccadd68a09caba627a7e5f3f71f7",
+    "setup_tasks_sha256": "b7576a0d3bd4166f9d637d5acc18e8466c72c23cf05294720f11ebe035db5d39"
+  }
+}

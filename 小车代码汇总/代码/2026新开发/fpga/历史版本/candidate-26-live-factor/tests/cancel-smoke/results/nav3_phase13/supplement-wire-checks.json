@@ -1,0 +1,53 @@
+{
+  "frames": [
+    {
+      "frame_id": 1,
+      "sha256": "bd88ce30e8cdc7c86cc049d42add7bd5f4f5e23a0fd59caa62532b9784df8f89",
+      "hex_path": "/home/tan/qiansai/fpga/robot_navigation_v42_singlemap/verification/proposals/cancel-timing-20261101/interface-convergence-20261101/candidate-26-live-factor/tests/cancel-smoke/results/nav3_phase13/sent-frame-1.hex",
+      "bytes": 284,
+      "crc16_valid": true,
+      "fcs_valid": true,
+      "opcode": 34
+    }
+  ],
+  "gaps": [
+    {
+      "frame_id": 1,
+      "preceding_frame_start_ps": 56820000,
+      "preceding_fcs_high_ps": 59088000,
+      "first_idle_low_ps": 59092000,
+      "next_preamble_low_ps": 87652000,
+      "idle_byte_slots": 3570,
+      "idle_samples": null,
+      "strict_12_byte_ifg": false,
+      "idle_samples_sha256": "4bee1f7199f176568a6b9414c919f82c175eefb2650f7d39c74f062d3bf0ce99",
+      "idle_samples_first_last": [
+        {
+          "low_ps": 59092000,
+          "high_ps": 59096000,
+          "low_ctl": 0,
+          "high_ctl": 0
+        },
+        {
+          "low_ps": 59100000,
+          "high_ps": 59104000,
+          "low_ctl": 0,
+          "high_ctl": 0
+        },
+        {
+          "low_ps": 87636000,
+          "high_ps": 87640000,
+          "low_ctl": 0,
+          "high_ctl": 0
+        },
+        {
+          "low_ps": 87644000,
+          "high_ps": 87648000,
+          "low_ctl": 0,
+          "high_ctl": 0
+        }
+      ],
+      "sampling_evidence": "all physical samples counted; long idle list compacted to hash plus endpoints; original VCD retained"
+    }
+  ]
+}

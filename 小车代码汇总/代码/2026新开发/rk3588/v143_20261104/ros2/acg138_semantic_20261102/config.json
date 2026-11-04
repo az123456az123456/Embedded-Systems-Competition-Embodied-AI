@@ -1,0 +1,20 @@
+{
+  "map_yaml": "/opt/acg138_semantic_20261102/fixtures/site01.yaml",
+  "map_frame": "map",
+  "map_sha256": "df0a2186432772296074bd26a06d318a8fe626b39ebfcd830962023709ebc91f",
+  "validated_for_navigation": false,
+  "http_stereo_left_eye": true,
+  "token_file": "/run/acg138-ros-bridge/semantic/token",
+  "standoff_m": 0.6,
+  "camera": {
+    "calibrated": false,
+    "calibration_source": "",
+    "width_px": 960,
+    "fx_px": 0,
+    "cx_px": 480,
+    "base_x_m": 0,
+    "base_y_m": 0,
+    "base_yaw_rad": 0
+  },
+  "landmarks": []
+}

@@ -1,0 +1,14 @@
+无地图语义导航执行链（2026-11-04）
+
+手机 /api/navigation(op=semantic-start) → Gateway 校验既有手机会话、显式 ARM 和前台租期 → 环回 8088 /task 创建当前 generation 任务 → ARB1_SEMANTIC_START → ROS bridge /exploration/manual_start → MappingExplorer 随机短段执行。
+语义节点仅协调任务、检查相机目标证据并发布 /semantic/gate 和 /semantic/state。状态等待相机和当前 Gateway 执行器，不订阅地图，不启动 explore_lite，不创建 NavigateToPose 动作。
+执行器在 semantic_external 分支读取 /odom 与 /scan，并只查询 base_link 到雷达的静态安装变换。它不查询 map TF、不等待 /semantic/goal、不提交地图规划任务。运动门与启动服务跨 DDS 通道，即使门稍后到达，当前 generation 的门也能切换到语义执行。
+
+控制器：24 个雷达扇区；+inf 按 range_max 处理，NaN/-inf 不视为自由空间。安全方向需覆盖车宽邻域；选定方向锁定到短段完成。全周净空未知或不足时禁止旋转；前方障碍时先零速再重选。里程计距离限制每段 0.4～0.9 米；原地转动 yaw 变化计入进展。
+使用最近起点记忆：有安全替代方向时，从候选集中硬性排除回头方向；死胡同允许回头脱困。
+雷达/里程计最大年龄 250ms，语义运动门 200ms，执行意图携带原始生产时间及年龄。Gateway 继续校验当前 generation、序号、前台授权和传感器总年龄，经原有手动 DRIVE/ROTATE 通道执行。
+目标确认、门失效、传感器过期、相机过期、进程失联和人工接管都会撤销运动。FOUND 需要新鲜电机零输出回执与里程计停稳 0.5 秒。
+
+本次不改 FPGA 位流、RTL、模型或语音素材。普通 Frontier 建图分支保留地图保护，语义分支独立运行。
+构建只选择 acg138_semantic、acg138_frontier、acg138_ros_bridge，不要求 explore_lite；旧原型字符串补丁 tools/integrate_semantic.py 已停用，避免重放旧地图目标逻辑。
+验证记录以 reports/mapfree-verification-20261104 为准；其他历史 reports 与交付包不代表本轮实现。

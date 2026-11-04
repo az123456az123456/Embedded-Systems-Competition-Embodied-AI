@@ -1,0 +1,93 @@
+{
+  "release": "v39",
+  "hardware_tested": false,
+  "payload": {
+    "dashboard": {
+      "source": "rk3588/robot_control_v39/dashboard/build/perception-dashboard.aarch64",
+      "sha256": "f5c1d3f20c397cdec7f2f6ecc05625171471bea19eb5d33e890c8375aa7bf0ce",
+      "bytes": 2061296
+    },
+    "navigation": {
+      "source": "rk3588/robot_control_v39/navigation/build/robot-navigation.aarch64",
+      "sha256": "b6750ab3ece42cad818eec11ab6958861cb8a9ecbc042df303c40ea12db8c86a",
+      "bytes": 601184
+    },
+    "launcher": {
+      "source": "rk3588/robot_control_v39/dashboard/run-perception.sh",
+      "sha256": "a559b71229997b7040cbc82576594a4f4661aa3d13fe8c415126f298104c479c",
+      "bytes": 10289
+    },
+    "entry": {
+      "source": "rk3588/robot_control_v39/navigation/run-dashboard.sh",
+      "sha256": "3bee00bcf69d8ba8d933ab9b4e970359329428b923bed6b1a8a4ef09b36db60d",
+      "bytes": 439
+    },
+    "yolo": {
+      "source": "rk3588/robot_control_v39/dashboard/run-yolo.sh",
+      "sha256": "4e0dc6be70cce33d2e9a78a88f6f44793b1330a408e6b07c9b3d5667b0091dbf",
+      "bytes": 108
+    },
+    "root_yolo": {
+      "source": "rk3588/robot_control_v39/dashboard/run-yolo.sh",
+      "sha256": "4e0dc6be70cce33d2e9a78a88f6f44793b1330a408e6b07c9b3d5667b0091dbf",
+      "bytes": 108
+    },
+    "probe": {
+      "source": "rk3588/robot_control_v39/dashboard/build/camera-link-probe.aarch64",
+      "sha256": "57e7dedf7df5be1b6c64128dbca352e989ecb40986524b575c514356a9608728",
+      "bytes": 178928
+    },
+    "capture_rgb": {
+      "source": "rk3588/robot_control_v39/dashboard/build/capture-fpga-rgb.aarch64",
+      "sha256": "e56ca1d5e3a06157d47c5586794c735cb58a5a89fbb73cbc3783a67d750e7733",
+      "bytes": 941560
+    },
+    "codec_probe": {
+      "source": "rk3588/robot_control_v39/dashboard/build/rgb-codec-probe.aarch64",
+      "sha256": "280ca30827e0f1b20f85d09a17a615ab86222e0c0c4baed1f21d5d72f70a30eb",
+      "bytes": 953840
+    },
+    "isp_probe": {
+      "source": "rk3588/robot_control_v39/camera-raw40/build/isp-probe",
+      "sha256": "cf047396564687e070e06068906617f0e98f65fec8f805f9a5abcef7c2900e98",
+      "bytes": 27232
+    },
+    "isp_launcher": {
+      "source": "rk3588/robot_control_v39/camera-raw40/run_isp_camera.sh",
+      "sha256": "9c337a964c9892aa7d917f31f2aafcc852abf45152a97128068acbf4e91603ac",
+      "bytes": 4430
+    },
+    "isp_library": {
+      "source": "outputs/01a13005-8bda-7393-95ca-5157476f342f/acg138-rk-restore-20261023/payload/isp/lib/librkaiq.so",
+      "sha256": "bd20b922212d5b22cc155008772c5ee8efc49c34d031e35425d1691f3e8a27b6",
+      "bytes": 3460048
+    },
+    "model": {
+      "source": "rk3588/robot_control_v39/models/acg138-best-e7f26253-int8-rk3588.rknn",
+      "sha256": "46aa5ac6ba8f4869225636f5fce3a571cf978ae4abe68d153045d27627ff371a",
+      "bytes": 4294687
+    },
+    "labels": {
+      "source": "rk3588/robot_control_v39/models/acg138-best-e7f26253-labels.txt",
+      "sha256": "d4d0edb3da823b95d66bf9138be295706f7e0adbfbf1ffc78ad61e9572c4f582",
+      "bytes": 93
+    },
+    "manifest": {
+      "source": "rk3588/robot_control_v39/models/model-manifest.json",
+      "sha256": "4932aca47563d79548b791f9740c90170d58249cbab6750de09898a57e0b9d15",
+      "bytes": 5266
+    },
+    "finder": {
+      "source": "rk3588/acg138-restore-20261023/scripts/find-video.sh",
+      "sha256": "c9fd16dd618e9da8a2de30767fe9d2c797ff686a1f05f99ad4b8da348eaf2ca6",
+      "bytes": 440
+    },
+    "isp_fps": {
+      "generated": "40\n",
+      "sha256": "673650f936cb3b0a2f93ce09d81be10748b1b203c19e8176b4eefc1964a0cf3a",
+      "bytes": 3
+    }
+  },
+  "model_preserved_from": "v35 trained best e7f26253 INT8",
+  "source_addon": "v37 ROS source and helpers only; full ROS rootfs not included"
+}

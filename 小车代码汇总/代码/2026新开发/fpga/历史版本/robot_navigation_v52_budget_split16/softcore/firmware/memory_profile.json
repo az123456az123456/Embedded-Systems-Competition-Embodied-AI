@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "profile": "navigation-v41-user-approved-80KiB-20261030",
+  "ram_bytes": 81920,
+  "low_bank_bytes": 65536,
+  "tail_bank_bytes": 16384,
+  "stack_bytes": 4096,
+  "image_end_limit": 76504,
+  "reserved_gap_below_stack_bytes": 1320,
+  "authorization": "User explicitly approved 80KiB RAM, unchanged 4KiB stack, and 76504B image limit on 2026-10-30."
+}

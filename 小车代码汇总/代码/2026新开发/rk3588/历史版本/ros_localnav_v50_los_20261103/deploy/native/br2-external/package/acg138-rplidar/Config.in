@@ -1,0 +1,23 @@
+config BR2_PACKAGE_ACG138_RPLIDAR
+	bool "acg138-rplidar (requires preported native ROS)"
+	depends on BR2_aarch64
+	depends on BR2_INSTALL_LIBSTDCPP
+	depends on BR2_TOOLCHAIN_HAS_THREADS
+	depends on BR2_TOOLCHAIN_GCC_AT_LEAST_8
+	help
+	  Builds ONLY this delivery's C1 driver overlay against a separately
+	  ported Buildroot-native ROS 2 underlay. This is not a package of
+	  ROS 2 core, CycloneDDS or slam_toolbox and does not install them.
+
+if BR2_PACKAGE_ACG138_RPLIDAR
+config BR2_PACKAGE_ACG138_RPLIDAR_SOURCE
+	string "absolute local acg138_rplidar package source directory"
+
+config BR2_PACKAGE_ACG138_ROS_TARGET_UNDERLAY
+	string "same-sysroot ARM64 ROS underlay directory"
+
+config BR2_PACKAGE_ACG138_ROS_HOST_PYTHONPATH
+	string "host ament/rosidl Python module path"
+	help
+	  Host-native code generators, never target Python extensions.
+endif

@@ -1,0 +1,30 @@
+{
+  "fixture": "navigation/tests/fixtures/v29_1-sns1-fixture.txt",
+  "fixture_sha256": "2d595c0a365eabcd399ca6470b92f48c411b18c007553419b29c2b1c7f6eb00c",
+  "rows": 39,
+  "payload_bytes": 64,
+  "format": "exact SNS1 lines extracted from actual production RTL + C DPI log; no synthetic UART parser",
+  "producer_test": "fpga/robot_control_v29_1_sonar/tests/tb_sonar_zero_capture_v29_1.sv",
+  "production_C_calls": 553,
+  "producer_assertions": 23,
+  "producer_source_sha256": {
+    "fpga/robot_control_v29_1_sonar/sensors/a02_uart_rx.v": "42153038e9eb9acac6d4b05a9de941cac61f1c87e2448f22d419c185ad552f84",
+    "fpga/robot_control_v29_1_sonar/sensors/encoder_4ch.v": "9ea62a3af76ce6ba79f35332b3b3d11cba3afed33e8a5348cb2275ba157ef3c8",
+    "fpga/robot_control_v29_1_sonar/sensors/robot_sensor_capture.v": "48f981e5e78c00ceb468bd58d64938288d9a6d7e31d2a946e6aa8b9c8bdf0fda",
+    "fpga/robot_control_v29_1_sonar/sensors/sensor_status_tx.v": "0cc091c393a66cdabaae7775e2e342ac51e1ec895ba716c3f92bcb29bb750f44",
+    "fpga/robot_control_v29_1_sonar/sensors/ultrasonic_3ch.v": "f7dc92708c94278216190eed442ff2ffcde6bdb56f925786d0e69e17137dcf49",
+    "fpga/robot_control_v29_1_sonar/sensors/ultrasonic_driver.v": "a206677998f690b8497b244a339caf90621195d90960db4d429d4c61f93f0d43",
+    "fpga/robot_control_v29_1_sonar/sensors/ultrasonic_sensor.v": "750b82edff98498b93e6cca0b87a5a8ce1a9f2228ecfe47bcfbcb9cfd358d41e",
+    "fpga/robot_control_v29_1_sonar/softcore/firmware/layered_control.c": "2a40c77174ec5ee42ab44f841899dfb0fa8a97ccc36a9f6a0a81b9d6246f31d7",
+    "fpga/robot_control_v29_1_sonar/softcore/firmware/layered_control.h": "28290c7df5516a9793a61ec3b5be41d77133cdbe03b58efc1af72ec8afc8366f",
+    "fpga/robot_control_v29_1_sonar/tests/tb_sonar_zero_capture_v29_1.sv": "5e2c2d91c83edb7f3993f0e676f6bbb2c5bfc70b492c7b82e363dac24f6dc180",
+    "fpga/robot_control_v29_1_sonar/tests/v29_1_kf_dpi.cpp": "798b8c73bdf5af433c9348d82d41e34a0cda7b96ad054b3ca64d87b5232493d2"
+  },
+  "zero_semantics": "checksum-valid FF0000FF maps to valid4500 by user project convention, not official proof of clear4.5m",
+  "walltime_removed": true,
+  "producer_evidence_sha256": {
+    "fpga/robot_control_v29_1_sonar/reports/v29_1-sonar-regression.json": "85b883dcfe4b7a3396ac5a05b429f0b3af0d66ebd610402b0914299732d4b37c",
+    "fpga/robot_control_v29_1_sonar/reports/v29_1-sns1-fixture.txt": "2d595c0a365eabcd399ca6470b92f48c411b18c007553419b29c2b1c7f6eb00c"
+  },
+  "producer_sources_frozen": true
+}

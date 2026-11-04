@@ -1,0 +1,73 @@
+Navigation map schema 1
+
+GET /api/navigation/map, Authorization: Bearer <existing pairing token>
+Read-only: does not create a control owner, renew the driver lease, or arm motors.
+Public endpoint is gateway port 8080. It reads a cached snapshot, not dashboard
+port 8082. Camera/phone control protocols remain compatible with v12.5.
+
+The same snapshot is atomically written to /tmp/robot-navigation/map.json twice
+per second. The JSON object has:
+ schema=1, width=64, height=64, resolution_m, origin=[x,y]
+ cells: 4096 ASCII characters, index=y*64+x, y increasing in world coordinates
+   '?' unknown/expired, '.' free, '#' occupied. UI flips only the screen Y axis.
+ pose=[x,y,yaw_radians], pose_valid, available
+ path=[[x,y],...], trajectory=[[x,y],...], goal=null or [x,y]
+ robot_radius_m, state, reason, availability_reason, units="metres,radians"
+ map_revision, session_id (changes on map reset and process restart)
+ updated_monotonic_ms (RK CLOCK_MONOTONIC), sensor_age_ms
+ snapshot_age_ms: HTTP read age of the cached snapshot; file initially has 0.
+
+Cell centre: origin + (index_coordinate + 0.5)*resolution_m.
+Pose, path, trajectory and goal share one world coordinate system. Camera image
+coordinates are unrelated. Paths are FPGA responses accepted by RK validation;
+empty path is meaningful and must not be replaced with a synthetic route.
+
+Phone must NOT compare Android uptime against RK updated_monotonic_ms. Use
+server snapshot_age_ms, request duration and local time since response receipt.
+On RK, CLOCK_MONOTONIC shares the same clock as the producer. Treat snapshots
+older than 2000ms as stale. Invalid pose is not a live vehicle position.
+Before the first snapshot, the endpoint may return only schema, available=false,
+pose_valid=false, reason=waiting_for_map, snapshot_age_ms=-1. No dummy map exists.
+
+Endpoint retains pairing-token authentication even without an active owner.
+Do not poll through the 50ms motor-control executor. Current APK polls in its
+own worker at 2Hz; a blocked map request cannot extend or block the motor lease.
+
+v18 map destination command
+
+Additional snapshot field:
+ navigable: 4096 characters, '.' = known free with full robot footprint and safety
+ margin; '#' = blocked/unknown/too close to obstacle. Unlike cells this already
+ includes the exact FPGA planning bitmap inflation. Do not paint these cells as
+ measured obstacles: this is a path-clearance mask, not a new sonar measurement.
+
+POST /api/navigation with the same token and JSON:
+ {"session":"phone control session", "op":"goto", "x":1.05, "y":0.05,
+  "map_session":"session_id from displayed map", "map_revision":42,
+  "intent_seq":123, "nav_seq":1}
+
+x/y are metres in the displayed map's world system, selected at a cell centre.
+The phone first serializes a zero DRIVE command (retains arm, cancels old route)
+through its normal control queue. intent_seq is that successful control sequence.
+nav_seq is a separate increasing sequence for navigation taps within this phone
+session. Send goto on a separate worker; continue foreground idle heartbeats.
+An intervening non-idle/manual/STOP command makes the older intent invalid.
+A future intent_seq or repeated/overtaken nav_seq is rejected. Never retry an old
+POST automatically after reconnection, a new tap, or a manual command.
+
+The server requires explicit existing arm, fresh foreground owner, motor ACK,
+calibrated IMU, --drive with validated navigation config and current sensor data.
+It binds the request to a retained displayed snapshot (max 2 seconds), checks the
+same reset/process epoch, and revalidates the destination against the CURRENT
+inflated map. Updated map revision alone does not shift the clicked world point.
+Unknown, occupied, narrow-clearance, out-of-window and stale targets are rejected.
+It then requests the route from FPGA A*. No RK or phone fallback A* is used.
+
+HTTP 200 ok=true / navigation.active=true means accepted for planning, not arrived.
+Follow navigation.state / reason and subsequent map goal/path. Failed planning,
+stale sensors, loss of phone lease, STOP or joystick takeover cancel motion.
+Typical errors: observe_only, calibration_not_confirmed, map_session_changed,
+map_snapshot_expired, map_not_ready, goal_not_verified_free,
+goal_outside_local_map, start_not_verified_free, stale_navigation_sequence,
+stale_navigation_intent, arm_from_phone_first, imu_not_ready, sonar_stale.
+Camera remains target-follow only; map inputs are encoders, IMU and three sonars.

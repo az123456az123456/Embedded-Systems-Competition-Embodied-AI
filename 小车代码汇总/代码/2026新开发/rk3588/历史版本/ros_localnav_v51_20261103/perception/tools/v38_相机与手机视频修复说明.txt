@@ -1,0 +1,55 @@
+v38 相机与手机视频修复说明（2026-10-29）
+
+1. 主交付恢复 RAW40：每眼 960×1080 RAW8、合并 1920×1080，经既有
+   UDP6102→RK ISP→NV12→YOLO。两眼 BGGR、swap_pairs=0，沿用已验证的
+   RAW ISP 配置。没有凭 RGB 颜色异常猜测修改 Bayer 相位。
+
+2. v36 无画面的确定配置风险：v35 run-perception.sh 默认 fpga-rgb，v36
+   安装器保留它，但 v36 位流发送 RAW，接收协议与发送协议不一致。
+   v38 必须同时替换 run-dashboard.sh、run-perception.sh、run-yolo.sh，
+   更新 RAW ISP 的 isp-probe、run_isp_camera.sh、camera-target-fps=40 和
+   /root/find-video.sh，避免只换 ELF 后继续打开错误通路。
+
+3. camera-link-probe.aarch64 在内部 eth0 检查实际图像包：
+     RAW：源 MAC 00:0a:35:01:fe:c0、IPv4 UDP6102、1922 字节 RAW 行；
+     RGB：源 MAC 02:ac:13:80:00:01、EtherType 0x88ba、RGP1 640×640。
+   自动选择对应接收方式；显式模式与探测不符时清楚报错，禁止将 RAW 当
+   RGB 解码。工具可将内部网口设为 UP/MTU4000，不修改 IP/路由，也不发送
+   电机指令；RGB 只发送 camera-only RGC1 START。无图像包时不冒充正常。
+   显式跳过诊断仅用于离线开发：PERCEPTION_CAMERA_PROBE=0。
+
+4. 手机延迟的代码风险：原 dashboard 虽只有最新 JPEG 单槽，但 TCP 默认
+   发送窗口仍可存多帧；8080 navigation 网关还会增加第二层内核缓存。
+   v38 dashboard 限发送窗口，请求 128KiB（Linux 通常实际 256KiB），单帧
+   发送总时限 200ms，源图超过 250ms 丢弃。慢流超时使用 RST 丢掉历史
+   队列，只重建视频连接；不取消电机使能，不重新建立控制会话。
+   navigation 网关必须配套更新同样的最新帧/期限策略。
+
+5. Android 1.2.18/code31：网络读帧和 JPEG 解码分线程，只留一个待解码
+   帧，UI 也只留一个；旧帧被更新帧替换，不逐个播放积压视频。手机/RK
+   单调时钟不同，通过收发时间的相对偏移增量识别 >250ms 新增积压，并
+   只重连视频。解码和 UI 交接超过 250ms 的帧丢弃。无论 CPU 还是无线链路
+   跟不上，优先跳到当前画面，不宣称无线总延迟为零。
+
+6. PHONE_PERF/API phone 增加 stale_drops、slow_disconnects、send_ms、
+   source_age_ms、tcp_backlog_bytes。target_fps 仍随完整双目 result_fps，
+   encode_fps/send_fps 是实测速率，send_scope=all-clients。正常 Wi-Fi
+   应接近 target；如果 slow_disconnects 持续增长，应排查 Wi-Fi 吞吐，
+   需要时 --phone-fps 20 可降低带宽而不形成历史队列。
+
+7. 已做宿主回归，不等于实车实拍验收：
+   - RAW/RGB/control 协议区分、实际 RAW 源 MAC 及尺寸：11 项。
+   - 启动入口：22 项，含 auto RAW、auto RGB、旧 RGB override 遇 RAW
+     必须拒绝、缺图像包、保留模型、保持双目40fps。
+   - RGP1 乱序/坏 CRC/左右行位置信息/逐像素/socket：12,324,545 项。
+     该结果证明软件重组，不证明 v35 RGB ISP 实拍色彩。
+   - 流发送截止、HTTP/MOT 编码和回环工作线程；真实 30/40fps MJPEG
+     及慢接收者隔离，详细数字见 v38_video_phone_verification.json。
+   - Android 766 项既有控制回归；200 帧突发+45ms 慢解码只解码2帧
+     就到最新帧，避免按 FIFO 播放历史图像。
+   - APK 已真实编译、对齐和签名，与已发布 v36 同签名、版本递增，
+     可直接覆盖安装；配对码和手机设置无需卸载清空。
+
+实板验收：使用完整 v38 RAW 配套后，看 CAMERA_LINK=v4l2、FASTPATH
+rx_fps/output_fps、PERF capture/result、PHONE_PERF，并对比两端同一动作。
+本机没有连接用户的板卡和手机，不能把宿主测试当成实板已验证。

@@ -1,0 +1,53 @@
+{
+  "fixture_type": "sparse reconstruction of one logged blocking cell; full map absent from diagnostic archive",
+  "diagnostic_file": "wrong.log.1",
+  "diagnostic_sha256": "b3f0bb0345e339ed3e705ef2e3fc43366156537ebba9ae3b055bdd9c49dbba07",
+  "sample_mono_ms": 721498,
+  "pose_m_rad": [
+    -0.7757,
+    0.0591,
+    3.0229
+  ],
+  "sonar_m": [
+    0.266,
+    0.601,
+    1.249
+  ],
+  "sonar_age_s": [
+    0.029,
+    0.006,
+    0.0041
+  ],
+  "guard": {
+    "blocked": true,
+    "cell_max_world_m": [
+      -1,
+      -0.1
+    ],
+    "cell_min_center_distance_m": 0.2749819773938165,
+    "cell_min_world_m": [
+      -1.1,
+      -0.2
+    ],
+    "cell_state": 1,
+    "cell_x": 21,
+    "cell_y": 30,
+    "channel": -1,
+    "evaluated": true,
+    "padding_outside_circle_skipped": 0,
+    "pure_rotation": true,
+    "range_m": 0,
+    "range_required_m": 0,
+    "reason": "known_occupied_safety_padding",
+    "required_radius_m": 0.29619797061952274,
+    "sample_mono_ms": 721496.431343,
+    "scope": "last_local_rotation_check_not_control_authority",
+    "target_yaw_rad": 3.0373533208095536
+  },
+  "origin_m": [
+    -3.2,
+    -3.2
+  ],
+  "resolution_m": 0.1,
+  "note": "All other cells unknown; no claim to replay the absent full4096 map."
+}

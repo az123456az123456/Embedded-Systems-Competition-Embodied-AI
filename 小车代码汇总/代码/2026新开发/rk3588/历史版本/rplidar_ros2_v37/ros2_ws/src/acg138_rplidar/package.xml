@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>acg138_rplidar</name>
+  <version>0.37.0</version>
+  <description>RPLIDAR C1 460800 SDK driver and tested uniform LaserScan conversion.</description>
+  <maintainer email="robot@localhost">ACG138 Robot Project</maintainer>
+  <license>BSD-2-Clause</license>
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <export><build_type>ament_cmake</build_type></export>
+</package>

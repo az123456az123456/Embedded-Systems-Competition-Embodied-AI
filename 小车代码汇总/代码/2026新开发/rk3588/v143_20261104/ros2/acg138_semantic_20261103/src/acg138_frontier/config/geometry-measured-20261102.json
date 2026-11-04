@@ -1,0 +1,50 @@
+{
+  "source": "user measurements 2026-11-02; latest corrections take precedence",
+  "units": "metres",
+  "stereo": {
+    "optical_baseline": 0.0332,
+    "center_to_right_edge": 0.0914,
+    "center_to_left_edge": 0.171,
+    "derived_body_width": 0.2624,
+    "derived_center_offset_from_body_geometric_midline": {
+      "right": 0.0398
+    },
+    "camera_x_base_link": null,
+    "camera_z_base_link": null,
+    "body_midline_to_base_link_y": null,
+    "intrinsics_status": "Not established by these mechanical measurements; no image calibration overwritten"
+  },
+  "body": {
+    "measured_total_length": 0.355,
+    "base_link_to_front": 0.1589,
+    "base_link_to_rear": 0.1942,
+    "sum_front_rear": 0.3531,
+    "total_minus_sum": 0.0019,
+    "difference_handling": "Recorded without inventing front/rear allocation; footprint uses reported base_link extents"
+  },
+  "lidar": {
+    "scan_plane_height_above_ground": 0.214,
+    "supersedes_heights": [
+      0.175,
+      0.1478
+    ]
+  },
+  "planning": {
+    "width": 0.3,
+    "front": 0.1589,
+    "rear": 0.1942,
+    "inflation_radius": 0.15,
+    "additional_margin": 0.0,
+    "self_footprint_exemption": "observed-free cells only"
+  },
+  "unchanged": {
+    "encoder_cpr": 60527.7,
+    "encoder_signs": [
+      -1,
+      1,
+      -1,
+      1
+    ],
+    "FPGA_bitstream": "unchanged"
+  }
+}

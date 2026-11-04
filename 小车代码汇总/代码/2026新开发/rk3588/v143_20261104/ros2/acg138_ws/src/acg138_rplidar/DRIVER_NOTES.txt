@@ -1,0 +1,60 @@
+acg138_rplidar：RPLIDAR C1 驱动说明
+
+1. 输入和版本
+默认仅使用 /dev/ttyUSB0、460800；不探测其他波特率，不依赖 BusyBox stty。
+SDK 直接取自用户附件 sllidar_ros2-main.zip，非网络下载替换版本。
+附件内 sl_lidar.h 的实际版本宏为 2.1.0；用户已验证的接口属于同一 sl SDK v2 API。
+vendor/provenance.json 记录附件 SHA256 和官方参考节点 SHA256。
+C1 规格书 v1.1 第8页：5k samples/s，8–12Hz，典型10Hz，0.05–12m白物体，黑物体约6m。
+使用 SDK 能力查询后，只在 MotorCtrlSupportRpm 时把 scan_frequency*60 作为 RPM 请求。
+其它能力用 SDK 默认电机速度，不把10Hz误当PWM值；实际接收频率单独打印。
+启动顺序：startScan(false,true) -> 仅查询到支持mode0时试startScanExpress(false,0) -> startScan(false,false)。
+不支持的扫描模式不会盲目发送。失败后返回非零，交给外部监督脚本重启。
+
+2. 坐标和栅格
+SDK angle_z_q14 的角度单位是90/16384度，不是1/16384度。
+C1第10页：正前+X，角度沿顺时针增大；ROS输出 θ=-SDKθ，+Y朝左、逆时针正。
+物理朝向应由 base_link -> laser 静态TF描述，不在驱动里任意加180度。
+默认500个等角度格，angle_min=-pi，angle_increment=2*pi/500，最后一格不重复+pi。
+每个原始点按真实角度放入最近的格；同格保留最近有效回波及其quality>>2。
+Q=0、distance=0、量程外输出+inf，不沿用上一帧，不将无回波宣称为已观测空闲。
+空格不插值、不复制成伪造测量。scan_bins=0可按每圈原始点数生成等角度格。
+
+3. 时间戳的实际精度
+scan_time优先采用完整一圈节点数*扫描模式us_per_sample；不把SDK抓取函数阻塞耗时当扫描周期。
+没有模式采样周期时使用成功抓取间隔，再退回1/scan_frequency。
+header.stamp由节点ROS时钟now()估计首个输出方向射线的采样时刻，并修正其相对原始scan-start的角位置。
+SDK grabScanDataHq没有给应用提供硬件采样时间；USB排队延迟无法消除，因而不是硬件同步时间戳。
+顺时针采样经逆时针排序和最近格重采样后，没有可信的正向等间隔逐点采样时间。
+本节点time_increment=0，明确不声称支持逐射线运动畸变补偿。
+低速小车MVP可用；后续若需精确deskew，应接入SDK时间戳API并保留逐点时间，不能填一个看似精确的正数。
+
+4. 构建与运行（先准备与目标系统ABI一致的ROS2 underlay）
+cd <此包上两级的ros2_ws目录>
+. /opt/ros/jazzy/setup.sh
+colcon build --merge-install --packages-select acg138_rplidar --cmake-args -DCMAKE_BUILD_TYPE=Release
+. install/setup.sh
+ros2 run acg138_rplidar c1_node --ros-args --params-file install/share/acg138_rplidar/config/c1.yaml
+
+这里的setup.sh来自你部署好的ROS2运行环境，并非假设Buildroot已有Ubuntu软件包。
+交叉构建必须用目标ROS2 underlay和目标Python/依赖sysroot；不能把宿主x86_64 ROS库链接进aarch64程序。
+该包只有 rclcpp、sensor_msgs、ament_cmake 和系统pthread依赖，不依赖图形界面或stty。
+无ROS自检：python3 tests/run-host-tests.py
+有CMake时也可：cmake -S . -B /tmp/c1-test -DACG138_CORE_ONLY=ON -DBUILD_TESTING=ON
+cmake --build /tmp/c1-test -j4
+ctest --test-dir /tmp/c1-test --output-on-failure
+
+5. 板端检查
+ros2 topic info /scan -v
+ros2 topic hz /scan
+ros2 topic echo /scan --once
+ros2 bag record /scan /tf /tf_static /odom
+QoS为SensorDataQoS（best-effort/volatile），订阅方应匹配或使用ros2 topic echo /scan --qos-reliability best_effort。
+预期约8–12Hz，典型10Hz；500为默认输出格数，原始每圈有效回波数取决于环境。
+前方放置障碍应在ROS角0附近；左侧应在+pi/2附近；右侧应在-pi/2附近。
+不要同时运行ultra_simple和c1_node占用同一串口。
+
+6. 当前验证边界
+主机原生C++转换测试覆盖全部65536种角码、四象限、边界量程、最近回波、无回波、时间换算。
+还编译了附件真实SDK源码和API契约，没有用伪SDK替代。
+没有声称已经在物理C1上运行；完整ROS2节点需在真实ROS2 underlay中构建、上板完成上述验收。

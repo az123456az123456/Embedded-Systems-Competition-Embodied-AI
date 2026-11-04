@@ -1,0 +1,30 @@
+[
+  {
+    "frame_index": 0,
+    "kind": "ACK1",
+    "reference_start_ps": 190316001,
+    "candidate_start_ps": 190340001,
+    "start_delay_ns": 24.0,
+    "equal_whole_frame": true,
+    "crc16_ok": true,
+    "fcs_ok": true,
+    "frame_hex": "55555555555555d5ffffffffffff02ac1380000188b641434b31010400000064000000000a0f8a2800000000000000000000000000000000000000000000000000000000782d7d31",
+    "sha256": "9fcc077770a26cbaabcc68a6b41fee00c9cbaaea9d95f5d0586dddbe3a725586",
+    "payload_magic_ok": true,
+    "payload_matches_same_source_valid_sample": true
+  },
+  {
+    "frame_index": 1,
+    "kind": "NAV1",
+    "reference_start_ps": 190988001,
+    "candidate_start_ps": 191012001,
+    "start_delay_ns": 24.0,
+    "equal_whole_frame": true,
+    "crc16_ok": true,
+    "fcs_ok": true,
+    "frame_hex": "55555555555555d5ffffffffffff02ac1380000188b74e4156310103000000002524000000010000000100000006000012a1000000000000000000000000000000000000ee793e01",
+    "sha256": "fb182f1588a5db6273bfb5e596135988bc16c01d23ba0e91270ed2aa14e98efc",
+    "payload_magic_ok": true,
+    "payload_matches_same_source_valid_sample": true
+  }
+]

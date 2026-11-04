@@ -1,0 +1,47 @@
+ACG138 v29-reactive-clearance RK增量更新（2026-10-27）
+
+需配套 robot_control_v29_reactive.fs。旧APK无需重装；摄像头、YOLO模型、分辨率、UI、IMU显示、照片、配对码、Wi-Fi及启动入口保留。本包不是系统镜像，不重装网卡驱动。
+
+安装：停车并退出统一窗口和导航；把tar.gz放到/root后逐行执行：
+  cd /root
+  tar -xzf robot-reactive-v29-rk3588-20261027.tar.gz
+  cd /root/robot-reactive-v29-rk3588-20261027
+  sh install.sh --check-only
+  sh install.sh
+安装器校验整包与现有配对版本，同时备份/更新dashboard、navigation和配对校验三个文件。未知/修改/混装版本拒绝覆盖，复制失败恢复原组。支持已发布v28.1及列明旧基线。config.json、模型/库、地图、配对码、照片均不改。
+
+仍用原入口：
+  sh /root/perception-dashboard/run-dashboard.sh -0
+横置用同一脚本-90参数。启动不自动行驶；车身静止完成本地校准，手机使能后再开始任务。
+
+本次避障行为：
+1. 前停基础距离改为0.20m，实际门限还加当前速度、真实源年龄、配置的测距延迟/反应和制动距离。0.20m不是所有速度下都可到达的硬停车点。
+2. 先停车，等待编码器停稳和真正新增测距，选择左右更远一侧；两侧都不足0.30m时优先顺时针扫描，但必须满足真实外廓的即时旋转空间守卫。
+3. 连续转向直到前方出现可通行候选，不再每25度必停，不再因累计超过29度直接报错。角度按IMU展开累计，仍有无进展、两圈扫描及实际运动总超时保护。
+4. 看到候选先停车，再等全部post-stop源观测和连续两个不同的前方源观测确认。前方clear=max(0.35m, 预期行驶速度的动态停车门限+0.04m)，左右平移保护仍为0.30m。重复包、转前远距离不能放行。
+5. “保持直行”沿新方向继续，不再走固定0.30m/0.20m，也不再转回旧航向。
+6. 地图导航清障后沿新方向按编码器走0.50m，再尝试FPGA A*连接原地图路线。未知或不可达区域不会强行当空地。
+7. 三路超声波短暂invalid/stale进入SENSOR_WAIT，输出v=w=0，保留当前前台授权会话。恢复后停稳重观测才继续；连续5秒未恢复，sonar_unavailable_timeout明确终止。修好后需重新开始，不能自动复活。
+8. 编码器、IMU、CPU/trap、ACK超时、手机失焦/断连/STOP仍保持原保护；没有删除encoder_wheel_disagreement，也不会自动清地图掩盖故障。
+9. 已锁存定位/编码器错误会在RK零速交接和claim前只读拒绝，直接显示首次真实原因；RK不为这个已知拒绝无谓改动手动权限。原APK收到真实错误409后仍可能主动安全STOP，本版不删除该手机保护。
+
+配置说明：
+本次用户明确要求0.20m，因此程序运行时只覆盖stop_clearance_m为0.20。磁盘旧config.json里的0.35原样保留供回滚；status.json的avoidance_policy同时显示effective stop_base_m和preserved_config_stop_base_m。实测刹车、反应、延迟、标定标志与未知字段均保留；不会编造校准数据。FPGA原始近障底限和本地闭环需本次配套位流。
+
+诊断：
+  cat /tmp/robot-navigation/status.json
+  grep -E 'SOFTCORE_NAV|SOFTCORE_CTRL|SENSOR_NET|GATEWAY_CTRL|PHONE_CTRL' /tmp/robot-nav-dashboard.log | tail -n 25
+  ./tools/softcore-monitor.aarch64 --timeout 10
+工具只读NAV1，不控制电机。wrong.log继续保存状态与原因；diagnose-phone.sh只读采集，export-wrong.sh导出。停用状态的正常ACK4探测过期显示softcore_idle_protocol_probe，不再滚动生成虚假的“本地校准未完成”事件。运行/准备中的ACK4有效期仍为300ms，旧ACK绝不授权。
+
+回滚：记录安装器打印的实际备份路径，退出程序后在本包目录执行：
+  sh rollback.sh /root/robot-phone-v29-reactive-clearance-backup.XXXXXX
+回滚不操作FPGA，恢复旧行为需换回原配套位流。配置未改，因此保留原设定。
+
+边界：本地地图不等于全局闭环SLAM；三只前向/斜向超声波不能保证覆盖车尾或所有细杆/吸声材料。模型/回归不代替真实车辆制动、抓地、回波与PI/PD增益的实测。本次具体离线验证以报告和SHA绑定为准，不宣称已经实车验证。
+
+源码：dashboard为统一窗口与手机服务，navigation为地图/路径/共享reactive状态机，common为诊断。
+复现导航测试：make -C navigation test；make -C navigation test-layered。
+交叉编译：sh dashboard/scripts/build-arm64.sh；make -C navigation arm64。
+FPGA_FIRMWARE默认相对指向fpga/robot_control_v29_reactive/softcore/firmware，可显式覆盖。
+完整封装前需运行scripts/verify-rk-release.py及package_release.py，后者只打RK增量包，配套FPGA由总包交付。

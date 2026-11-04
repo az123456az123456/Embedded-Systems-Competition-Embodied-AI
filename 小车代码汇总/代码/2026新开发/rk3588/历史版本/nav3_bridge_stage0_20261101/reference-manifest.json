@@ -1,0 +1,30 @@
+{
+  "references": [
+    {
+      "source": "/home/tan/qiansai/小车代码汇总/代码/2026新开发/fpga/candidate-26-live-factor/source/common/nav_exec_wire.h",
+      "copy": "package/tests/reference/nav3/nav_exec_wire.h",
+      "sha256": "6f0ffed06228b007a75c36c8e55560d2ac7a8eb710b83c16e2ced19ad63bc0e8",
+      "role": "candidate26_authoritative"
+    },
+    {
+      "source": "/home/tan/qiansai/小车代码汇总/代码/2026新开发/fpga/candidate-26-live-factor/source/common/nav_exec_wire.c",
+      "copy": "package/tests/reference/nav3/nav_exec_wire.c",
+      "sha256": "411ebb2e6440bdab6af492c5bf7886c7b7eba6b0e01afd8b58900fc2788976cc",
+      "role": "candidate26_authoritative"
+    },
+    {
+      "source": "/home/tan/qiansai/小车代码汇总/代码/2026新开发/fpga/candidate-26-live-factor/source/softcore/firmware/nav_runtime.c",
+      "copy": "package/tests/reference/nav3/nav_runtime.c",
+      "sha256": "a1438879b7778ff737216de3748b1f95f6c6c26cdf421048e124a7168c13d6a7",
+      "role": "candidate26_authoritative"
+    },
+    {
+      "source": "/home/tan/qiansai/fpga/robot_navigation_v41/verification/L1/test_wire.c",
+      "copy": "package/tests/reference/nav3/test_wire_v41_reference.c",
+      "sha256": "fd44a5b201acc60e31a0cb04c2224fcd37359fde5d62184f7a9a68e598a77d11",
+      "role": "historical_v41_host_test_not_candidate26_evidence"
+    }
+  ],
+  "host_architecture": "x86_64",
+  "board_connected": false
+}

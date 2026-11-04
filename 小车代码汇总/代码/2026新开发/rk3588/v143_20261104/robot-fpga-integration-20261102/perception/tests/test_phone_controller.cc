@@ -1,0 +1,227 @@
+#include "../phone/controller.h"
+
+#include <cmath>
+#include <cstdlib>
+#include <iostream>
+#include <limits>
+
+using namespace robotphone;
+namespace {
+int checks=0;
+void check(bool value, const char* message) {
+  ++checks;
+  if (!value) { std::cerr << "FAIL: " << message << '\n'; std::exit(1); }
+}
+bool near(double a,double b,double e=1e-8) { return std::abs(a-b)<e; }
+Config mapped() { Config c;c.follow_front_sonar_distance=false; c.left_motor_mask=3; c.slew_per_second=100; c.bearing.enabled=true; for(auto &e:c.bearing.eyes){e.calibrated=true;e.fx_px=600;e.cx_px=480;e.lateral_right_m=0;} return c; }
+void sensors(Controller& c,std::uint64_t t,double yaw=0,bool calibrated=true) {
+  c.updateMotorLink(t,true); c.updateImu({t,calibrated,0,0,yaw}); c.updateAngleProtocol(true); c.updateArcProtocol(true); c.updateRanges({t,{true,true,true},{2,2,2}});
+}
+Detection box(double cx=216,int eye=0,int cls=0,double size=80) {
+  Detection d; d.class_id=cls; d.name="person"; d.score=.8; d.eye=eye;
+  d.x1=cx-size/2; d.x2=cx+size/2; d.y1=180; d.y2=180+size;
+  return d;
+}
+VisionFrame frame(std::uint64_t id,std::uint64_t t,std::vector<Detection> boxes) {
+  return {id,t,std::move(boxes)};
+}
+void interlocks() {
+  Controller c;
+  sensors(c,1000);
+  check(!c.arm(1,1000),"unmapped robot cannot arm");
+  check(c.configure(mapped()),"valid map accepted");
+  check(c.arm(1,1000),"fresh FPGA ACK permits arm");
+  check(c.drive(2,1,.5,false,1000),"new manual command accepted");
+  c.tick(1010);
+  check(near(c.state().left,.6)&&near(c.state().right,.427),"continuous arc keeps both wheels translating at 60% outer limit");
+  check(!c.drive(2,-1,0,false,1010),"replay rejected");
+  c.stop(1011,true);
+  check(c.state().estop && !c.state().armed && c.state().left==0 && c.state().right==0,"emergency stop immediate and latched");
+  check(!c.drive(3,1,0,false,1012),"drive cannot clear emergency stop");
+  check(!c.arm(2,1012),"replayed arm cannot clear emergency stop");
+  check(c.arm(3,1012) && !c.state().estop,"separate fresh arm clears latch");
+  c.drive(4,1,0,false,1012); c.tick(1022);
+  c.setForeground(false,1023);
+  check(c.state().armed && c.state().left==0,"background immediately pauses without revoking authorization");
+  check(!c.arm(5,1023),"cannot arm in background");
+  c.setForeground(true,1024); check(c.arm(5,1024),"foreground requires new arm");
+  c.drive(6,1,0,false,1024); c.tick(1034); c.ownerDisconnected(1035);
+  check(!c.state().armed && c.state().left==0 && !c.state().target_id,"owner disconnect stops and clears target");
+  sensors(c,1100); c.arm(7,1100); c.drive(8,1,0,false,1100); c.tick(1110);
+  c.configure(mapped());
+  check(c.state().armed && c.state().left==0,"same configuration clears motion and retains authorization");
+  c.arm(9,1110); c.drive(10,1,0,false,1110); c.tick(1120);
+  c.updateMotorLink(1121,false);
+  check(c.state().armed && c.state().left==0,"negative motor readiness pauses immediately");
+}
+
+void leasesAndSlew() {
+  Config config=mapped(); config.slew_per_second=1;
+  Controller c(config); sensors(c,1000); c.arm(1,1000); c.drive(2,1,.5,false,1000);
+  c.tick(1100);
+  check(near(c.state().left,.1)&&near(c.state().right,.071),"slew ramp preserves rounded FPGA arc ratio from stopped");
+  c.drive(3,0,0,false,1101);
+  check(c.state().left==0 && c.state().right==0,"zero joystick stops immediately without deceleration wait");
+  check(c.state().armed && c.state().mode==Mode::Idle,"joystick release stays armed and idle");
+  sensors(c,1400); c.tick(1400);
+  check(c.state().armed && c.state().left==0,"idle released joystick has no moving command lease to expire");
+  check(c.drive(4,1,0,false,1400),"fresh joystick gesture works without another arm after release");
+  c.tick(1410);
+  sensors(c,1698); c.tick(1698);
+  check(c.state().armed,"fresh ACK alone does not prematurely expire lease");
+  sensors(c,1751); c.tick(1751);
+  check(c.state().armed && c.state().reason=="motion_command_stale" && c.state().left==0,"sensor polling never extends command lease");
+  sensors(c,1800); c.arm(5,1800); c.drive(6,1,0,false,1800); c.tick(1810);
+  c.updateImu({2050,true,0,0,0}); c.drive(7,1,0,false,2050); c.tick(2101);
+  check(c.state().armed && c.state().reason=="motor_link_stale","missing actual FPGA ACK stops despite fresh control commands");
+  sensors(c,2200); c.arm(8,2200); c.drive(9,1,0,false,2200); c.tick(2210); c.tick(2209);
+  check(c.state().armed && c.state().reason=="clock_reversed","monotonic clock reversal fails closed");
+  sensors(c,2300); c.arm(10,2300);
+  check(!c.drive(11,std::numeric_limits<double>::quiet_NaN(),0,false,2300) && c.state().armed,"NaN command pauses without revoking authorization");
+  sensors(c,2400); c.arm(12,2400); c.drive(13,1,0,false,2400); c.tick(2410);
+  sensors(c,2751);
+  check(c.drive(14,1,0,false,2751) && c.state().armed,"fresh new command can establish a new action under unexpired logical authorization");
+}
+
+void heading() {
+  Controller c(mapped()); sensors(c,1000,179); c.arm(1,1000);
+  c.drive(2,.5,0,true,1000); c.tick(1010);
+  sensors(c,1020,-179); c.drive(3,.5,0,true,1020); c.tick(1030);
+  check(near(c.state().heading_error_deg,2),"yaw wrap produces +2 instead of -358 degrees");
+  check(c.state().left>c.state().right,"positive yaw deviation corrects right");
+  c.drive(4,-.5,0,true,1040); c.tick(1050);
+  check(c.state().left>c.state().right && c.state().right<0,"reverse velocity does not invert heading correction");
+  c.drive(5,.5,.4,true,1060); c.tick(1070);
+  sensors(c,1080,135); c.drive(6,.5,0,true,1080); c.tick(1090);
+  check(near(c.state().heading_error_deg,0) && near(c.state().left,c.state().right),"manual turn override recaptures heading on release");
+  sensors(c,1100,140); c.drive(7,.5,0,true,1100); c.tick(1110);
+  check(near(c.state().heading_error_deg,5),"new heading retained after override");
+  c.updateMotorLink(1401,true); c.tick(1401);
+  check(c.state().left==0 && c.state().reason=="imu_stale" && c.state().mode==Mode::Idle,"stale calibrated IMU stops heading mode");
+  check(c.drive(8,.2,0,false,1402),"manual mode remains available without IMU");
+  c.tick(1412); check(c.state().left>0,"manual motion does not pretend to require calibrated attitude");
+  check(c.drive(9,.2,0,true,1413) && c.state().left==0,"uncalibrated/stale attitude cannot enable hold");
+  check(c.drive(10,0,0,true,1414) && c.state().armed && c.state().mode==Mode::Idle,"release with hold requested stops even when IMU is stale");
+}
+
+void tracking() {
+  Controller c(mapped()); sensors(c,1000); c.arm(1,1000);
+  auto a=c.updateVision(frame(1,1000,{box(150),box(300)}));
+  const auto left=a.boxes[0].track_id,right=a.boxes[1].track_id;
+  auto b=c.updateVision(frame(2,1030,{box(302),box(152)}));
+  check(b.boxes[0].track_id==right && b.boxes[1].track_id==left,"reordered detection array preserves object identities");
+  check(c.select(1,left,1040),"tap on retained recent displayed frame resolves to current ID");
+  check(!c.select(999,left,1040),"unknown frame cannot select");
+  check(!c.select(1,left,1801),"expired displayed frame cannot select");
+  check(c.state().target_id==left,"failed selection cannot silently replace existing target");
+  c.select(2,left,1040); c.follow(2,1040); c.tick(1050);
+  auto d=c.updateVision(frame(3,1060,{box(304)}));
+  check(c.state().target_id==left && c.state().left==0 && c.state().reason=="follow_wait_target","missing selected target immediately stops");
+  auto resumed=c.updateVision(frame(4,1090,{box(150),box(306)}));
+  check(resumed.boxes[0].track_id==left,"selected object retains ID after individual miss beside another person");
+  check(c.follow(3,1100) && c.state().left==0,"missing identity waits without acquiring the other visible person");
+  auto old=c.vision();
+  c.updateVision(frame(3,900,{box(150)}));
+  check(c.vision().frame_id==old.frame_id,"out of order vision cannot refresh freshness");
+
+  Controller ambiguous(mapped());
+  auto first=ambiguous.updateVision(frame(1,1000,{box(206),box(226)}));
+  const auto selected=first.boxes[0].track_id;
+  ambiguous.select(1,selected,1000);
+  auto second=ambiguous.updateVision(frame(2,1030,{box(216)}));
+  check(second.boxes[0].track_id!=first.boxes[0].track_id && second.boxes[0].track_id!=first.boxes[1].track_id,"ambiguous merge gets new identity");
+  check(ambiguous.state().target_id==selected&&!ambiguous.selectedTarget(),"ambiguity retains selection intent without choosing another person");
+  check(!ambiguous.canSelect(1,selected,1030),"retired ambiguous identity cannot be selected from a held display");
+  auto unmerged=ambiguous.updateVision(frame(3,1060,{box(206)}));
+  check(unmerged.boxes[0].track_id!=selected&&!ambiguous.selectedTarget(),"ambiguous identity cannot silently reclaim a later detection");
+
+  Controller split(mapped());
+  auto one=split.updateVision(frame(1,1000,{box(216)}));
+  auto two=split.updateVision(frame(2,1030,{box(206),box(226)}));
+  check(two.boxes[0].track_id!=one.boxes[0].track_id && two.boxes[1].track_id!=one.boxes[0].track_id,"ambiguous split never duplicates track ID");
+  auto changed=split.updateVision(frame(3,1060,{box(206,0,1)}));
+  check(changed.boxes[0].track_id!=two.boxes[0].track_id,"different class cannot inherit target ID");
+  auto gap=split.updateVision(frame(4,1900,{box(206,0,1)}));
+  check(gap.boxes[0].track_id!=changed.boxes[0].track_id,"long tracking gap cannot silently retain identity");
+
+  Controller moving(mapped()); sensors(moving,2000); moving.arm(1,2000);
+  moving.drive(2,.5,0,true,2000); moving.tick(2010);
+  auto tap=moving.updateVision(frame(1,2010,{box(216)}));
+  check(moving.select(1,tap.boxes[0].track_id,2011) && moving.state().armed &&
+        moving.state().left==0 && moving.state().mode==Mode::Idle,
+        "valid new target tap cancels prior moving command without starting follow");
+  moving.tick(2020);
+  check(moving.state().left==0,"selecting a box cannot resume previous heading motion");
+}
+
+void selectedDropouts() {
+  Controller c(mapped());sensors(c,1000);c.arm(1,1000);
+  auto first=c.updateVision(frame(1,1000,{box(150),box(310)}));
+  const auto target=first.boxes[0].track_id,other=first.boxes[1].track_id;
+  check(c.select(1,target,1000),"select before follow");
+  const auto selected_at=c.state().selection_ms;
+  for(unsigned i=1;i<=18;++i) {
+    const auto t=1000+i*33;
+    auto update=c.updateVision(frame(i+1,t,{box(310)}));
+    check(update.boxes[0].track_id==other,"other visible target stays independent of selected dropout");
+    check(c.state().target_id==target&&c.state().selection_ms==selected_at,"idle selection survives individual misses without resetting epoch");
+    check(!c.selectedTarget()&&c.state().left==0&&c.state().right==0,"remembered identity supplies no motor observation");
+  }
+  sensors(c,1594);
+  check(c.select(1,target,1594),"held display remains selectable using its actual source frame beyond 500ms");
+  check(!c.follow(2,1594)&&c.state().target_id==target&&c.state().left==0,"follow admission during miss preserves selection and stays stopped");
+  auto back=c.updateVision(frame(20,1630,{box(312),box(153)}));
+  check(back.boxes[0].track_id==other&&back.boxes[1].track_id==target,"reappearance with reversed order keeps both identities");
+  sensors(c,1630);check(c.follow(3,1630),"fresh reappearance allows explicit follow");
+  FollowObservation o;o.target_id=target;o.selection_ms=c.state().selection_ms;
+  o.vision_ms=o.scan_ms=o.pose_ms=1630;o.matched=o.forward_clear=o.turn_clear=true;o.distance_m=o.x_body_m=2;
+  check(c.updateFollowObservation(o,1630),"fresh lidar association accepted");
+  c.updateVision(frame(21,1660,{box(314)}));
+  check(!c.followObservationFresh(1660)&&c.state().left==0,"one missed target invalidates prior lidar motion observation");
+  c.updateVision(frame(22,1690,{box(155),box(316)}));sensors(c,1690);c.follow(4,1690);c.tick(1690);
+  check(c.state().target_id==target&&c.state().reason=="follow_wait_lidar"&&c.state().left==0,"reacquisition waits for a new lidar observation");
+  c.updateVision(frame(23,1720,{box(318)}));
+  auto expired=c.updateVision(frame(24,2500,{box(155),box(320)}));
+  check(expired.boxes[0].track_id!=target&&c.state().target_id==target&&!c.selectedTarget(),"expired identity cannot switch to a newly detected person");
+  c.stop(2501);check(c.state().target_id==0,"explicit stop still clears retained intent");
+}
+
+void following() {
+  Controller c(mapped()); sensors(c,1000); c.arm(1,1000);
+  auto f=c.updateVision(frame(1,1000,{box(648,1)}));
+  check(near(f.boxes[0].center_x,0),"right-eye optical center is not interpreted as right steering");
+  c.select(1,f.boxes[0].track_id,1000); check(c.follow(2,1000),"valid tap allows follow");
+  FollowObservation measured;measured.target_id=c.state().target_id;measured.selection_ms=c.state().selection_ms;
+  measured.vision_ms=measured.scan_ms=measured.pose_ms=1000;measured.matched=true;measured.forward_clear=measured.turn_clear=true;
+  measured.distance_m=measured.x_body_m=2;c.updateFollowObservation(measured,1000);c.tick(1010);
+  check(near(c.state().left,.22) && near(c.state().right,.22),"centered target approaches slowly at configured duty");
+  c.stop(1011); check(!c.state().target_id,"stop clears target");
+  check(!c.drive(3,1,0,false,1012) && c.state().left==0,"explicit normal stop requires separate arm before further drive");
+  sensors(c,1100); c.arm(3,1100);
+  f=c.updateVision(frame(2,1100,{box(820,1)}));
+  c.select(2,f.boxes[0].track_id,1100); c.follow(4,1100);
+  measured.target_id=c.state().target_id;measured.selection_ms=c.state().selection_ms;measured.matched=false;
+  measured.vision_ms=measured.scan_ms=measured.pose_ms=1100;c.updateFollowObservation(measured,1100);c.tick(1110);
+  check(c.state().left>0 && c.state().right<0 && near(c.state().left,-c.state().right),"off-center target turns in place before approaching");
+  c.stop(1111); sensors(c,1200); c.arm(5,1200);
+  auto large=box(216); large.y1=100; large.y2=400;
+  f=c.updateVision(frame(3,1200,{large})); c.select(3,f.boxes[0].track_id,1200); c.follow(6,1200); c.tick(1210);
+  check(c.state().left==0 && c.state().target_id && c.state().mode==Mode::Follow,"large image target keeps following but cannot approach without lidar");
+  sensors(c,1300); f=c.updateVision(frame(4,1300,{box(216)}));
+  c.select(4,f.boxes[0].track_id,1300); c.follow(7,1300); c.tick(1310);
+  sensors(c,1500); c.follow(8,1500); c.tick(1510);
+  sensors(c,1700); c.follow(9,1700); c.tick(1710);
+  sensors(c,1801); c.tick(1801);
+  check(c.state().left==0 && c.state().target_id,"vision expiry stops and retains selected identity");
+  check(c.state().reason=="follow_wait_target" && c.state().armed,"vision expiry is checked independently from fresh IMU/ACK/control lease");
+  check(c.follow(10,1802) && c.state().left==0,"owner may maintain follow while waiting for vision without motion");
+  sensors(c,1900,0,false); f=c.updateVision(frame(5,1900,{box(216)}));
+  c.select(5,f.boxes[0].track_id,1900);
+  check(!c.follow(11,1900) && c.state().reason=="imu_stale","follow requires calibrated fresh attitude");
+}
+}  // namespace
+
+int main() {
+  interlocks(); leasesAndSlew(); heading(); tracking(); following();selectedDropouts();
+  std::cout << "PASS controller: " << checks << " checks (tracking, differential, heading, leases, ACK, stop/rearm)\n";
+}

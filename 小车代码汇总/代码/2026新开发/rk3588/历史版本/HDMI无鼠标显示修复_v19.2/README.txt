@@ -1,0 +1,1 @@
+Source and offline evidence for the HDMI startup fix. Runtime installation uses the included tar.gz/install.sh only. Existing board launchers are deliberately not supplied/replaced; model and40FPS launch settings remain installed on the board. See 使用说明.txt. Build: dashboard/scripts/build-arm64.sh with matching BSP; host protocol tests: make test-window test-hdmi-window.

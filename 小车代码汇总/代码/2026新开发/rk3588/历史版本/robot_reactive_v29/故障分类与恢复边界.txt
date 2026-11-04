@@ -1,0 +1,41 @@
+ACG138 v29-reactive-clearance：状态、故障与恢复边界
+
+正常状态：
+PREPARING / waiting_softcore_calibration：接受任务但只发零MOT4，等待本地CPU/IMU的严格新ACK4；最多15秒，手机前台租约仍350ms。
+SENSOR_WAIT / sonar_invalid_zero_wait、sonar_stale_zero_wait：三路测距短时缺失，立即零速，当前任务/授权仍保留，不伪造>4m。恢复进入SENSOR_RECOVERY，停稳且源时间晚于停车后再恢复。连续5秒不恢复为sonar_unavailable_timeout，任务结束，重新开始才可再动。
+OBSTACLE_STOP / AVOID_STOP：遇障先停，等待真实编码器停稳和新测距。
+AVOID_SELECT：比较左右有效距离选更远侧；两侧都不足.30m优先顺时针，但几何守卫不能绕过。
+AVOID_TURN_CLEAR：连续低速旋转直到新前方数据提名clear方向。不会因29度分段假错误停用。
+AVOID_CONFIRM_CLEAR：停车后等待两次不同的前方源观测确认，左右仍需>.30m；转前旧远距离不允许开始前进。
+AVOID_ADVANCE_050：仅地图导航，测量沿新方向走.50m，途中继续避障。
+AVOID_REJOIN_WAIT：等待真实地图可达回归点；保持直行不再进入地图回归。
+STRAIGHT_ADVANCE：新方向直行，保留航向微调、编码器PI和超声波保护。
+AVOID_WAIT / avoid_rotation_clearance_insufficient：已知占据或外廓扫掠空间不满足，零速等新证据；不会把未知区域写成空地。
+softcore_idle_protocol_probe：停用/非自主状态的正常协议探测，不是控制授权，也不是校准失败，不写故障滚动事件。
+
+必须结束当前任务的真实保护：
+sonar_unavailable_timeout：连续5秒没有恢复三路有效新测距；检查供电、共地、TX、RX模式、回波/干扰和源年龄。传感器恢复不自动启动已终止任务。
+no_odometry_progress：实际请求非零旋转/行驶且允许执行时，4秒无可测进展；测距WAIT/几何gate零速等待不耗此计时。检查电机供电、使能、编码器和卡轮。
+avoid_scan_exhausted：累计扫描两圈仍无可确认方向；不是单段角度上限。
+avoid_local_sequence_timeout：本次避障实际运动累计超过120秒。
+encoder_wheel_disagreement：同侧前后轮持续计数不一致，可能接线/映射、编码器断线/丢计数或车轮真实打滑/卡住。已锁存定位故障不会靠重复Start消失，不盲删检查。RK在zero/claim前只读拒绝已锁存的请求，不为已知拒绝抢占手动权限；旧APK仍可因409主动安全STOP。停车核对四路计数、轮组和计数符号，确认恢复后按定位复位流程重新建图。
+encoder_jump、imu_yaw_jump、invalid_odometry_frame、odometry_gap、sensor_device_time_gap、sensor_timebase_changed：真实定位参考不可信。保持停车并检查源时间、编码器和IMU；不自动清图。
+imu_invalid_or_stale、telemetry_stale、control_watchdog：IMU、整体传感器链或控制循环过期。与局部sonar暂失分开，仍立即失败停车。
+planner_timeout、planner_path_no_longer_safe、route_segment_blocked：规划/地图路线失效；不能沿旧结果盲走。
+
+权限与软核：
+phone_stop、phone_disarm、app_background、owner_disconnected、lease_expired：用户/生命周期/前台授权终止；任何迟到ACK、心跳或路径结果不能复活旧任务。
+fpga_ack_stale、motor_link_not_ready、fpga_watchdog：电机ACK不新鲜/不匹配或FPGA看门狗。NAV1心跳不能代替严格300ms电机ACK。
+softcore_cpu_trap：新鲜NAV1硬件trap位；需检查位流/初始化/CPU，不允许忽略继续运动。
+softcore_firmware_fault：固件错误/自检失败；固件码1为板ID，0x1001..0x1004为A*启动自检。
+softcore_boot_not_ready、softcore_selftest_pending：主固件启动未完成，零速等；持续异常检查CPU。
+softcore_heartbeat_unverified、softcore_heartbeat_stalled：尚未见真心跳进展或3.5秒不前进；收包不是CPU活跃的证明。
+softcore_local_imu_not_observed：主循环尚未观察IMU序号，不能只看RK窗口校准进度。
+softcore_local_calibration_or_commit_not_ready：仅自主准备/控制请求期间，匹配ACK4仍未ready；原NAV1不能进一步区分本地校准/提交/IMU年龄。
+softcore_not_ready、velocity_protocol_lost：运行时本地ready/协议丢失；保持停车，恢复不自动重新开始。
+softcore_preparation_timeout：准备15秒仍未完成，明确取消。零轮速本身不会取消使能。
+fpga_v28_velocity_required：沿用原协议错误名，表示未确认MOT4；本版需配套v29位流，绝不退回PWM导航。
+
+诊断权限边界：NAV1独立只读socket，永远不能刷新电机ACK、使能或手机租约。source age来自真实原始观测；滤波、重复包和GET查询不会刷新。invalid/timeout不等价于超量程有效值。
+
+历史取证（供排错，不是本版硬件测试）：v28出现100个合法NAV1均trap/hb0/imu_seq0，已由综合网表定位异步CPU寄存器文件误推断同步RAM；v28.1的992位DFF修复完整保留。此次v29故障包中CPU/ACK链健康，旧encoder锁存在两次PREPARING后被正确拒绝，不能归咎手机租约；停用正常ACK4探测噪声已单独修正。新发布产物的实际检查结果见绑定验证报告。

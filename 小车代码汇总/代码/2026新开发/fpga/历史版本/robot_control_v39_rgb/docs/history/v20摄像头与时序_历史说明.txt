@@ -1,0 +1,95 @@
+ACG138 摄像头40 FPS试运行版＋FPGA时序优化 v20
+日期：2026-10-25
+
+适用基准
+FPGA：robot_navigation_v18；RK：已经正常运行的自训练YOLOv8s INT8完整包。
+本包包含新FPGA完整工程及位流、原v18的30FPS回退位流、RK最小接收更新包、验证报告。
+当前模型、640×640推理尺寸、双目1920×1080输出及手机设置继续沿用。
+
+一、完成的修改
+1. 双目每目仍是960×1080 RAW8，ROI和像素时钟84.135MHz不变。
+   HTS由2500改为1880，VTS仍为1120；计算采集帧率39.95755FPS。
+   同步修改50/60Hz抗频闪步长和频段上限，保持固定帧长。
+   该自定义裁剪模式的最小HTS未获厂商规定，因此属于40FPS试运行配置，需要实板验收。
+2. 两目源缓存扩至各16KiB，发送行缓存扩至8KiB，共增加10块BSRAM。
+   满空状态寄存；Gray解码、计数减法分级；提前保存下一读地址，缩短BRAM地址路径。
+3. RGMII接收增加数据/有效/错误同步流水级；导航请求邮箱降低512位使能扇出。
+4. 编码器校正使用平衡求和和预计算阈值；571228组算术向量及150002次逐周期比较与v18一致。
+   电机轮组、方向设置、编码器校正增益、故障处理和更新周期保持原有行为。
+   IMU滤波、超声波算法、软核导航固件、接线及通信协议沿用当前版本。
+5. RK只替换隔离ISP接收程序并补充FPS配置读取，带有自动备份和精确回退。
+   手机推流沿用现有帧率设置，本次无需更换APK。
+
+二、编译与验证结果
+器件：GW5AT-LV60PG484AC1/I0；工具：Gowin V1.9.12.03。
+最差setup余量：v18 +0.040ns → v20 +0.196ns。
+最差hold余量：+0.182ns；setup/hold违例均为0。
+内部实际运行时钟仍为50MHz、125MHz；摄像头PCLK约84.135MHz，仍以100MHz约束检查。
+工具估计RGMII RX/TX Fmax分别131.366/128.137MHz，不表示RGMII链路被超频。
+逻辑：17065/59904；寄存器：15914/60780；BSRAM：66/118。
+全部75个物理管脚/电平属性核对通过；CPU 64KiB初始化镜像逐位核对通过。
+全部88位实际Gray同步入口有明确8ns边界，最大Q到D连线延迟0.965ns；没有整时钟域假路径。
+真实FIFO＋行控制器的两帧1920×1080图像逐字节验证通过，跨时钟、复位、满空、回绕测试通过。
+真实发送FIFO＋网络仲裁的三帧3240行及IMU/SNS1/NAV2/ACK共存验证通过，像素、FCS、帧间隔和仲裁均通过。
+Gowin IDDR＋接收流水的13种MOT1/NAV2正常/损坏/错误/恢复情况通过。
+RK安装/回退等79项检查通过，ARM64接收程序已编译。
+这些属于离线验证；板级外部IO时序、传感器40FPS成像和连续实际帧率还需实板验证。
+
+三、替换方法
+1. 停车，退出RK的YOLO、导航窗口。
+2. 电脑下载本包，解压后先用Gowin Programmer的SRAM方式下载根目录robot_navigation_v20.fs。
+   先验证图像稳定，再决定是否写入Flash。接线保持当前能正常运行的接法。
+3. 只把camera-fastpath-40fps-rk3588-v20-20261025.tar.gz拷到RK的/root，然后执行：
+
+cd /root
+tar -xzf camera-fastpath-40fps-rk3588-v20-20261025.tar.gz
+cd camera-fastpath-40fps-rk3588-v20-20261025
+sh install-highfps.sh 40
+
+   记下安装成功输出的Backup路径，它是精确回退所需的原文件备份。
+   安装前若手动导出过旧帧率，先执行unset CAMERA_TARGET_FPS。
+4. 继续使用已经验证有效的CPU性能设置，启动纯预览检查：
+
+sh /root/robot-perception/scripts/cpu-big-performance.sh enable
+sh /root/perception-dashboard/run-dashboard.sh -0 --no-detect --no-phone
+
+   横置仍用-90。退出纯预览后启动完整窗口：
+
+sh /root/perception-dashboard/run-dashboard.sh -0
+
+   原yolo与/root/run-yolo.sh入口继续使用；配对码、模型和手机电机设置沿用已有值。
+
+四、验收怎么看
+另一个终端执行：
+
+grep FASTPATH /tmp/fpga-isp.log | tail -n 5
+
+先观察纯预览，再观察正常识别运行后的连续稳定日志：
+- rx_fps、output_fps都持续接近39.96，且画面没有缺行、错行、闪烁，说明摄像头与RK输出已提速。
+- incomplete/malformed/rx_superseded应观察稳定后的增量；启动时一次残帧不等于持续丢帧。
+- rx_fps接近40但output_fps偏低且rx_superseded持续增加，说明RK的ISP/输出处理跟不上。
+- 两项都接近40而PERF result_fps较低，说明识别处理能力限制了检测帧率。
+- V4L2_INTERVAL=40只是格式元数据，不能代替实际完整帧计数。
+窗口程序的旧版本字符串可能仍含30fps，这是保留的程序名称；真实帧率看FASTPATH计数。
+40FPS并不保证YOLO也达到40；当前模型保持原样，上板结果以日志为准。
+旧日志ISP约10.9ms＋输出11ms，40FPS每帧约25ms，余量较小。详细判断见RK详细说明.txt。
+曝光时间缩短后，暗处可能需要更好的照明，以免增益噪声影响识别。
+
+五、回退
+退出YOLO和导航窗口，在RK更新包目录执行，最后一项替换成安装时打印的实际备份路径：
+
+sh rollback-highfps.sh /opt/fpga-camera-isp-1080/camera-highfps-backup.XXXXXX
+
+再下载本包的robot_navigation_v18_30fps_rollback.fs，启动原窗口，即恢复原30FPS链路。
+仅把RK配置改成30或35不会改变FPGA传感器的实际帧率；真实回退需同时恢复原FPGA位流。
+
+六、工程与证据
+完整FPGA工程：fpga/robot_navigation_v20/robot_navigation_v20.gprj。
+最终位流SHA256：6c4164736aa933e568fc91c234bdac0baec28a55a6c8123cb3146022899d9571
+基准v18位流SHA256：8d9ddd806258445b09c5c2d30581cc9348e0d6b1f526675fa4bb43bb6aee15e5。
+原软核firmware.hex已包含在位流中，不用另烧软核程序。
+安装包内SHA256SUMS核对全部文件；详细时序、资源、88位Gray入口和CPU初始化证据在工程reports目录。
+
+传感器依据：OV5640数据手册的裁剪、HTS/VTS及PCLK章节。
+https://cdn.sparkfun.com/datasheets/Sensors/LightImaging/OV5640_datasheet.pdf
+该资料允许通过较小ISP输入提高最高帧率，但没有给出本ROI的最小HTS保证。

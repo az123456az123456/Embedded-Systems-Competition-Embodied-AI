@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.16)
+project(acg138_bringup)
+find_package(ament_cmake REQUIRED)
+install(DIRECTORY launch config DESTINATION share/${PROJECT_NAME})
+install(PROGRAMS scripts/synthetic_scan.py scripts/check_map.py scripts/initial_pose.py scripts/ros-smoke.sh DESTINATION lib/${PROJECT_NAME})
+ament_package()

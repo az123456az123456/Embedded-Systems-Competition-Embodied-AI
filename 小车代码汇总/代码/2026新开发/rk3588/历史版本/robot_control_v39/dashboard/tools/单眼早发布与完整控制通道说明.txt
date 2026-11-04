@@ -1,0 +1,85 @@
+v35 第四阶段：单眼早发布、完整控制、动态容量与跳帧
+
+默认独立预览模式中，某帧的一只眼完成推理后立即产生 PAIR_PARTIAL 事件；
+两只眼均完成后产生 PAIR_COMPLETE。每个事件有独立递增 update_id，
+frame_id 可在同帧 partial→complete 时保持相同，不能倒退到更旧帧。
+缺少的眼不拿旧帧填补；eye_complete_mask 表示实际就绪眼，未就绪眼的
+frame/time 元数据为零。显式 sync-preview 仍保留完整配对输出作对照。
+
+50 ms 和 100 ms 的含义
+
+从第一只眼完成到另一只眼完成的等待超过 50 ms，标明 counterpart_timeout。
+单眼早发布并不等待这50ms。配对等待超过100ms后，该帧即使最终完成也
+不能进入控制通道。其 PAIR_COMPLETE 仍计入真实完成数量，可能供显示，
+但 control_eligible=false。源数据超过350ms时，显示和控制都过期。
+没有通过把一帧的一只眼与另一帧的另一只眼组合来绕过此限制。
+
+显示和控制为何分开
+
+持续负载时，N+1帧快眼可能比N帧慢眼更早完成。如果显示严格不回退，
+RK窗口可能长时间显示最新的单眼结果，之前的N帧完整结果不能回退覆盖它。
+因此另设 complete-only 控制槽，独立保持最新完整、及时、单调的结果；
+它的源时间不会被后来的partial刷新。保持selected目标也不会被partial清空。
+完整帧里目标实际消失、完整观测过期或用户更换目标时，仍按原逻辑处理。
+
+兼容现有手机APK
+
+原 detections、selected_id、detections_frame_id、detection_timestamp_ms、
+update_id 和 complete_mask 始终来自最新 fresh complete 控制帧，因此旧APK
+仍可正常看到并选择目标。detections_pair_status 明确说明该层的完整状态。
+它的frame_id可早于当前视频帧，box_age_ms仍按真实原时间计算。
+
+新增 partial_detections 是独立的提前结果通道，框 id=0、selectable=false，
+并附 partial_frame_id、partial_update_id、partial_timestamp_ms、
+partial_complete_mask、partial_source_sequence/epoch、每眼frame/time。
+preview_pair_status 与原detections_pair_status分开，绝不把N+1的partial
+标志冒充N的complete状态。旧APK忽略新字段；RK窗口直接显示提前就绪眼。
+
+FPS与统计
+
+result_fps只按真实完整配对完成计数；单眼事件和update次数不抬高它。
+eye_completion_fps是单眼完成率。completed_pairs包含真实已算完的pair；
+published_pairs是完整结果成功进入显示最新槽的数量，可能因显示不回退
+低于completed_pairs；control通道独立，不能把这项差值全当无用推理。
+partial_events/partial_publications/observation_updates分别计事件与显示更新。
+STAGE pair_events记录50ms告警、100ms控制放弃、每眼queue p95/max与丢弃原因。
+STAGE worker_idle记录线程实际等任务的时间，不是硬件NPU占用率。
+
+动态容量和drop-oldest
+
+保留最多两个在途双目pair（3worker）和一个最新捕获槽。worker空闲时
+主动从共享队列取最老的已启动pair，先眼次序按帧交替；不固定偏向左眼。
+容量有空位时不做固定比例跳帧；容量满期间捕获槽覆盖旧帧，恢复容量后
+只取最新捕获。尚未上NPU且源年龄超限的pair可整对丢弃，已经运行的
+NPU作业不能伪取消或复用其图像内存。没有引入无界队列来换好看的FPS。
+
+skip_capacity：等待处理容量期间被最新捕获覆盖的帧。
+skip_capture_age：捕获已过期、尚未提交到推理。
+skip_unstarted_age：已排入但整个pair还未进入NPU且过期。
+drop_pair_old：完整显示结果比已经显示的新帧更旧，不允许回滚。
+drop_pair_age：pair算完时已超过显示年龄。
+所有图像任务持有 shared_ptr 的不可变源帧，关闭时等待线程结束后才释放。
+
+验证边界
+
+真实生产调度线程用模拟Camera/RKNN接口执行左右眼快慢互换、50/100ms
+跨限、逆序完成、源过期、容量过载、空闲不跳帧和多次关闭竞态测试。
+HTTP/MJPEG测试使用真实phone_service/Controller验证完整框仍可选择，
+partial不可选且不续完整观测寿命。它们是离线/本机模拟，不是RK板上FPS。
+
+手机视频节拍与HDMI解耦
+
+默认 --phone-fps auto，按真实完整 result_fps 设置视频目标速率，最高60FPS；
+显式 --phone-fps 15 是用户上限。关闭识别时按preview/capture设置目标。
+节拍使用steady高精度时间，手机实际速度受编码、WiFi及客户端能力影响；
+目标40不等于承诺手机实测40。没有客户端时不编码。慢编码/慢客户端只
+取最新槽，不排队补旧JPEG；send_fps为所有客户端发送数的聚合，并有标注。
+
+生产main将已有vision_worker attach到phone_service，独立observer约2ms
+检查generation，仅变化才采样，避免HDMI的33ms刷新和draw/present阻塞
+限制手机至30FPS。无视频客户端时只复制观测，不复制像素。IMU/SNS仍由
+原主循环接收/过滤，observer不复制回写旧IMU，不打开第二摄像头/NPU。
+退出时必须phone_stop（停止并join observer）后才vision_stop；二次attach
+会失败，禁止同时由主循环和observer重复发送观测。旧phone_publish API
+保留给demo和独立测试。PHONE_PERF与API分别提供target/result/encode/send
+速率和编码耗时，实测结果应以这些值和上板日志为准。
